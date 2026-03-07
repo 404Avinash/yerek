@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fresco — Farm Fresh. Transparent. Honest.</title>
+  <meta name="description" content="Fresco brings vegetables directly from farms to our hygienic store while letting you track the journey of your food with QR traceability." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ========= NAV ========= -->
+  <nav id="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <span class="logo-leaf">🌿</span>
+        <span class="logo-text">Fresco</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#mission">Mission</a></li>
+        <li><a href="#how-it-works">Process</a></li>
+        <li><a href="#categories">Store</a></li>
+        <li><a href="#trace">QR Trace</a></li>
+        <li><a href="#walking-mandi">Walking Mandi</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+      <a href="#walking-mandi" class="nav-cta">Join Beta</a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========= HERO ========= -->
+  <section id="hero">
+    <div class="hero-bg">
+      <div class="hero-overlay"></div>
+      <div class="hero-pattern"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge reveal">
+        <span class="badge-dot"></span>
+        Farm-to-Store · QR Traced · Zero Middlemen
+      </div>
+      <h1 class="hero-headline reveal">
+        Farm Fresh.<br />
+        <em>Transparent.</em><br />
+        Honest.
+      </h1>
+      <p class="hero-sub reveal">
+        We bring vegetables directly from farms to our hygienic store while
+        letting you track the journey of your food — from soil to shelf.
+      </p>
+      <div class="hero-cta-group reveal">
+        <a href="#how-it-works" class="btn btn-primary" id="discoverBtn">
+          <span>Discover Our Process</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#trace" class="btn btn-outline" id="scanBtn">
+          <span>Scan &amp; Know Your Vegetables</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3M17 14h3M14 17h3v3"/></svg>
+        </a>
+      </div>
+      <div class="hero-stats reveal">
+        <div class="stat-item">
+          <span class="stat-number" data-target="50">0</span><span>+</span>
+          <span class="stat-label">Partner Farms</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number" data-target="8">0</span><span>h</span>
+          <span class="stat-label">Farm to Store</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number" data-target="30">0</span><span>%</span>
+          <span class="stat-label">Less Food Waste</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual reveal">
+      <div class="hero-card">
+        <div class="hero-card-header">
+          <span class="card-tag tag-live">🟢 Live</span>
+          <span class="card-tag tag-fresh">Fresh Today</span>
+        </div>
+        <div class="veggie-grid">
+          <div class="veggie-tile" style="--c:#4ade80">🥬<span>Spinach</span></div>
+          <div class="veggie-tile" style="--c:#f97316">🍅<span>Tomato</span></div>
+          <div class="veggie-tile" style="--c:#fb923c">🥕<span>Carrot</span></div>
+          <div class="veggie-tile" style="--c:#a3e635">🥦<span>Broccoli</span></div>
+          <div class="veggie-tile" style="--c:#facc15">🍋<span>Lemon</span></div>
+          <div class="veggie-tile" style="--c:#c084fc">🧅<span>Onion</span></div>
+        </div>
+        <div class="hero-card-footer">
+          <div class="freshness-bar">
+            <span>Freshness Index</span>
+            <div class="bar-track"><div class="bar-fill" style="width:91%"></div></div>
+            <span class="bar-score">9.1/10</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll-indicator">
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ========= MISSION ========= -->
+  <section id="mission">
+    <div class="container">
+      <div class="section-tag reveal">Our Mission</div>
+      <h2 class="section-title reveal">
+        The Problem with Your<br /><em>Vegetables Today</em>
+      </h2>
+      <div class="mission-problem reveal">
+        <div class="problem-card">
+          <div class="problem-icon">🔗</div>
+          <p>Traditional supply chains involve <strong>5–7 middlemen</strong> before vegetables reach you.</p>
+        </div>
+        <div class="problem-arrow">→</div>
+        <div class="problem-card">
+          <div class="problem-icon">💰</div>
+          <p>Each step inflates price and reduces <strong>freshness &amp; quality</strong> significantly.</p>
+        </div>
+        <div class="problem-arrow">→</div>
+        <div class="problem-card">
+          <div class="problem-icon">❓</div>
+          <p>Customers have <strong>no visibility</strong> into where their food comes from or how it was handled.</p>
+        </div>
+      </div>
+      <blockquote class="mission-quote reveal">
+        "Our mission is to build a transparent food system where customers can see exactly
+        how their vegetables travel from farms to their baskets."
+      </blockquote>
+      <div class="mission-pillars">
+        <div class="pillar reveal">
+          <div class="pillar-icon">🌾</div>
+          <h3>Farm Direct Sourcing</h3>
+          <p>We partner directly with local farms, cutting out all middlemen to ensure fresher produce at fairer prices for everyone.</p>
+        </div>
+        <div class="pillar reveal">
+          <div class="pillar-icon">🧼</div>
+          <h3>Hygienic Handling</h3>
+          <p>Every vegetable is sorted, cleaned, and handled under strict hygiene standards before it reaches our smart store shelves.</p>
+        </div>
+        <div class="pillar reveal">
+          <div class="pillar-icon">♻️</div>
+          <h3>Waste Reduction</h3>
+          <p>Demand-based planning and efficient logistics reduce spoilage by up to 30%, making our chain environmentally responsible.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= HOW IT WORKS ========= -->
+  <section id="how-it-works">
+    <div class="container">
+      <div class="section-tag reveal">The Process</div>
+      <h2 class="section-title reveal">How Fresco <em>Works</em></h2>
+      <p class="section-sub reveal">A seamless four-step journey that ensures every vegetable reaches you at peak freshness — with full traceability.</p>
+      
+      <div class="steps-flow">
+        <div class="step reveal" id="step1">
+          <div class="step-number">01</div>
+          <div class="step-icon">🌱</div>
+          <div class="step-connector"></div>
+          <h3>Farm Sourcing</h3>
+          <p>We source vegetables directly from our network of trusted partner farms, ensuring quality from the very beginning.</p>
+        </div>
+        <div class="step reveal" id="step2">
+          <div class="step-number">02</div>
+          <div class="step-icon">🧹</div>
+          <div class="step-connector"></div>
+          <h3>Hygienic Handling</h3>
+          <p>Produce is carefully sorted, inspected, and packed under controlled hygienic conditions to maintain peak freshness.</p>
+        </div>
+        <div class="step reveal" id="step3">
+          <div class="step-number">03</div>
+          <div class="step-icon">🏪</div>
+          <div class="step-connector"></div>
+          <h3>Smart Store</h3>
+          <p>Vegetables are organized into categories — leafy, root, fruit vegetables, and fruits — in our modern retail space.</p>
+        </div>
+        <div class="step reveal" id="step4">
+          <div class="step-number">04</div>
+          <div class="step-icon">📱</div>
+          <div class="step-connector" style="display:none"></div>
+          <h3>Scan &amp; Trace</h3>
+          <p>Customers scan QR codes on produce to instantly view the complete farm-to-store journey of their vegetables.</p>
+        </div>
+      </div>
+
+      <div class="journey-bar reveal">
+        <div class="journey-node">
+          <div class="journey-icon">🌾</div>
+          <span>Farm</span>
+        </div>
+        <div class="journey-line"><div class="journey-progress"></div></div>
+        <div class="journey-node">
+          <div class="journey-icon">🚛</div>
+          <span>Transport</span>
+        </div>
+        <div class="journey-line"><div class="journey-progress"></div></div>
+        <div class="journey-node">
+          <div class="journey-icon">🏪</div>
+          <span>Smart Store</span>
+        </div>
+        <div class="journey-line"><div class="journey-progress"></div></div>
+        <div class="journey-node">
+          <div class="journey-icon">🛍️</div>
+          <span>Customer</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= CATEGORIES ========= -->
+  <section id="categories">
+    <div class="container">
+      <div class="section-tag reveal">Store Experience</div>
+      <h2 class="section-title reveal">Organized for <em>You</em></h2>
+      <p class="section-sub reveal">Every vegetable has a home. Our smart store layout helps you find the freshest produce instantly, organized by category.</p>
+      <div class="categories-grid">
+        <a class="cat-card reveal" data-cat="leafy" href="category.html?cat=leafy">
+          <div class="cat-bg"></div>
+          <div class="cat-card-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="cat-emoji">🥬</div>
+          <h3>Leafy Vegetables</h3>
+          <p class="cat-desc">Harvested fresh daily</p>
+          <div class="cat-items">
+            <span>Spinach</span>
+            <span>Coriander</span>
+            <span>Fenugreek</span>
+          </div>
+          <div class="cat-freshness">
+            <span class="fresh-dot"></span> Fresh Today
+          </div>
+        </a>
+        <a class="cat-card reveal" data-cat="root" href="category.html?cat=root">
+          <div class="cat-bg"></div>
+          <div class="cat-card-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="cat-emoji">🥕</div>
+          <h3>Root Vegetables</h3>
+          <p class="cat-desc">Earth's natural goodness</p>
+          <div class="cat-items">
+            <span>Carrot</span>
+            <span>Radish</span>
+            <span>Beetroot</span>
+          </div>
+          <div class="cat-freshness">
+            <span class="fresh-dot"></span> Sourced Weekly
+          </div>
+        </a>
+        <a class="cat-card reveal" data-cat="tuber" href="category.html?cat=tuber">
+          <div class="cat-bg"></div>
+          <div class="cat-card-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="cat-emoji">🥔</div>
+          <h3>Tuber Vegetables</h3>
+          <p class="cat-desc">Wholesome staples</p>
+          <div class="cat-items">
+            <span>Potato</span>
+            <span>Sweet Potato</span>
+          </div>
+          <div class="cat-freshness">
+            <span class="fresh-dot"></span> Farm Direct
+          </div>
+        </a>
+        <a class="cat-card reveal" data-cat="fruiting" href="category.html?cat=fruiting">
+          <div class="cat-bg"></div>
+          <div class="cat-card-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="cat-emoji">🍅</div>
+          <h3>Fruiting Vegetables</h3>
+          <p class="cat-desc">Ripened to perfection</p>
+          <div class="cat-items">
+            <span>Tomato</span>
+            <span>Capsicum</span>
+            <span>Brinjal</span>
+          </div>
+          <div class="cat-freshness">
+            <span class="fresh-dot"></span> Peak Ripeness
+          </div>
+        </a>
+        <a class="cat-card reveal" data-cat="fruits" href="category.html?cat=fruits">
+          <div class="cat-bg"></div>
+          <div class="cat-card-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="cat-emoji">🍌</div>
+          <h3>Fruits</h3>
+          <p class="cat-desc">Nature's sweetest picks</p>
+          <div class="cat-items">
+            <span>Banana</span>
+            <span>Apple</span>
+            <span>Orange</span>
+          </div>
+          <div class="cat-freshness">
+            <span class="fresh-dot"></span> Seasonal Picks
+          </div>
+        </a>
+      </div>
+      <div class="categories-cta reveal">
+        <p>Click any category to explore individual produce, farm partners, and our sourcing journey.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= TRACE ========= -->
+  <section id="trace">
+    <div class="container">
+      <div class="trace-inner">
+        <div class="trace-left reveal">
+          <div class="section-tag">QR Traceability</div>
+          <h2 class="section-title">Scan &amp; Know Your<br /><em>Food's Story</em></h2>
+          <p class="section-sub">Every vegetable in our store carries a QR code. One scan reveals the complete transparency report — from the farmer's name to your freshness score.</p>
+          <ul class="trace-features">
+            <li>
+              <div class="feature-icon">📍</div>
+              <div>
+                <strong>Farm Location</strong>
+                <span>Exact farm coordinates &amp; farmer profile</span>
+              </div>
+            </li>
+            <li>
+              <div class="feature-icon">📅</div>
+              <div>
+                <strong>Harvest Date</strong>
+                <span>Exact date and time of harvest</span>
+              </div>
+            </li>
+            <li>
+              <div class="feature-icon">🚛</div>
+              <div>
+                <strong>Transport Timeline</strong>
+                <span>Route taken &amp; hours in transit</span>
+              </div>
+            </li>
+            <li>
+              <div class="feature-icon">⭐</div>
+              <div>
+                <strong>Freshness Score</strong>
+                <span>AI-based freshness rating out of 10</span>
+              </div>
+            </li>
+            <li>
+              <div class="feature-icon">❄️</div>
+              <div>
+                <strong>Storage Conditions</strong>
+                <span>Temperature &amp; humidity during storage</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="trace-right reveal">
+          <div class="phone-mockup">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="scan-header">
+                <div class="scan-logo">🌿 Fresco</div>
+                <div class="scan-status">✅ Verified</div>
+              </div>
+              <div class="scan-veggie">
+                <div class="scan-emoji">🍅</div>
+                <div class="scan-name">Tomato</div>
+                <div class="scan-variety">Hybrid Red</div>
+              </div>
+              <div class="scan-score-ring">
+                <svg viewBox="0 0 100 100" class="ring-svg">
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="#e8f5e9" stroke-width="8"/>
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="#22c55e" stroke-width="8"
+                    stroke-dasharray="263.9" stroke-dashoffset="23.7" stroke-linecap="round"
+                    transform="rotate(-90 50 50)" class="ring-progress"/>
+                </svg>
+                <div class="ring-label">
+                  <span class="ring-number">9.1</span>
+                  <span class="ring-sub">Freshness</span>
+                </div>
+              </div>
+              <div class="scan-details">
+                <div class="detail-row">
+                  <span class="detail-label">Farm</span>
+                  <span class="detail-value">Ramesh Farm, Sonipat</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Harvested</span>
+                  <span class="detail-value">6 March 2026</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Transit</span>
+                  <span class="detail-value">8 Hours</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Storage</span>
+                  <span class="detail-value">18°C · 65% Humidity</span>
+                </div>
+              </div>
+              <div class="scan-cta-btn">View Full Report</div>
+            </div>
+          </div>
+          <div class="qr-float">
+            <div class="qr-grid">
+              <div></div><div class="qr-dark"></div><div></div><div class="qr-dark"></div>
+              <div class="qr-dark"></div><div></div><div class="qr-dark"></div><div></div>
+              <div></div><div class="qr-dark"></div><div class="qr-dark"></div><div></div>
+              <div class="qr-dark"></div><div></div><div></div><div class="qr-dark"></div>
+            </div>
+            <span>Scan Me</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= WASTE REDUCTION ========= -->
+  <section id="waste">
+    <div class="container">
+      <div class="section-tag reveal">Environmental Impact</div>
+      <h2 class="section-title reveal">Reducing Food<br /><em>Wastage Together</em></h2>
+      <p class="section-sub reveal">Food wastage is one of the biggest environmental challenges of our time. Fresco is built to fight it at every step of the supply chain.</p>
+      <div class="waste-content">
+        <div class="waste-stat-big reveal">
+          <div class="big-number">
+            <span class="count-up" data-target="30">0</span>%
+          </div>
+          <p>of vegetables are lost in traditional inefficient supply chains before reaching consumers.</p>
+          <cite>— FAO Global Food Loss Report</cite>
+        </div>
+        <div class="waste-points">
+          <div class="waste-point reveal">
+            <div class="waste-icon">📊</div>
+            <div>
+              <h4>Demand-Based Planning</h4>
+              <p>We source only what's needed based on real-time store demand, eliminating overstock and spoilage at the retail level.</p>
+            </div>
+          </div>
+          <div class="waste-point reveal">
+            <div class="waste-icon">🚛</div>
+            <div>
+              <h4>Efficient Direct Logistics</h4>
+              <p>Cutting out middlemen means fewer handling points, shorter transit times, and significantly less damage to produce.</p>
+            </div>
+          </div>
+          <div class="waste-point reveal">
+            <div class="waste-icon">🌡️</div>
+            <div>
+              <h4>Controlled Storage</h4>
+              <p>Temperature-monitored storage at every stage preserves freshness longer, keeping vegetables viable and reducing waste.</p>
+            </div>
+          </div>
+          <div class="waste-point reveal">
+            <div class="waste-icon">🌱</div>
+            <div>
+              <h4>Composting Partnerships</h4>
+              <p>Even unsold organic matter is diverted to composting programs, ensuring zero-landfill waste from our store.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= WALKING MANDI ========= -->
+  <section id="walking-mandi">
+    <div class="container">
+      <div class="mandi-inner">
+        <div class="mandi-left reveal">
+          <div class="beta-badge">
+            <span class="beta-pulse"></span>
+            BETA · Launching Soon
+          </div>
+          <h2 class="section-title">Walking<br /><em>Mandi</em></h2>
+          <p class="section-sub">A mobile mandi network bringing farm-fresh vegetables directly to neighbourhood stores, restaurants, and local vendors — no middlemen, no delays.</p>
+          <div class="mandi-features">
+            <div class="mandi-feat">
+              <span>🏘️</span>
+              <div>
+                <strong>Neighbourhood Delivery</strong>
+                <span>Fresh produce at your doorstep daily</span>
+              </div>
+            </div>
+            <div class="mandi-feat">
+              <span>🍽️</span>
+              <div>
+                <strong>Restaurant Supply</strong>
+                <span>Bulk farm-fresh orders for businesses</span>
+              </div>
+            </div>
+            <div class="mandi-feat">
+              <span>📦</span>
+              <div>
+                <strong>Local Vendor Network</strong>
+                <span>Empower small retailers with direct farm access</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mandi-right reveal">
+          <div class="waitlist-card">
+            <div class="waitlist-header">
+              <h3>Join the Early Access Waitlist</h3>
+              <p>Be the first to experience Walking Mandi in your city.</p>
+            </div>
+            <form id="waitlistForm" class="waitlist-form">
+              <div class="form-group">
+                <label for="wl-name">Your Name</label>
+                <input type="text" id="wl-name" placeholder="Rahul Sharma" required />
+              </div>
+              <div class="form-group">
+                <label for="wl-email">Email Address</label>
+                <input type="email" id="wl-email" placeholder="rahul@example.com" required />
+              </div>
+              <div class="form-group">
+                <label for="wl-city">City</label>
+                <input type="text" id="wl-city" placeholder="Delhi, Mumbai, Bangalore..." required />
+              </div>
+              <button type="submit" class="btn btn-primary full-width" id="joinBtn">
+                <span>Join Early Access</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </form>
+            <div id="waitlistSuccess" class="waitlist-success hidden">
+              <div class="success-icon">🎉</div>
+              <h4>You're on the list!</h4>
+              <p>We'll notify you as soon as Walking Mandi launches in your city.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= ABOUT ========= -->
+  <section id="about">
+    <div class="container">
+      <div class="about-inner">
+        <div class="about-visual reveal">
+          <div class="about-orb orb-1"></div>
+          <div class="about-orb orb-2"></div>
+          <div class="about-icon-cluster">
+            <div class="cluster-item ci-1">🌾</div>
+            <div class="cluster-item ci-2">📱</div>
+            <div class="cluster-item ci-3">🌿</div>
+            <div class="cluster-item ci-4">🏪</div>
+          </div>
+        </div>
+        <div class="about-text reveal">
+          <div class="section-tag">About Fresco</div>
+          <h2 class="section-title">Built on a Simple<br /><em>Belief</em></h2>
+          <p class="about-quote">
+            "We believe food should be fresh, transparent, and trusted.
+            By combining traditional farm sourcing with simple technology like
+            QR traceability, we aim to create a smarter and more honest
+            vegetable supply chain."
+          </p>
+          <p class="about-detail">
+            Fresco was born from the frustration of not knowing where your food comes from.
+            We set out to fix the broken agriculture retail chain — not just for consumers,
+            but for the farmers who grow our food and deserve fair recognition and better prices.
+          </p>
+          <div class="about-values">
+            <div class="value-chip">🤝 Farmer First</div>
+            <div class="value-chip">🔍 Full Transparency</div>
+            <div class="value-chip">🌍 Sustainability</div>
+            <div class="value-chip">💚 Community</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= FOOTER ========= -->
+  <footer id="footer">
+    <div class="footer-top">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="#" class="logo">🌿 Fresco</a>
+            <p>Fresh food with complete transparency. From soil to shelf, we never hide a thing.</p>
+            <div class="social-links">
+              <a href="#" aria-label="Instagram" class="social-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              </a>
+              <a href="#" aria-label="Twitter" class="social-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+              </a>
+              <a href="#" aria-label="LinkedIn" class="social-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="footer-col">
+            <h4>Navigate</h4>
+            <ul>
+              <li><a href="#about">About</a></li>
+              <li><a href="#mission">Our Mission</a></li>
+              <li><a href="#how-it-works">How It Works</a></li>
+              <li><a href="#categories">Store</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Features</h4>
+            <ul>
+              <li><a href="#trace">QR Scan &amp; Trace</a></li>
+              <li><a href="#waste">Food Waste Initiative</a></li>
+              <li><a href="#walking-mandi">Walking Mandi Beta</a></li>
+              <li><a href="#">Partner Farms</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Contact</h4>
+            <ul>
+              <li><a href="mailto:hello@fresco.in">hello@fresco.in</a></li>
+              <li><a href="#">Press &amp; Media</a></li>
+              <li><a href="#">Become a Farm Partner</a></li>
+              <li><a href="#">Careers</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© 2026 Fresco. All rights reserved.</p>
+        <p class="footer-tagline">Fresh food with complete transparency.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
