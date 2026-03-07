@@ -115,12 +115,16 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// ---- Waitlist Form ----
+// ---- Waitlist Form — connected to Formspree ----
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvzwgale';
+
 const waitlistForm = document.getElementById('waitlistForm');
 const waitlistSuccess = document.getElementById('waitlistSuccess');
+
 if (waitlistForm) {
-  waitlistForm.addEventListener('submit', (e) => {
+  waitlistForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+
     const btn = document.getElementById('joinBtn');
     const name = document.getElementById('wl-name').value.trim();
     const email = document.getElementById('wl-email').value.trim();
@@ -128,18 +132,49 @@ if (waitlistForm) {
 
     if (!name || !email || !city) return;
 
-    // Simulate submission with loading state
+    // Loading state
+    const originalText = btn.querySelector('span').textContent;
     btn.querySelector('span').textContent = 'Submitting...';
     btn.style.opacity = '0.7';
     btn.disabled = true;
 
-    setTimeout(() => {
-      waitlistForm.classList.add('hidden');
-      waitlistSuccess.classList.remove('hidden');
-      waitlistSuccess.style.animation = 'fadeInUp 0.5s ease';
-    }, 1200);
+    try {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: JSON.stringify({ name, email, city }),
+      });
+
+      if (response.ok) {
+        // Success — show celebration screen
+        waitlistForm.classList.add('hidden');
+        waitlistSuccess.classList.remove('hidden');
+        waitlistSuccess.style.animation = 'fadeInUp 0.5s ease';
+      } else {
+        // Formspree returned an error
+        btn.querySelector('span').textContent = 'Something went wrong — try again';
+        btn.style.opacity = '1';
+        btn.style.background = '#dc2626';
+        btn.disabled = false;
+        setTimeout(() => {
+          btn.querySelector('span').textContent = originalText;
+          btn.style.background = '';
+        }, 3000);
+      }
+    } catch (err) {
+      // Network error
+      btn.querySelector('span').textContent = 'No connection — try again';
+      btn.style.opacity = '1';
+      btn.style.background = '#dc2626';
+      btn.disabled = false;
+      setTimeout(() => {
+        btn.querySelector('span').textContent = originalText;
+        btn.style.background = '';
+      }, 3000);
+    }
   });
 }
+
 
 // ---- Veggie tile hover sparkle ----
 document.querySelectorAll('.veggie-tile').forEach(tile => {
