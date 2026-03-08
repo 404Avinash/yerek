@@ -134,7 +134,10 @@
       const { error } = await _supabase.auth.signUp({
         email: document.getElementById('su-email').value.trim(),
         password: document.getElementById('su-password').value,
-        options: { data: { full_name: document.getElementById('su-name').value.trim() } }
+        options: {
+          emailRedirectTo: window.location.origin + '/admin/index.html',
+          data: { full_name: document.getElementById('su-name').value.trim() }
+        }
       });
 
       if (error) {

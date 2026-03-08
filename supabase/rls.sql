@@ -54,3 +54,18 @@ create policy "Admin: read qr scans" on qr_scans for select using (get_my_role()
 -- ---- SAVED BOXES — users manage own, admin read ----
 create policy "Own boxes: all"       on saved_boxes for all using (auth.uid() = user_id);
 create policy "Admin: read all boxes" on saved_boxes for select using (get_my_role() in ('owner','staff'));
+
+-- ---- ORDERS — users manage own, admin manage all ----
+alter table public.orders enable row level security;
+create policy "Own orders: read"    on orders for select using (auth.uid() = user_id);
+create policy "Anyone: place order" on orders for insert with check (true);
+create policy "Own orders: update"  on orders for update using (auth.uid() = user_id);
+create policy "Admin: manage orders" on orders for all using (get_my_role() in ('owner','staff'));
+
+-- ---- ORDER ITEMS — follow parent order ----
+alter table public.order_items enable row level security;
+create policy "Order items: read own"  on order_items for select using (
+  exists (select 1 from public.orders where id = order_id and user_id = auth.uid())
+);
+create policy "Order items: insert"    on order_items for insert with check (true);
+create policy "Admin: manage order items" on order_items for all using (get_my_role() in ('owner','staff'));

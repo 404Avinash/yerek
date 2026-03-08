@@ -15,6 +15,15 @@ function getBatchId(code, daysAgo = 0) {
   return `FRS-${code}-${mm}${dd}`;
 }
 
+// Price lookup (₹/kg). Used by cart system.
+const PRODUCT_PRICES = {
+  spinach: 40, coriander: 60, fenugreek: 50, lettuce: 80, mint: 70, amaranth: 50,
+  carrot: 40, radish: 30, beetroot: 50, turnip: 35,
+  potato: 25, 'sweet-potato': 45, yam: 55, colocasia: 60,
+  tomato: 35, capsicum: 80, brinjal: 40, chilly: 90, peas: 70, 'bitter-gourd': 50,
+  banana: 50, apple: 150, orange: 80, papaya: 45, guava: 60, pomegranate: 120
+};
+
 // ==========================================
 // FULL PRODUCT DATA
 // ==========================================
@@ -1125,5 +1134,37 @@ document.addEventListener('DOMContentLoaded', () => {
   render(key);
   initReveal();
   initQrAnimation();
+
+  // Add-to-Cart setup
+  const prod = PRODUCTS[key];
+  let prodQty = 0.5;
+  const pricePerKg = PRODUCT_PRICES[key] || prod.price || 50;
+
+  function updateAtcDisplay() {
+    const disp = document.getElementById('prodQtyDisplay');
+    const priceDisp = document.getElementById('prodPriceDisplay');
+    if (disp) disp.textContent = prodQty + ' kg';
+    if (priceDisp) priceDisp.textContent = Math.round(pricePerKg * prodQty);
+  }
+
+  window.adjustProdQty = function(delta) {
+    prodQty = Math.max(0.5, Math.min(10, +(prodQty + delta).toFixed(1)));
+    updateAtcDisplay();
+  };
+
+  window.handleProdAddToCart = function() {
+    if (typeof addToCart === 'function') {
+      const cart = getCart();
+      const existing = cart.find(i => i.slug === key);
+      if (existing) {
+        updateQty(key, +(existing.qty + prodQty).toFixed(1));
+      } else {
+        addToCart(key, prod.name, prod.emoji, pricePerKg);
+        if (prodQty !== 0.5) updateQty(key, prodQty);
+      }
+    }
+  };
+
+  updateAtcDisplay();
   console.log(`🌿 Fresco — ${PRODUCTS[key].name} page loaded.`);
 });

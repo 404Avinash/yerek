@@ -79,6 +79,9 @@ function renderSidebar(activePage, role) {
         <a href="batches.html" class="sidebar-link ${activePage === 'batches' ? 'active' : ''}">
           <span>📦</span> Today's Batches
         </a>
+        <a href="orders.html" class="sidebar-link ${activePage === 'orders' ? 'active' : ''}">
+          <span>🛒</span> Orders
+        </a>
         <a href="products.html" class="sidebar-link ${activePage === 'products' ? 'active' : ''}">
           <span>🥬</span> Products
         </a>

@@ -36,12 +36,12 @@ const CATEGORIES = {
       { name: 'Verma Farms', location: 'Panipat, Haryana', emoji: '🌱', pct: '22%', years: '1 yr' },
     ],
     produce: [
-      { name: 'Spinach', aka: 'Palak', emoji: '🥬', desc: 'Iron-rich dark leafy greens, freshly harvested and packed with nutrients ready for your kitchen.', freshness: '9.6', origin: 'Sonipat', tag: 'fresh', available: true },
-      { name: 'Coriander', aka: 'Dhaniya', emoji: '🌿', desc: 'Aromatic herb bundles, sourced same-day from partner farms. Bright, fragrant and flavour-packed.', freshness: '9.4', origin: 'Karnal', tag: 'fresh', available: true },
-      { name: 'Fenugreek', aka: 'Methi', emoji: '🌱', desc: 'Slightly bitter, powerfully nutritious. A winter staple picked at the ideal growth stage.', freshness: '9.1', origin: 'Panipat', tag: 'seasonal', available: true },
-      { name: 'Lettuce', aka: 'Salad Patta', emoji: '🥗', desc: 'Crisp iceberg and romaine lettuce head varieties, grown under controlled greenhouse conditions.', freshness: '9.3', origin: 'Sonipat', tag: 'fresh', available: true },
-      { name: 'Mint', aka: 'Pudina', emoji: '🌿', desc: 'Cool, refreshing mint leaves. Freshly cut and bundled — perfect for chutneys, teas, and garnishes.', freshness: '9.5', origin: 'Karnal', tag: 'fresh', available: true },
-      { name: 'Amaranth', aka: 'Chaulai', emoji: '🌿', desc: 'Traditional iron-rich green, seasonal specialty from our long-term farm partners in Haryana.', freshness: '8.9', origin: 'Panipat', tag: 'seasonal', available: true },
+      { name: 'Spinach', aka: 'Palak', emoji: '🥬', desc: 'Iron-rich dark leafy greens, freshly harvested and packed with nutrients ready for your kitchen.', freshness: '9.6', origin: 'Sonipat', tag: 'fresh', available: true, price: 40 },
+      { name: 'Coriander', aka: 'Dhaniya', emoji: '🌿', desc: 'Aromatic herb bundles, sourced same-day from partner farms. Bright, fragrant and flavour-packed.', freshness: '9.4', origin: 'Karnal', tag: 'fresh', available: true, price: 60 },
+      { name: 'Fenugreek', aka: 'Methi', emoji: '🌱', desc: 'Slightly bitter, powerfully nutritious. A winter staple picked at the ideal growth stage.', freshness: '9.1', origin: 'Panipat', tag: 'seasonal', available: true, price: 50 },
+      { name: 'Lettuce', aka: 'Salad Patta', emoji: '🥗', desc: 'Crisp iceberg and romaine lettuce head varieties, grown under controlled greenhouse conditions.', freshness: '9.3', origin: 'Sonipat', tag: 'fresh', available: true, price: 80 },
+      { name: 'Mint', aka: 'Pudina', emoji: '🌿', desc: 'Cool, refreshing mint leaves. Freshly cut and bundled — perfect for chutneys, teas, and garnishes.', freshness: '9.5', origin: 'Karnal', tag: 'fresh', available: true, price: 70 },
+      { name: 'Amaranth', aka: 'Chaulai', emoji: '🌿', desc: 'Traditional iron-rich green, seasonal specialty from our long-term farm partners in Haryana.', freshness: '8.9', origin: 'Panipat', tag: 'seasonal', available: true, price: 50 },
     ],
   },
 
@@ -74,10 +74,10 @@ const CATEGORIES = {
       { name: 'Singh\'s Earth Farm', location: 'Hisar, Haryana', emoji: '🥔', pct: '20%', years: '1 yr' },
     ],
     produce: [
-      { name: 'Carrot', aka: 'Gajar', emoji: '🥕', desc: 'Vibrant orange carrots rich in beta-carotene. Grown in sandy loam soil for natural sweetness.', freshness: '9.3', origin: 'Sonipat', tag: 'fresh', available: true },
-      { name: 'Radish', aka: 'Mooli', emoji: '🫚', desc: 'Crisp white radish, a winter favourite. Harvested at peak size for the right balance of pungency.', freshness: '9.0', origin: 'Rohtak', tag: 'seasonal', available: true },
-      { name: 'Beetroot', aka: 'Chukandar', emoji: '🟣', desc: 'Deep red beetroot packed with antioxidants. Earthy and sweet — great for salads and juicing.', freshness: '9.1', origin: 'Hisar', tag: 'fresh', available: true },
-      { name: 'Turnip', aka: 'Shalgam', emoji: '🫐', desc: 'White and purple turnips, a traditional winter root vegetable with mild peppery flavour.', freshness: '8.8', origin: 'Rohtak', tag: 'seasonal', available: true },
+      { name: 'Carrot', aka: 'Gajar', emoji: '🥕', desc: 'Vibrant orange carrots rich in beta-carotene. Grown in sandy loam soil for natural sweetness.', freshness: '9.3', origin: 'Sonipat', tag: 'fresh', available: true, price: 40 },
+      { name: 'Radish', aka: 'Mooli', emoji: '🫚', desc: 'Crisp white radish, a winter favourite. Harvested at peak size for the right balance of pungency.', freshness: '9.0', origin: 'Rohtak', tag: 'seasonal', available: true, price: 30 },
+      { name: 'Beetroot', aka: 'Chukandar', emoji: '🟣', desc: 'Deep red beetroot packed with antioxidants. Earthy and sweet — great for salads and juicing.', freshness: '9.1', origin: 'Hisar', tag: 'fresh', available: true, price: 50 },
+      { name: 'Turnip', aka: 'Shalgam', emoji: '🫐', desc: 'White and purple turnips, a traditional winter root vegetable with mild peppery flavour.', freshness: '8.8', origin: 'Rohtak', tag: 'seasonal', available: true, price: 35 },
     ],
   },
 
@@ -110,10 +110,10 @@ const CATEGORIES = {
       { name: 'Narmada Farms', location: 'Gwalior, MP', emoji: '🥕', pct: '15%', years: '1 yr' },
     ],
     produce: [
-      { name: 'Potato', aka: 'Aloo', emoji: '🥔', desc: 'The everyday essential. Freshly washed potatoes from Agra\'s famous tuber belt, available in all sizes.', freshness: '9.0', origin: 'Agra, UP', tag: 'fresh', available: true },
-      { name: 'Sweet Potato', aka: 'Shakarkandi', emoji: '🍠', desc: 'Naturally sweet, fibre-rich sweet potatoes. A nutritious seasonal alternative perfect for roasting.', freshness: '9.2', origin: 'Gwalior, MP', tag: 'seasonal', available: true },
-      { name: 'Yam', aka: 'Suran / Jimikand', emoji: '🍠', desc: 'Large purple yam with starchy texture. A winter delicacy used in traditional Indian preparations.', freshness: '8.8', origin: 'Aligarh, UP', tag: 'seasonal', available: true },
-      { name: 'Colocasia', aka: 'Arbi', emoji: '🫙', desc: 'Small taro roots with a creamy texture when cooked. Farm-fresh and cleaned before stocking.', freshness: '8.9', origin: 'Agra, UP', tag: 'fresh', available: true },
+      { name: 'Potato', aka: 'Aloo', emoji: '🥔', desc: 'The everyday essential. Freshly washed potatoes from Agra\'s famous tuber belt, available in all sizes.', freshness: '9.0', origin: 'Agra, UP', tag: 'fresh', available: true, price: 25 },
+      { name: 'Sweet Potato', aka: 'Shakarkandi', emoji: '🍠', desc: 'Naturally sweet, fibre-rich sweet potatoes. A nutritious seasonal alternative perfect for roasting.', freshness: '9.2', origin: 'Gwalior, MP', tag: 'seasonal', available: true, price: 45 },
+      { name: 'Yam', aka: 'Suran / Jimikand', emoji: '🍠', desc: 'Large purple yam with starchy texture. A winter delicacy used in traditional Indian preparations.', freshness: '8.8', origin: 'Aligarh, UP', tag: 'seasonal', available: true, price: 55 },
+      { name: 'Colocasia', aka: 'Arbi', emoji: '🫙', desc: 'Small taro roots with a creamy texture when cooked. Farm-fresh and cleaned before stocking.', freshness: '8.9', origin: 'Agra, UP', tag: 'fresh', available: true, price: 60 },
     ],
   },
 
@@ -146,12 +146,12 @@ const CATEGORIES = {
       { name: 'Khatri Gardens', location: 'Rewari, Haryana', emoji: '🍆', pct: '25%', years: '1 yr' },
     ],
     produce: [
-      { name: 'Tomato', aka: 'Tamatar', emoji: '🍅', desc: 'Plump, vine-ripened tomatoes from Ramesh Farm, Sonipat. Bright red, firm and full of natural umami.', freshness: '9.1', origin: 'Sonipat', tag: 'fresh', available: true },
-      { name: 'Capsicum', aka: 'Shimla Mirch', emoji: '🫑', desc: 'Green, red, and yellow bell peppers from polyhouse farms in Alwar. Crisp, sweet and pesticide-tested.', freshness: '9.4', origin: 'Alwar', tag: 'fresh', available: true },
-      { name: 'Brinjal', aka: 'Baingan', emoji: '🍆', desc: 'Glossy purple brinjal in standard and baby varieties. Grown without excessive irrigation for firm texture.', freshness: '9.0', origin: 'Rewari', tag: 'fresh', available: true },
-      { name: 'Chilly', aka: 'Hari Mirch', emoji: '🌶️', desc: 'Fresh green chillies — mild to hot varieties available. Sourced daily to retain the essential oils and heat.', freshness: '9.5', origin: 'Sonipat', tag: 'fresh', available: true },
-      { name: 'Peas', aka: 'Matar', emoji: '🫛', desc: 'Sweet green peas, a winter seasonal highlight. Hand-picked pods from open field farms in Haryana.', freshness: '9.3', origin: 'Rewari', tag: 'seasonal', available: true },
-      { name: 'Bitter Gourd', aka: 'Karela', emoji: '🥒', desc: 'Fresh bitter gourd with characteristic ridges. Selected at the right stage before over-maturity sets in.', freshness: '8.9', origin: 'Alwar', tag: 'seasonal', available: true },
+      { name: 'Tomato', aka: 'Tamatar', emoji: '🍅', desc: 'Plump, vine-ripened tomatoes from Ramesh Farm, Sonipat. Bright red, firm and full of natural umami.', freshness: '9.1', origin: 'Sonipat', tag: 'fresh', available: true, price: 35 },
+      { name: 'Capsicum', aka: 'Shimla Mirch', emoji: '🫑', desc: 'Green, red, and yellow bell peppers from polyhouse farms in Alwar. Crisp, sweet and pesticide-tested.', freshness: '9.4', origin: 'Alwar', tag: 'fresh', available: true, price: 80 },
+      { name: 'Brinjal', aka: 'Baingan', emoji: '🍆', desc: 'Glossy purple brinjal in standard and baby varieties. Grown without excessive irrigation for firm texture.', freshness: '9.0', origin: 'Rewari', tag: 'fresh', available: true, price: 40 },
+      { name: 'Chilly', aka: 'Hari Mirch', emoji: '🌶️', desc: 'Fresh green chillies — mild to hot varieties available. Sourced daily to retain the essential oils and heat.', freshness: '9.5', origin: 'Sonipat', tag: 'fresh', available: true, price: 90 },
+      { name: 'Peas', aka: 'Matar', emoji: '🫛', desc: 'Sweet green peas, a winter seasonal highlight. Hand-picked pods from open field farms in Haryana.', freshness: '9.3', origin: 'Rewari', tag: 'seasonal', available: true, price: 70 },
+      { name: 'Bitter Gourd', aka: 'Karela', emoji: '🥒', desc: 'Fresh bitter gourd with characteristic ridges. Selected at the right stage before over-maturity sets in.', freshness: '8.9', origin: 'Alwar', tag: 'seasonal', available: true, price: 50 },
     ],
   },
 
@@ -184,12 +184,12 @@ const CATEGORIES = {
       { name: 'Coorg Estates', location: 'Coorg, Karnataka', emoji: '🍊', pct: '25%', years: '1 yr' },
     ],
     produce: [
-      { name: 'Banana', aka: 'Kela', emoji: '🍌', desc: 'Robusta and Elaichi banana varieties from Maharashtra. Available at various ripeness stages to suit your timing.', freshness: '9.1', origin: 'Nashik', tag: 'fresh', available: true },
-      { name: 'Apple', aka: 'Seb', emoji: '🍎', desc: 'Crisp Himachali apples from Shimla at peak seasonal harvest. Royal Delicious and Fuji varieties available.', freshness: '9.4', origin: 'Shimla', tag: 'seasonal', available: true },
-      { name: 'Orange', aka: 'Santra', emoji: '🍊', desc: 'Juicy Nagpur-style mandarins from partner orchards in Vidarbha. Thin-skinned, seedless and sweet.', freshness: '9.2', origin: 'Nagpur', tag: 'seasonal', available: true },
-      { name: 'Papaya', aka: 'Papita', emoji: '🍈', desc: 'Semi-ripe papayas sourced from southern farm partners. Yellow-fleshed varieties with high enzyme content.', freshness: '9.0', origin: 'Karnataka', tag: 'fresh', available: true },
-      { name: 'Guava', aka: 'Amrood', emoji: '🍐', desc: 'Pink and white guavas from Allahabad belt. Available in crunchy and soft-ripe options.', freshness: '9.3', origin: 'Allahabad, UP', tag: 'fresh', available: true },
-      { name: 'Pomegranate', aka: 'Anar', emoji: '🍎', desc: 'Bhagwa pomegranates — deep red arils, naturally sweet with low acidity. Sourced from Solapur farms.', freshness: '9.1', origin: 'Solapur, MH', tag: 'seasonal', available: true },
+      { name: 'Banana', aka: 'Kela', emoji: '🍌', desc: 'Robusta and Elaichi banana varieties from Maharashtra. Available at various ripeness stages to suit your timing.', freshness: '9.1', origin: 'Nashik', tag: 'fresh', available: true, price: 50 },
+      { name: 'Apple', aka: 'Seb', emoji: '🍎', desc: 'Crisp Himachali apples from Shimla at peak seasonal harvest. Royal Delicious and Fuji varieties available.', freshness: '9.4', origin: 'Shimla', tag: 'seasonal', available: true, price: 150 },
+      { name: 'Orange', aka: 'Santra', emoji: '🍊', desc: 'Juicy Nagpur-style mandarins from partner orchards in Vidarbha. Thin-skinned, seedless and sweet.', freshness: '9.2', origin: 'Nagpur', tag: 'seasonal', available: true, price: 80 },
+      { name: 'Papaya', aka: 'Papita', emoji: '🍈', desc: 'Semi-ripe papayas sourced from southern farm partners. Yellow-fleshed varieties with high enzyme content.', freshness: '9.0', origin: 'Karnataka', tag: 'fresh', available: true, price: 45 },
+      { name: 'Guava', aka: 'Amrood', emoji: '🍐', desc: 'Pink and white guavas from Allahabad belt. Available in crunchy and soft-ripe options.', freshness: '9.3', origin: 'Allahabad, UP', tag: 'fresh', available: true, price: 60 },
+      { name: 'Pomegranate', aka: 'Anar', emoji: '🍎', desc: 'Bhagwa pomegranates — deep red arils, naturally sweet with low acidity. Sourced from Solapur farms.', freshness: '9.1', origin: 'Solapur, MH', tag: 'seasonal', available: true, price: 120 },
     ],
   },
 };
@@ -354,8 +354,9 @@ function renderProduceGrid(key, filter) {
   grid.innerHTML = items.map((p, i) => {
     // Build product page key: lowercase, spaces → hyphens
     const itemKey = p.name.toLowerCase().replace(/\s+/g, '-');
+    const price = p.price || 50;
     return `
-    <a href="product.html?item=${itemKey}" class="produce-card" style="animation-delay:${i * 0.06}s;text-decoration:none;color:inherit;">
+    <div class="produce-card" style="animation-delay:${i * 0.06}s;cursor:pointer;" onclick="window.location.href='product.html?item=${itemKey}'">
       <div class="produce-card-image" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9);">
         ${p.emoji}
         <div class="produce-card-arrow-overlay">
@@ -370,12 +371,14 @@ function renderProduceGrid(key, filter) {
           <div class="freshness-badge">⭐ ${p.freshness}/10</div>
           <div class="origin-badge">📍 ${p.origin}</div>
         </div>
-        <div class="produce-card-qr">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3M17 14h3M14 17h3v3"/></svg>
-          View full batch info & recipes →
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
+          <span style="font-size:.9rem;font-weight:800;color:#15803d;font-family:'Outfit',sans-serif">₹${price}<span style="font-size:.72rem;font-weight:500;color:#6b7280">/kg</span></span>
+          <button class="atc-btn" onclick="addToCart('${itemKey}','${p.name}','${p.emoji}',${price});event.stopPropagation();">
+            + Cart
+          </button>
         </div>
       </div>
-    </a>
+    </div>
   `}).join('');
 }
 

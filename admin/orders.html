@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orders — Fresco Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body class="admin-body">
+
+  <div class="admin-layout" id="app">
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;width:100%;color:var(--gray-400)">Loading…</div>
+  </div>
+
+  <!-- Order detail modal (outside layout so z-index stays on top) -->
+  <div id="orderModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center">
+    <div style="background:#fff;border-radius:16px;width:100%;max-width:620px;margin:20px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #e5e7eb">
+        <h3 style="font-weight:700;font-size:1rem;margin:0" id="modalOrderNum">Order Details</h3>
+        <button onclick="closeModal()" style="background:none;border:none;cursor:pointer;font-size:1.2rem;color:#6b7280;line-height:1">✕</button>
+      </div>
+      <div id="modalContent" style="padding:24px"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    let _currentRole = null;
+    let _orders = [];
+
+    const STATUS_COLORS = {
+      pending:    { bg: '#fef9c3', color: '#713f12', border: '#fde047' },
+      confirmed:  { bg: '#eff6ff', color: '#1e40af', border: '#93c5fd' },
+      packing:    { bg: '#fff7ed', color: '#9a3412', border: '#fed7aa' },
+      ready:      { bg: '#f0fdf4', color: '#14532d', border: '#86efac' },
+      picked_up:  { bg: '#f3f4f6', color: '#374151', border: '#d1d5db' },
+      cancelled:  { bg: '#fef2f2', color: '#991b1b', border: '#fecaca' },
+    };
+
+    const STATUS_LABELS = {
+      pending: '⏳ Pending',
+      confirmed: '✅ Confirmed',
+      packing: '📦 Packing',
+      ready: '🟢 Ready',
+      picked_up: '✓ Picked Up',
+      cancelled: '✕ Cancelled',
+    };
+
+    (async () => {
+      const auth = await requireAdmin(['owner', 'staff']);
+      if (!auth) return;
+      _currentRole = auth.profile.role;
+
+      document.getElementById('app').innerHTML = `
+        ${renderSidebar('orders', _currentRole)}
+        <main class="admin-main">
+          <div class="admin-topbar">
+            <h1 class="admin-page-title">📦 Orders</h1>
+            <div class="topbar-actions">
+              <select id="statusFilter" class="admin-input" style="max-width:180px" onchange="loadOrders()">
+                <option value="">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="packing">Packing</option>
+                <option value="ready">Ready for Pickup</option>
+                <option value="picked_up">Picked Up</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-label">Total Today</div><div class="stat-value" id="statToday">—</div></div>
+            <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value" id="statPending" style="color:#f59e0b">—</div></div>
+            <div class="stat-card"><div class="stat-label">Ready for Pickup</div><div class="stat-value" id="statReady" style="color:#16a34a">—</div></div>
+            <div class="stat-card"><div class="stat-label">Completed Today</div><div class="stat-value" id="statDone">—</div></div>
+          </div>
+          <div class="admin-card" style="overflow:hidden">
+            <div id="ordersTable"><div style="padding:40px;text-align:center;color:var(--gray-400)">Loading orders…</div></div>
+          </div>
+        </main>`;
+
+      await loadOrders();
+    })();
+
+    async function loadOrders() {
+      const filter = document.getElementById('statusFilter').value;
+      let query = _supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+      if (filter) query = query.eq('status', filter);
+
+      const { data, error } = await query;
+      if (error) { showToast('Failed to load orders: ' + error.message, 'error'); return; }
+      _orders = data || [];
+
+      // Stats
+      const today = new Date().toISOString().split('T')[0];
+      const todayOrders = _orders.filter(o => o.created_at.startsWith(today));
+      document.getElementById('statToday').textContent = todayOrders.length;
+      document.getElementById('statPending').textContent = _orders.filter(o => o.status === 'pending').length;
+      document.getElementById('statReady').textContent = _orders.filter(o => o.status === 'ready').length;
+      document.getElementById('statDone').textContent = _orders.filter(o => o.status === 'picked_up').length;
+
+      renderTable();
+    }
+
+    function renderTable() {
+      if (!_orders.length) {
+        document.getElementById('ordersTable').innerHTML = `
+          <div style="padding:60px;text-align:center;color:var(--gray-400)">
+            <div style="font-size:2.5rem;margin-bottom:12px">📦</div>
+            No orders found.
+          </div>`;
+        return;
+      }
+
+      document.getElementById('ordersTable').innerHTML = `
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Pickup</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${_orders.map(o => {
+              const sc = STATUS_COLORS[o.status] || STATUS_COLORS.pending;
+              const sl = STATUS_LABELS[o.status] || o.status;
+              const pickupDt = new Date(o.pickup_date + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+              return `
+              <tr>
+                <td><strong style="font-family:monospace;font-size:.82rem;color:#14532d">${o.order_number}</strong></td>
+                <td>${escHtml(o.user_name)}</td>
+                <td style="font-size:.83rem">${escHtml(o.user_phone)}</td>
+                <td style="font-size:.82rem">${pickupDt}<br><span style="color:#9ca3af">${escHtml(o.pickup_slot)}</span></td>
+                <td style="font-weight:700;color:#15803d">₹${o.total_amount}</td>
+                <td>
+                  <span style="background:${sc.bg};color:${sc.color};border:1px solid ${sc.border};padding:3px 10px;border-radius:999px;font-size:.75rem;font-weight:700;white-space:nowrap">
+                    ${sl}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn btn-sm" onclick="viewOrder(${o.id})">View</button>
+                  <select onchange="updateStatus(${o.id}, this.value, this)" style="margin-left:6px;padding:4px 8px;border:1px solid #e5e7eb;border-radius:6px;font-size:.78rem;font-family:Outfit,sans-serif;cursor:pointer">
+                    <option value="">Change status…</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="packing">Packing</option>
+                    <option value="ready">Ready</option>
+                    <option value="picked_up">Picked Up</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    async function updateStatus(orderId, newStatus, selectEl) {
+      if (!newStatus) return;
+      const confirmed = await adminConfirm(`Change order status to "${newStatus}"?`);
+      selectEl.value = '';
+      if (!confirmed) return;
+
+      const { error } = await _supabase.from('orders')
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq('id', orderId);
+
+      if (error) { showToast('Failed: ' + error.message, 'error'); return; }
+      showToast('Status updated ✓');
+      await loadOrders();
+    }
+
+    async function viewOrder(orderId) {
+      const order = _orders.find(o => o.id === orderId);
+      if (!order) return;
+
+      const { data: items } = await _supabase.from('order_items').select('*').eq('order_id', orderId);
+
+      const sc = STATUS_COLORS[order.status] || STATUS_COLORS.pending;
+      const sl = STATUS_LABELS[order.status] || order.status;
+      const pickupDt = new Date(order.pickup_date + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+
+      document.getElementById('modalOrderNum').textContent = order.order_number;
+      document.getElementById('modalContent').innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
+          <div><div style="font-size:.75rem;color:#9ca3af;font-weight:600;margin-bottom:3px">CUSTOMER</div><div style="font-weight:700">${escHtml(order.user_name)}</div></div>
+          <div><div style="font-size:.75rem;color:#9ca3af;font-weight:600;margin-bottom:3px">PHONE</div><div style="font-weight:700">${escHtml(order.user_phone)}</div></div>
+          <div><div style="font-size:.75rem;color:#9ca3af;font-weight:600;margin-bottom:3px">PICKUP DATE</div><div style="font-weight:700">${pickupDt}</div></div>
+          <div><div style="font-size:.75rem;color:#9ca3af;font-weight:600;margin-bottom:3px">TIME SLOT</div><div style="font-weight:700">${escHtml(order.pickup_slot)}</div></div>
+          <div><div style="font-size:.75rem;color:#9ca3af;font-weight:600;margin-bottom:3px">STATUS</div>
+            <span style="background:${sc.bg};color:${sc.color};border:1px solid ${sc.border};padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:700">${sl}</span>
+          </div>
+          <div><div style="font-size:.75rem;color:#9ca3af;font-weight:600;margin-bottom:3px">TOTAL</div><div style="font-weight:800;color:#15803d;font-size:1.05rem">₹${order.total_amount}</div></div>
+        </div>
+        ${order.notes ? `<div style="background:#f9fafb;border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:.85rem;color:#374151"><strong>Notes:</strong> ${escHtml(order.notes)}</div>` : ''}
+        <div style="border-top:1px solid #e5e7eb;padding-top:16px;margin-bottom:16px">
+          <div style="font-weight:700;color:#111827;margin-bottom:12px">Order Items</div>
+          ${(items || []).map(i => `
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f3f4f6">
+              <span style="font-size:1.2rem">${i.product_emoji || '🥬'}</span>
+              <span style="flex:1;font-weight:600;font-size:.9rem">${escHtml(i.product_name)}</span>
+              <span style="font-size:.82rem;color:#6b7280">${i.qty_kg} kg × ₹${i.price_per_kg}</span>
+              <span style="font-weight:700;color:#15803d;font-size:.9rem">₹${i.subtotal}</span>
+            </div>`).join('')}
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          ${['confirmed','packing','ready','picked_up','cancelled'].map(s =>
+            s !== order.status ? `<button class="btn btn-sm" onclick="updateStatus(${order.id},'${s}',{value:''});closeModal()" style="${s==='ready'?'background:#16a34a;color:#fff':s==='cancelled'?'background:#fee2e2;color:#dc2626':''}">${STATUS_LABELS[s]}</button>` : ''
+          ).join('')}
+        </div>`;
+
+      const modal = document.getElementById('orderModal');
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('orderModal').style.display = 'none';
+    }
+
+    function escHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // Close modal on overlay click
+    document.getElementById('orderModal').addEventListener('click', e => {
+      if (e.target.id === 'orderModal') closeModal();
+    });
+  </script>
+</body>
+</html>

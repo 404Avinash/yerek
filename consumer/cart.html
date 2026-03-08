@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Cart — Fresco</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    body { background: var(--green-50, #f0fdf4); min-height: 100vh; }
+    .cart-header {
+      background: #fff; border-bottom: 1px solid #e5e7eb;
+      padding: 14px 32px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .cart-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .cart-brand-name { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700; color: #14532d; }
+    .cart-main { max-width: 700px; margin: 0 auto; padding: 32px 20px; }
+    .cart-title { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 700; color: #111827; margin-bottom: 24px; }
+
+    .cart-item {
+      background: #fff; border-radius: 16px; padding: 16px 20px;
+      margin-bottom: 12px; display: flex; align-items: center; gap: 16px;
+      box-shadow: 0 2px 12px rgba(20,83,45,.06);
+    }
+    .ci-emoji { font-size: 2rem; flex-shrink: 0; }
+    .ci-info { flex: 1; }
+    .ci-name { font-size: 1rem; font-weight: 700; color: #111827; }
+    .ci-price { font-size: .85rem; color: #6b7280; margin-top: 2px; }
+    .ci-qty {
+      display: flex; align-items: center; gap: 10px;
+      background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 10px; padding: 6px 10px;
+    }
+    .ci-qty button {
+      background: none; border: none; font-size: 1.1rem; cursor: pointer;
+      color: #15803d; font-weight: 800; line-height: 1; padding: 0 4px;
+    }
+    .ci-qty span { font-size: .9rem; font-weight: 700; color: #14532d; min-width: 38px; text-align: center; font-family: 'Outfit', sans-serif; }
+    .ci-subtotal { font-size: 1rem; font-weight: 800; color: #15803d; min-width: 60px; text-align: right; font-family: 'Outfit', sans-serif; }
+    .ci-remove { background: none; border: none; cursor: pointer; color: #9ca3af; font-size: 1.1rem; padding: 4px; transition: color .18s; }
+    .ci-remove:hover { color: #ef4444; }
+
+    .cart-summary {
+      background: #fff; border-radius: 20px; padding: 24px 24px;
+      margin-top: 20px; box-shadow: 0 4px 24px rgba(20,83,45,.08);
+    }
+    .cs-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: .9rem; color: #374151; }
+    .cs-row.total { font-size: 1.1rem; font-weight: 800; color: #111827; border-top: 1.5px solid #e5e7eb; padding-top: 14px; margin-top: 6px; }
+    .cs-note { background: #f0fdf4; border: 1px solid #d1fae5; border-radius: 10px; padding: 10px 14px; font-size: .82rem; color: #166534; margin-bottom: 16px; }
+    .cs-checkout {
+      display: block; width: 100%; background: #16a34a; color: #fff; border: none;
+      border-radius: 999px; padding: 14px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; font-family: 'Outfit', sans-serif; text-align: center;
+      text-decoration: none; transition: background .18s;
+    }
+    .cs-checkout:hover { background: #15803d; }
+
+    .cart-empty {
+      text-align: center; padding: 80px 20px;
+      background: #fff; border-radius: 20px; box-shadow: 0 4px 24px rgba(20,83,45,.06);
+    }
+    .cart-empty .big { font-size: 3.5rem; margin-bottom: 16px; }
+    .cart-empty h2 { font-family: 'Fraunces', serif; font-size: 1.4rem; color: #111827; margin-bottom: 8px; }
+    .cart-empty p { color: #6b7280; font-size: .9rem; margin-bottom: 24px; }
+    .cart-empty a {
+      display: inline-block; background: #16a34a; color: #fff; padding: 12px 28px;
+      border-radius: 999px; text-decoration: none; font-weight: 700; font-size: .9rem;
+      font-family: 'Outfit', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <header class="cart-header">
+    <a href="/" class="cart-brand">
+      <span style="font-size:1.3rem">🌿</span>
+      <span class="cart-brand-name">Fresco</span>
+    </a>
+    <a href="/consumer/login.html" id="cartAccBtn" style="font-size:.82rem;font-weight:600;color:#16a34a;text-decoration:none">My Account</a>
+  </header>
+
+  <div class="cart-main">
+    <h1 class="cart-title">🛒 My Cart</h1>
+    <div id="cartContent"></div>
+  </div>
+
+  <script src="/js/cart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-client.js"></script>
+  <script>
+    (async () => {
+      const { data: { session } } = await _supabase.auth.getSession();
+      if (session) {
+        const btn = document.getElementById('cartAccBtn');
+        btn.href = '/consumer/profile.html';
+        btn.textContent = '👤 My Account';
+      }
+    })();
+
+    function renderCart() {
+      const cart = getCart();
+      const container = document.getElementById('cartContent');
+
+      if (!cart.length) {
+        container.innerHTML = `
+          <div class="cart-empty">
+            <div class="big">🛒</div>
+            <h2>Your cart is empty</h2>
+            <p>Add some fresh produce and come back here to checkout.</p>
+            <a href="/category.html?cat=leafy">Browse Vegetables →</a>
+          </div>`;
+        return;
+      }
+
+      let itemsHtml = cart.map((item, idx) => `
+        <div class="cart-item" id="ci-${item.slug}">
+          <div class="ci-emoji">${item.emoji}</div>
+          <div class="ci-info">
+            <div class="ci-name">${item.name}</div>
+            <div class="ci-price">₹${item.price}/kg</div>
+          </div>
+          <div class="ci-qty">
+            <button onclick="changeQty('${item.slug}', -0.5)">−</button>
+            <span>${item.qty} kg</span>
+            <button onclick="changeQty('${item.slug}', 0.5)">+</button>
+          </div>
+          <div class="ci-subtotal">₹${Math.round(item.price * item.qty)}</div>
+          <button class="ci-remove" onclick="removeItem('${item.slug}')" title="Remove">✕</button>
+        </div>`).join('');
+
+      const total = getCartTotal();
+      const itemCount = cart.reduce((s, i) => s + i.qty, 0);
+
+      const summaryHtml = `
+        <div class="cart-summary">
+          <div class="cs-note">
+            📦 Store pickup only · Fresco Store, Delhi · Your order will be packed and ready for you by the scheduled time.
+          </div>
+          <div class="cs-row"><span>Items (${cart.length} products, ${itemCount} kg approx.)</span><span>₹${total}</span></div>
+          <div class="cs-row"><span>Packaging</span><span style="color:#16a34a">FREE</span></div>
+          <div class="cs-row total"><span>Total</span><span>₹${total}</span></div>
+          <a href="/consumer/checkout.html" class="cs-checkout" style="display:block;margin-top:16px">Proceed to Checkout →</a>
+          <a href="/category.html?cat=leafy" style="display:block;text-align:center;margin-top:12px;color:#6b7280;font-size:.85rem;font-weight:600">+ Add more items</a>
+        </div>`;
+
+      container.innerHTML = itemsHtml + summaryHtml;
+    }
+
+    function changeQty(slug, delta) {
+      const cart = getCart();
+      const item = cart.find(i => i.slug === slug);
+      if (!item) return;
+      const newQty = +(item.qty + delta).toFixed(1);
+      if (newQty <= 0) { removeItem(slug); return; }
+      updateQty(slug, Math.min(newQty, 10));
+      renderCart();
+    }
+
+    function removeItem(slug) {
+      removeFromCart(slug);
+      renderCart();
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>

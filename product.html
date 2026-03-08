@@ -28,6 +28,9 @@
         <span id="breadcrumb-item">Product</span>
       </div>
       <a href="#" id="back-to-cat" class="nav-back-btn">← Back</a>
+      <a href="/consumer/cart.html" class="nav-cart-btn" title="Cart" style="margin-left:4px">
+        🛒<span class="fresco-cart-badge" style="display:none">0</span>
+      </a>
     </div>
   </nav>
 
@@ -67,6 +70,20 @@
             <span class="strip-val">0</span>
             <span class="strip-lbl">Middlemen</span>
           </div>
+        </div>
+        <!-- Add to Cart -->
+        <div class="prod-atc-bar reveal" id="prodAtcBar" style="display:flex;align-items:center;gap:14px;margin-top:20px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:8px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:8px 14px">
+            <button onclick="adjustProdQty(-0.5)" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#15803d;font-weight:800;line-height:1">−</button>
+            <span id="prodQtyDisplay" style="font-size:1rem;font-weight:800;color:#14532d;min-width:40px;text-align:center;font-family:'Outfit',sans-serif">0.5 kg</span>
+            <button onclick="adjustProdQty(0.5)" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#15803d;font-weight:800;line-height:1">+</button>
+          </div>
+          <div style="font-size:1.2rem;font-weight:800;color:#15803d;font-family:'Outfit',sans-serif">
+            ₹<span id="prodPriceDisplay">0</span>
+          </div>
+          <button class="atc-btn" id="prodAtcBtn" onclick="handleProdAddToCart()" style="padding:11px 24px;font-size:.9rem">
+            🛒 Add to Cart
+          </button>
         </div>
       </div>
       <div class="prod-hero-right reveal">
@@ -423,6 +440,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/supabase-client.js"></script>
+  <script src="/js/cart.js"></script>
   <script src="product.js?v=2"></script>
   <script>
     // Wire QR panel from product data after render

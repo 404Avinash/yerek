@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — Fresco</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    body { background: var(--green-50, #f0fdf4); min-height: 100vh; }
+    .co-header {
+      background: #fff; border-bottom: 1px solid #e5e7eb;
+      padding: 14px 32px; display: flex; align-items: center; gap: 16px;
+    }
+    .co-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .co-brand-name { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700; color: #14532d; }
+    .co-main { max-width: 720px; margin: 0 auto; padding: 32px 20px; display: flex; flex-direction: column; gap: 20px; }
+    .co-title { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 700; color: #111827; }
+
+    .co-card {
+      background: #fff; border-radius: 20px; padding: 24px 28px;
+      box-shadow: 0 2px 16px rgba(20,83,45,.07);
+    }
+    .co-section-title {
+      font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 700;
+      color: #111827; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+    }
+    .co-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .co-fg { display: flex; flex-direction: column; gap: 5px; }
+    .co-fg.full { grid-column: 1 / -1; }
+    .co-fg label { font-size: .82rem; font-weight: 600; color: #374151; }
+    .co-fg input, .co-fg select, .co-fg textarea {
+      padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px;
+      font-size: .88rem; font-family: 'Outfit', sans-serif; color: #1f2937;
+      outline: none; transition: border .18s; background: #fff;
+    }
+    .co-fg input:focus, .co-fg select:focus, .co-fg textarea:focus {
+      border-color: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.1);
+    }
+    .co-fg textarea { resize: vertical; min-height: 72px; }
+
+    /* Pickup slot buttons */
+    .slot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 4px; }
+    .slot-btn {
+      border: 2px solid #e5e7eb; border-radius: 12px; padding: 12px 8px; text-align: center;
+      cursor: pointer; background: #fff; font-family: 'Outfit', sans-serif;
+      transition: .18s; font-size: .82rem;
+    }
+    .slot-btn:hover { border-color: #86efac; background: #f0fdf4; }
+    .slot-btn.selected { border-color: #16a34a; background: #f0fdf4; }
+    .slot-icon { font-size: 1.4rem; margin-bottom: 4px; }
+    .slot-time { font-weight: 700; color: #111827; font-size: .82rem; }
+    .slot-label { font-size: .72rem; color: #6b7280; margin-top: 2px; }
+
+    /* Order summary */
+    .oi-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
+    .oi-row:last-child { border-bottom: none; }
+    .oi-emoji { font-size: 1.3rem; }
+    .oi-name { flex: 1; font-weight: 600; color: #111827; font-size: .9rem; }
+    .oi-qty { font-size: .82rem; color: #6b7280; }
+    .oi-price { font-weight: 700; color: #15803d; font-size: .9rem; font-family: 'Outfit', sans-serif; }
+
+    .co-total-row { display: flex; justify-content: space-between; padding: 12px 0; }
+    .co-total-row.grand { border-top: 2px solid #e5e7eb; font-weight: 800; font-size: 1.05rem; margin-top: 4px; padding-top: 14px; }
+
+    .co-submit {
+      width: 100%; background: #16a34a; color: #fff; border: none; border-radius: 999px;
+      padding: 15px; font-size: 1rem; font-weight: 700; cursor: pointer;
+      font-family: 'Outfit', sans-serif; transition: .18s;
+    }
+    .co-submit:hover { background: #15803d; }
+    .co-submit:disabled { opacity: .55; cursor: not-allowed; }
+    .co-err { background: #fee2e2; color: #dc2626; padding: 10px 14px; border-radius: 10px; font-size: .85rem; }
+
+    /* Confirmation */
+    .co-confirm { text-align: center; padding: 20px 0; }
+    .co-confirm .big { font-size: 3.5rem; margin-bottom: 16px; }
+    .co-confirm h2 { font-family: 'Fraunces', serif; font-size: 1.5rem; color: #111827; margin-bottom: 8px; }
+    .co-confirm .order-num { background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 12px; padding: 10px 20px; display: inline-block; font-size: 1.1rem; font-weight: 800; color: #15803d; margin: 12px 0; font-family: 'Outfit', sans-serif; letter-spacing: .05em; }
+    .co-confirm p { color: #6b7280; font-size: .9rem; max-width: 380px; margin: 0 auto 20px; line-height: 1.7; }
+    .co-confirm-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .co-confirm-actions a {
+      padding: 10px 22px; border-radius: 999px; font-weight: 700; font-size: .88rem;
+      text-decoration: none; font-family: 'Outfit', sans-serif;
+    }
+    .btn-primary-sm { background: #16a34a; color: #fff; }
+    .btn-outline-sm { border: 1.5px solid #e5e7eb; color: #374151; }
+
+    /* Login gate */
+    .co-login-gate { text-align: center; padding: 60px 20px; }
+    .co-login-gate .big { font-size: 2.5rem; margin-bottom: 16px; }
+    .co-login-gate p { color: #6b7280; margin-bottom: 20px; font-size: .9rem; }
+    .co-login-gate a { background: #16a34a; color: #fff; padding: 12px 26px; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: .9rem; font-family: 'Outfit', sans-serif; }
+
+    @media (max-width: 600px) {
+      .co-form { grid-template-columns: 1fr; }
+      .slot-grid { grid-template-columns: 1fr; }
+      .co-header { padding: 12px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="co-header">
+    <a href="/" class="co-brand">
+      <span style="font-size:1.3rem">🌿</span>
+      <span class="co-brand-name">Fresco</span>
+    </a>
+    <span style="font-size:.82rem;color:#9ca3af">Checkout</span>
+  </header>
+
+  <div class="co-main" id="coMain">
+    <div style="text-align:center;padding:60px;color:#9ca3af">Loading…</div>
+  </div>
+
+  <script src="/js/cart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-client.js"></script>
+  <script>
+    let _session = null;
+    let _profile = null;
+    let _selectedDate = null;
+    let _selectedSlot = null;
+
+    const SLOTS = [
+      { id: 'morning', icon: '🌅', time: '9:00 – 11:00 AM', label: 'Morning' },
+      { id: 'afternoon', icon: '☀️', time: '12:00 – 2:00 PM', label: 'Afternoon' },
+      { id: 'evening', icon: '🌇', time: '4:00 – 6:00 PM', label: 'Evening' },
+    ];
+
+    // Get next 3 available dates (skip today if after 4 PM)
+    function getPickupDates() {
+      const dates = [];
+      const now = new Date();
+      const cutoffHour = 16; // after 4 PM, can't schedule for today
+      let start = now.getHours() >= cutoffHour ? 1 : 0;
+      for (let i = start; dates.length < 3; i++) {
+        const d = new Date(now);
+        d.setDate(now.getDate() + i);
+        // Skip Sundays (optional - can remove)
+        // if (d.getDay() === 0) continue;
+        dates.push(d);
+      }
+      return dates;
+    }
+
+    function fmtDate(d) {
+      return d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+    }
+
+    function fmtISODate(d) {
+      return d.toISOString().split('T')[0];
+    }
+
+    function genOrderNumber() {
+      const now = new Date();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const rand = Math.floor(1000 + Math.random() * 9000);
+      return `FRS-${now.getFullYear()}${mm}${dd}-${rand}`;
+    }
+
+    async function init() {
+      const { data: { session } } = await _supabase.auth.getSession();
+      _session = session;
+
+      const cart = getCart();
+      if (!cart.length) {
+        document.getElementById('coMain').innerHTML = `
+          <div class="co-card co-login-gate">
+            <div class="big">🛒</div>
+            <p>Your cart is empty. Add some fresh vegetables first!</p>
+            <a href="/category.html?cat=leafy">Browse Vegetables</a>
+          </div>`;
+        return;
+      }
+
+      if (session) {
+        const { data: p } = await _supabase.from('profiles').select('full_name,phone,email').eq('id', session.user.id).single();
+        _profile = p;
+      }
+
+      renderCheckout(cart);
+    }
+
+    function renderCheckout(cart) {
+      const dates = getPickupDates();
+      _selectedDate = dates[0];
+      _selectedSlot = SLOTS[0].id;
+
+      const cartTotal = getCartTotal();
+
+      const orderItems = cart.map(i => `
+        <div class="oi-row">
+          <span class="oi-emoji">${i.emoji}</span>
+          <span class="oi-name">${i.name}</span>
+          <span class="oi-qty">${i.qty} kg</span>
+          <span class="oi-price">₹${Math.round(i.price * i.qty)}</span>
+        </div>`).join('');
+
+      const dateButtons = dates.map((d, idx) => `
+        <button type="button" class="slot-btn ${idx === 0 ? 'selected' : ''}" id="date-${idx}" onclick="selectDate(${idx}, this)">
+          <div class="slot-icon">${idx === 0 ? '📅' : '🗓️'}</div>
+          <div class="slot-time">${fmtDate(d)}</div>
+          <div class="slot-label">${idx === 0 ? 'Available' : 'Available'}</div>
+        </button>`).join('');
+
+      const slotButtons = SLOTS.map((s, idx) => `
+        <button type="button" class="slot-btn ${idx === 0 ? 'selected' : ''}" id="slot-${s.id}" onclick="selectSlot('${s.id}', this)">
+          <div class="slot-icon">${s.icon}</div>
+          <div class="slot-time">${s.time}</div>
+          <div class="slot-label">${s.label}</div>
+        </button>`).join('');
+
+      document.getElementById('coMain').innerHTML = `
+        <h1 class="co-title">Checkout</h1>
+
+        <!-- Contact Info -->
+        <div class="co-card">
+          <div class="co-section-title">👤 Your Details</div>
+          ${!_session ? `
+            <div style="background:#fef9c3;border:1px solid #fde047;border-radius:10px;padding:10px 14px;font-size:.85rem;color:#713f12;margin-bottom:16px">
+              ⚠️ You're checking out as a guest. <a href="/consumer/login.html" style="color:#92400e;font-weight:700">Sign in</a> to save your order history.
+            </div>` : ''}
+          <div class="co-form">
+            <div class="co-fg">
+              <label>Full Name *</label>
+              <input type="text" id="co-name" placeholder="Avinash Sharma" required value="${_profile?.full_name || ''}">
+            </div>
+            <div class="co-fg">
+              <label>Phone Number *</label>
+              <input type="tel" id="co-phone" placeholder="+91 98xxx xxxxx" required value="${_profile?.phone || ''}">
+            </div>
+            <div class="co-fg full">
+              <label>Email (for confirmation)</label>
+              <input type="email" id="co-email" placeholder="you@email.com" value="${_profile?.email || (_session?.user?.email || '')}">
+            </div>
+          </div>
+        </div>
+
+        <!-- Pickup Location -->
+        <div class="co-card">
+          <div class="co-section-title">📍 Pickup Location</div>
+          <div style="background:#f0fdf4;border:1.5px solid #d1fae5;border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start">
+            <span style="font-size:1.5rem">🏪</span>
+            <div>
+              <div style="font-weight:700;color:#111827;margin-bottom:2px">Fresco Store — Delhi</div>
+              <div style="font-size:.82rem;color:#6b7280">Address will be shared via WhatsApp after order confirmation.</div>
+              <div style="font-size:.82rem;color:#15803d;font-weight:600;margin-top:4px">Open: Mon–Sat, 8 AM – 7 PM</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pickup Date -->
+        <div class="co-card">
+          <div class="co-section-title">📅 Pickup Date</div>
+          <div class="slot-grid" id="dateGrid">${dateButtons}</div>
+        </div>
+
+        <!-- Pickup Time Slot -->
+        <div class="co-card">
+          <div class="co-section-title">⏰ Time Slot</div>
+          <div class="slot-grid" id="slotGrid">${slotButtons}</div>
+        </div>
+
+        <!-- Notes -->
+        <div class="co-card">
+          <div class="co-section-title">📝 Notes (optional)</div>
+          <div class="co-fg full" style="grid-column:1/-1">
+            <textarea id="co-notes" placeholder="Any special requests? e.g. 'Keep spinach in separate bag', 'Call when ready'…"></textarea>
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="co-card">
+          <div class="co-section-title">🧾 Order Summary</div>
+          ${orderItems}
+          <div class="co-total-row"><span style="color:#6b7280;font-size:.88rem">Packaging</span><span style="color:#16a34a;font-weight:700;font-size:.88rem">FREE</span></div>
+          <div class="co-total-row grand"><span>Total</span><span style="color:#15803d">₹${cartTotal}</span></div>
+        </div>
+
+        <!-- Place Order -->
+        <div class="co-card">
+          <div id="co-err" class="co-err hidden" style="margin-bottom:14px"></div>
+          <button class="co-submit" id="coSubmitBtn" onclick="placeOrder()">
+            ✅ Place Order — ₹${cartTotal}
+          </button>
+          <p style="text-align:center;margin-top:12px;font-size:.8rem;color:#9ca3af">
+            Pay at the store when you pick up. No advance payment needed.
+          </p>
+        </div>`;
+
+      // Store dates for select handler
+      window._pickupDates = dates;
+    }
+
+    function selectDate(idx, btn) {
+      document.querySelectorAll('#dateGrid .slot-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      _selectedDate = window._pickupDates[idx];
+    }
+
+    function selectSlot(slotId, btn) {
+      document.querySelectorAll('#slotGrid .slot-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      _selectedSlot = slotId;
+    }
+
+    async function placeOrder() {
+      const name = (document.getElementById('co-name')?.value || '').trim();
+      const phone = (document.getElementById('co-phone')?.value || '').trim();
+      const email = (document.getElementById('co-email')?.value || '').trim();
+      const notes = (document.getElementById('co-notes')?.value || '').trim();
+      const errEl = document.getElementById('co-err');
+      const btn = document.getElementById('coSubmitBtn');
+
+      errEl.classList.add('hidden');
+
+      if (!name || !phone) {
+        errEl.textContent = 'Please fill in your name and phone number.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      if (!_selectedDate || !_selectedSlot) {
+        errEl.textContent = 'Please select a pickup date and time slot.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      const cart = getCart();
+      if (!cart.length) { errEl.textContent = 'Your cart is empty.'; errEl.classList.remove('hidden'); return; }
+
+      btn.disabled = true; btn.textContent = 'Placing order…';
+
+      const orderNumber = genOrderNumber();
+      const slotInfo = SLOTS.find(s => s.id === _selectedSlot);
+      const total = getCartTotal();
+
+      // Insert order
+      const { data: order, error: orderErr } = await _supabase.from('orders').insert({
+        order_number: orderNumber,
+        user_id: _session?.user?.id || null,
+        user_name: name,
+        user_phone: phone,
+        user_email: email || null,
+        pickup_date: fmtISODate(_selectedDate),
+        pickup_slot: slotInfo.time,
+        status: 'pending',
+        total_amount: total,
+        notes: notes || null
+      }).select().single();
+
+      if (orderErr) {
+        errEl.textContent = 'Failed to place order: ' + orderErr.message;
+        errEl.classList.remove('hidden');
+        btn.disabled = false; btn.textContent = '✅ Place Order — ₹' + total;
+        return;
+      }
+
+      // Insert order items
+      const items = cart.map(i => ({
+        order_id: order.id,
+        product_slug: i.slug,
+        product_name: i.name,
+        product_emoji: i.emoji,
+        qty_kg: i.qty,
+        price_per_kg: i.price,
+        subtotal: Math.round(i.price * i.qty)
+      }));
+
+      await _supabase.from('order_items').insert(items);
+
+      // Clear cart
+      clearCart();
+
+      // Show confirmation
+      document.getElementById('coMain').innerHTML = `
+        <div class="co-card co-confirm">
+          <div class="big">🎉</div>
+          <h2>Order Placed!</h2>
+          <div class="order-num">${orderNumber}</div>
+          <p>
+            Your order is confirmed for <strong>${fmtDate(_selectedDate)}</strong><br>
+            Slot: <strong>${slotInfo.icon} ${slotInfo.time}</strong><br><br>
+            We'll start packing your fresh produce. Come to the Fresco store at the scheduled time — it'll be ready and bagged for you.
+          </p>
+          <div class="co-confirm-actions">
+            <a href="/" class="btn-primary-sm">Back to Home</a>
+            ${_session ? `<a href="/consumer/profile.html" class="btn-outline-sm">My Account</a>` : ''}
+            <a href="/category.html?cat=leafy" class="btn-outline-sm">Shop More</a>
+          </div>
+        </div>`;
+    }
+
+    init();
+  </script>
+</body>
+</html>
