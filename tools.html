@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">Smart Tools — Fresco</title>
+  <meta name="description" content="Compare vegetable nutrition, build your weekly box, and check today's store stock — powered by Fresco's farm data." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fraunces:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="tools-styles.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Fresco
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="category.html?cat=leafy">Store</a>
+        <a href="tools.html" class="active">Smart Tools</a>
+      </div>
+      <a href="index.html#waitlist" class="nav-cta">Join Waitlist</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="tools-hero">
+    <div class="tools-hero-inner">
+      <span class="tools-tag">SMART TOOLS</span>
+      <h1 class="tools-title">Know What You Eat.</h1>
+      <p class="tools-sub">Compare nutrition, plan your weekly box, and check what's fresh in store today — all powered by real farm data.</p>
+    </div>
+  </section>
+
+  <!-- TOOL TABS -->
+  <div class="tools-tabs-wrap">
+    <div class="tools-tabs">
+      <button class="tool-tab active" data-tool="compare">
+        <span>⚖️</span> Compare Nutrition
+      </button>
+      <button class="tool-tab" data-tool="box">
+        <span>📦</span> Box Builder
+      </button>
+      <button class="tool-tab" data-tool="stock">
+        <span>📍</span> Stock Board
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================== TOOL: COMPARE ===================== -->
+  <section class="tool-panel active" id="tool-compare">
+    <div class="tool-inner">
+      <div class="tool-heading-wrap">
+        <h2 class="tool-heading">Nutrition Comparator</h2>
+        <p class="tool-sub">Pick any two vegetables to see a side-by-side nutrition breakdown. Find out which one wins on protein, fibre, vitamins, and more.</p>
+      </div>
+
+      <div class="compare-selectors">
+        <div class="compare-sel-wrap">
+          <label class="sel-label">First Vegetable</label>
+          <div class="veg-select-grid" id="pick-a"></div>
+        </div>
+        <div class="compare-vs">VS</div>
+        <div class="compare-sel-wrap">
+          <label class="sel-label">Second Vegetable</label>
+          <div class="veg-select-grid" id="pick-b"></div>
+        </div>
+      </div>
+
+      <div class="compare-result hidden" id="compare-result">
+        <div class="compare-cards" id="compare-cards"></div>
+        <div class="compare-table-wrap">
+          <table class="compare-table" id="compare-table"></table>
+        </div>
+      </div>
+      <div class="compare-placeholder" id="compare-placeholder">
+        <span style="font-size:2.5rem">⚖️</span>
+        <p>Select two vegetables above to compare their nutritional profiles</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TOOL: BOX BUILDER ===================== -->
+  <section class="tool-panel" id="tool-box">
+    <div class="tool-inner">
+      <div class="tool-heading-wrap">
+        <h2 class="tool-heading">Weekly Box Builder</h2>
+        <p class="tool-sub">Choose up to 5 vegetables for your weekly box. We'll show you the combined nutrition, estimated cost, and top recipes you can make.</p>
+      </div>
+
+      <div class="box-builder-wrap">
+        <div class="box-left">
+          <div class="box-picker-label">
+            <span>Choose up to 5 vegetables</span>
+            <span class="box-count" id="box-count">0 / 5 selected</span>
+          </div>
+          <div class="box-picker-grid" id="box-picker"></div>
+        </div>
+        <div class="box-right" id="box-summary">
+          <div class="box-empty-state" id="box-empty">
+            <span style="font-size:2rem">📦</span>
+            <p>Select vegetables to start building your box</p>
+          </div>
+          <div class="box-summary-inner hidden" id="box-filled">
+            <h3 class="box-summary-title">Your Weekly Box</h3>
+            <div class="box-selected-list" id="box-selected-list"></div>
+            <div class="box-nutrition-summary" id="box-nutrition-wrap">
+              <div class="box-section-label">Combined Nutrition (per 100g each)</div>
+              <div class="box-nutrition-grid" id="box-nutrition-grid"></div>
+            </div>
+            <div class="box-cost-wrap">
+              <div class="box-section-label">Estimated Weekly Cost</div>
+              <div class="box-cost" id="box-cost"></div>
+            </div>
+            <div class="box-recipes-wrap">
+              <div class="box-section-label">Recipes You Can Make</div>
+              <div class="box-recipes-list" id="box-recipes-list"></div>
+            </div>
+            <button class="box-clear-btn" id="box-clear-btn">Clear Box</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TOOL: STOCK BOARD ===================== -->
+  <section class="tool-panel" id="tool-stock">
+    <div class="tool-inner">
+      <div class="tool-heading-wrap">
+        <h2 class="tool-heading">Today's Stock Board</h2>
+        <p class="tool-sub">Check what's available in store today — freshness scores, batch harvest times, and stock levels before you head out.</p>
+      </div>
+
+      <div class="stock-filter-wrap">
+        <button class="stock-filter active" data-cat="all">All</button>
+        <button class="stock-filter" data-cat="leafy">🥬 Leafy</button>
+        <button class="stock-filter" data-cat="root">🥕 Root</button>
+        <button class="stock-filter" data-cat="tuber">🥔 Tuber</button>
+        <button class="stock-filter" data-cat="fruiting">🍅 Fruiting</button>
+        <button class="stock-filter" data-cat="fruits">🍌 Fruits</button>
+      </div>
+
+      <div class="stock-board" id="stock-board"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">🌿 Fresco</div>
+        <p class="footer-tagline">Farm fresh. Transparent. Honest.</p>
+      </div>
+      <div class="footer-links">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="category.html?cat=leafy">Store</a></li>
+          <li><a href="tools.html">Smart Tools</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Fresco. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="product.js"></script>
+  <script src="tools.js"></script>
+</body>
+</html>
