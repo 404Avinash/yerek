@@ -351,6 +351,10 @@
               </div>
             </div>
           </div>
+          <div class="qr-real-wrap">
+            <div id="qr-canvas"></div>
+            <p class="qr-real-label">📱 Scan to view full trace report</p>
+          </div>
         </div>
       </div>
     </div>
@@ -416,6 +420,7 @@
     </div>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="product.js?v=2"></script>
   <script>
     // Wire QR panel from product data after render
@@ -439,6 +444,27 @@
         if (qrTransit) qrTransit.textContent = p.batch.transit;
         if (qrStorage) qrStorage.textContent = p.batch.storage;
         if (qrBatchId) qrBatchId.textContent = p.batch.batchId;
+
+        // Generate real scannable QR code
+        const qrCanvas = document.getElementById('qr-canvas');
+        if (qrCanvas && typeof QRCode !== 'undefined') {
+          const traceUrl = `${location.origin}${location.pathname}?item=${encodeURIComponent(key)}`;
+          new QRCode(qrCanvas, {
+            text: traceUrl,
+            width: 140,
+            height: 140,
+            colorDark: '#15803d',
+            colorLight: '#f0fdf4',
+            correctLevel: QRCode.CorrectLevel.H,
+          });
+        }
+
+        // Animate freshness ring in QR panel
+        const ring = document.querySelector('.qr-trace-panel .ring-progress');
+        if (ring) {
+          const offset = 263.9 - (parseFloat(p.freshness) / 10) * 263.9;
+          setTimeout(() => { ring.style.strokeDashoffset = offset; }, 300);
+        }
       }
     });
   </script>

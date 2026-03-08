@@ -4,6 +4,18 @@
    ========================================== */
 
 // ==========================================
+// DYNAMIC BATCH ID HELPER
+// Batch IDs auto-update with today's date
+// ==========================================
+function getBatchId(code, daysAgo = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `FRS-${code}-${mm}${dd}`;
+}
+
+// ==========================================
 // FULL PRODUCT DATA
 // ==========================================
 const PRODUCTS = {
@@ -17,7 +29,7 @@ const PRODUCTS = {
     batch: {
       harvested: 'Today, 5:30 AM', farm: 'Sharma Greens', location: 'Sonipat, Haryana',
       transit: '5 hrs 20 min', arrivedAt: '10:50 AM',
-      storage: '4°C · 85% Humidity', batchId: 'FRS-SPN-0308', qty: '40 kg'
+      storage: '4°C · 85% Humidity', batchId: getBatchId('SPN', 0), qty: '40 kg'
     },
     nutrition: [
       { label: 'Calories', value: '23 kcal', per: 'per 100g' },
@@ -52,7 +64,7 @@ const PRODUCTS = {
     batch: {
       harvested: 'Today, 4:00 AM', farm: 'Patel Organics', location: 'Karnal, Haryana',
       transit: '4 hrs 10 min', arrivedAt: '8:10 AM',
-      storage: '3°C · 90% Humidity', batchId: 'FRS-DHN-0308', qty: '15 kg'
+      storage: '3°C · 90% Humidity', batchId: getBatchId('DHN', 0), qty: '15 kg'
     },
     nutrition: [
       { label: 'Calories', value: '23 kcal', per: 'per 100g' },
@@ -87,7 +99,7 @@ const PRODUCTS = {
     batch: {
       harvested: 'Yesterday, 6:00 AM', farm: 'Verma Farms', location: 'Panipat, Haryana',
       transit: '6 hrs', arrivedAt: 'Yesterday 12:00 PM',
-      storage: '4°C · 80% Humidity', batchId: 'FRS-MTH-0307', qty: '20 kg'
+      storage: '4°C · 80% Humidity', batchId: getBatchId('MTH', 1), qty: '20 kg'
     },
     nutrition: [
       { label: 'Calories', value: '49 kcal', per: 'per 100g' },
@@ -122,7 +134,7 @@ const PRODUCTS = {
     batch: {
       harvested: 'Today, 4:30 AM', farm: 'Patel Organics', location: 'Karnal, Haryana',
       transit: '4 hrs', arrivedAt: '8:30 AM',
-      storage: '3°C · 90% Humidity', batchId: 'FRS-PDN-0308', qty: '8 kg'
+      storage: '3°C · 90% Humidity', batchId: getBatchId('PDN', 0), qty: '8 kg'
     },
     nutrition: [
       { label: 'Calories', value: '70 kcal', per: 'per 100g' },
@@ -157,7 +169,7 @@ const PRODUCTS = {
     batch: {
       harvested: 'Today, 6:00 AM', farm: 'Sharma Greens', location: 'Sonipat, Haryana',
       transit: '5 hrs 30 min', arrivedAt: '11:30 AM',
-      storage: '2°C · 95% Humidity', batchId: 'FRS-LTC-0308', qty: '25 kg'
+      storage: '2°C · 95% Humidity', batchId: getBatchId('LTC', 0), qty: '25 kg'
     },
     nutrition: [
       { label: 'Calories', value: '14 kcal', per: 'per 100g' },
@@ -193,7 +205,7 @@ const PRODUCTS = {
     batch: {
       harvested: '2 days ago', farm: 'Ramesh Farm', location: 'Sonipat, Haryana',
       transit: '8 hrs', arrivedAt: 'Yesterday 6:00 PM',
-      storage: '5°C · 90% Humidity', batchId: 'FRS-GJR-0306', qty: '60 kg'
+      storage: '5°C · 90% Humidity', batchId: getBatchId('GJR', 2), qty: '60 kg'
     },
     nutrition: [
       { label: 'Calories', value: '41 kcal', per: 'per 100g' },
@@ -228,7 +240,7 @@ const PRODUCTS = {
     batch: {
       harvested: '3 days ago', farm: 'Gupta Roots', location: 'Rohtak, Haryana',
       transit: '6 hrs', arrivedAt: '2 days ago',
-      storage: '4°C · 88% Humidity', batchId: 'FRS-MOL-0305', qty: '45 kg'
+      storage: '4°C · 88% Humidity', batchId: getBatchId('MOL', 3), qty: '45 kg'
     },
     nutrition: [
       { label: 'Calories', value: '16 kcal', per: 'per 100g' },
@@ -263,7 +275,7 @@ const PRODUCTS = {
     batch: {
       harvested: '2 days ago', farm: 'Singh\'s Earth Farm', location: 'Hisar, Haryana',
       transit: '9 hrs', arrivedAt: 'Yesterday',
-      storage: '4°C · 85% Humidity', batchId: 'FRS-CHK-0306', qty: '30 kg'
+      storage: '4°C · 85% Humidity', batchId: getBatchId('CHK', 2), qty: '30 kg'
     },
     nutrition: [
       { label: 'Calories', value: '43 kcal', per: 'per 100g' },
@@ -299,7 +311,7 @@ const PRODUCTS = {
     batch: {
       harvested: '4 days ago', farm: 'Yadav Tubers', location: 'Agra, UP',
       transit: '10 hrs', arrivedAt: '3 days ago',
-      storage: '12°C · 80% Humidity', batchId: 'FRS-ALO-0304', qty: '120 kg'
+      storage: '12°C · 80% Humidity', batchId: getBatchId('ALO', 4), qty: '120 kg'
     },
     nutrition: [
       { label: 'Calories', value: '77 kcal', per: 'per 100g (boiled)' },
@@ -334,7 +346,7 @@ const PRODUCTS = {
     batch: {
       harvested: '3 days ago', farm: 'Narmada Farms', location: 'Gwalior, MP',
       transit: '12 hrs', arrivedAt: '2 days ago',
-      storage: '15°C · 75% Humidity', batchId: 'FRS-SKR-0305', qty: '35 kg'
+      storage: '15°C · 75% Humidity', batchId: getBatchId('SKR', 3), qty: '35 kg'
     },
     nutrition: [
       { label: 'Calories', value: '86 kcal', per: 'per 100g' },
@@ -370,7 +382,7 @@ const PRODUCTS = {
     batch: {
       harvested: 'Today, 3:00 AM', farm: 'Ramesh Farm', location: 'Sonipat, Haryana',
       transit: '8 hrs', arrivedAt: '11:00 AM',
-      storage: '18°C · 65% Humidity', batchId: 'FRS-TMT-0308', qty: '80 kg'
+      storage: '18°C · 65% Humidity', batchId: getBatchId('TMT', 0), qty: '80 kg'
     },
     nutrition: [
       { label: 'Calories', value: '18 kcal', per: 'per 100g' },
@@ -405,7 +417,7 @@ const PRODUCTS = {
     batch: {
       harvested: 'Today, 5:00 AM', farm: 'Joshi Polyhouse', location: 'Alwar, Rajasthan',
       transit: '7 hrs', arrivedAt: '12:00 PM',
-      storage: '8°C · 90% Humidity', batchId: 'FRS-CAP-0308', qty: '40 kg'
+      storage: '8°C · 90% Humidity', batchId: getBatchId('CAP', 0), qty: '40 kg'
     },
     nutrition: [
       { label: 'Calories', value: '31 kcal', per: 'per 100g' },
@@ -440,7 +452,7 @@ const PRODUCTS = {
     batch: {
       harvested: 'Today, 4:00 AM', farm: 'Ramesh Farm', location: 'Sonipat, Haryana',
       transit: '8 hrs', arrivedAt: '12:00 PM',
-      storage: '8°C · 85% Humidity', batchId: 'FRS-CHI-0308', qty: '20 kg'
+      storage: '8°C · 85% Humidity', batchId: getBatchId('CHI', 0), qty: '20 kg'
     },
     nutrition: [
       { label: 'Calories', value: '40 kcal', per: 'per 100g' },
@@ -475,7 +487,7 @@ const PRODUCTS = {
     batch: {
       harvested: 'Yesterday', farm: 'Khatri Gardens', location: 'Rewari, Haryana',
       transit: '7 hrs', arrivedAt: 'Yesterday 5:00 PM',
-      storage: '10°C · 85% Humidity', batchId: 'FRS-BNG-0307', qty: '35 kg'
+      storage: '10°C · 85% Humidity', batchId: getBatchId('BNG', 1), qty: '35 kg'
     },
     nutrition: [
       { label: 'Calories', value: '25 kcal', per: 'per 100g' },
@@ -511,7 +523,7 @@ const PRODUCTS = {
     batch: {
       harvested: '3 days ago', farm: 'Nashik Orchards', location: 'Nashik, Maharashtra',
       transit: '18 hrs', arrivedAt: '2 days ago',
-      storage: '14°C · 70% Humidity', batchId: 'FRS-KEL-0305', qty: '70 kg'
+      storage: '14°C · 70% Humidity', batchId: getBatchId('KEL', 3), qty: '70 kg'
     },
     nutrition: [
       { label: 'Calories', value: '89 kcal', per: 'per 100g' },
@@ -546,7 +558,7 @@ const PRODUCTS = {
     batch: {
       harvested: '4 days ago', farm: 'HP Apple Growers', location: 'Shimla, Himachal Pradesh',
       transit: '24 hrs', arrivedAt: '3 days ago',
-      storage: '3°C · 90% Humidity', batchId: 'FRS-SEB-0304', qty: '50 kg'
+      storage: '3°C · 90% Humidity', batchId: getBatchId('SEB', 4), qty: '50 kg'
     },
     nutrition: [
       { label: 'Calories', value: '52 kcal', per: 'per 100g' },
@@ -581,7 +593,7 @@ const PRODUCTS = {
     batch: {
       harvested: '5 days ago', farm: 'Mathur Harvest', location: 'Aligarh, UP',
       transit: '11 hrs', arrivedAt: '4 days ago',
-      storage: '13°C · 75% Humidity', batchId: 'FRS-SRN-0303', qty: '50 kg'
+      storage: '13°C · 75% Humidity', batchId: getBatchId('SRN', 5), qty: '50 kg'
     },
     nutrition: [
       { label: 'Calories', value: '118 kcal', per: 'per 100g' },
@@ -616,7 +628,7 @@ const PRODUCTS = {
     batch: {
       harvested: '3 days ago', farm: 'Yadav Tubers', location: 'Agra, UP',
       transit: '10 hrs', arrivedAt: '2 days ago',
-      storage: '12°C · 78% Humidity', batchId: 'FRS-ARB-0305', qty: '30 kg'
+      storage: '12°C · 78% Humidity', batchId: getBatchId('ARB', 3), qty: '30 kg'
     },
     nutrition: [
       { label: 'Calories', value: '112 kcal', per: 'per 100g' },
@@ -652,7 +664,7 @@ const PRODUCTS = {
     batch: {
       harvested: 'Yesterday, 5:00 AM', farm: 'Verma Farms', location: 'Panipat, Haryana',
       transit: '6 hrs', arrivedAt: 'Yesterday 11:00 AM',
-      storage: '4°C · 80% Humidity', batchId: 'FRS-CHL-0307', qty: '12 kg'
+      storage: '4°C · 80% Humidity', batchId: getBatchId('CHL', 1), qty: '12 kg'
     },
     nutrition: [
       { label: 'Calories', value: '23 kcal', per: 'per 100g' },
@@ -688,7 +700,7 @@ const PRODUCTS = {
     batch: {
       harvested: '4 days ago', farm: 'Gupta Roots', location: 'Rohtak, Haryana',
       transit: '6 hrs', arrivedAt: '3 days ago',
-      storage: '4°C · 88% Humidity', batchId: 'FRS-SHG-0304', qty: '28 kg'
+      storage: '4°C · 88% Humidity', batchId: getBatchId('SHG', 4), qty: '28 kg'
     },
     nutrition: [
       { label: 'Calories', value: '28 kcal', per: 'per 100g' },
@@ -724,7 +736,7 @@ const PRODUCTS = {
     batch: {
       harvested: 'Today, 4:00 AM', farm: 'Khatri Gardens', location: 'Rewari, Haryana',
       transit: '7 hrs', arrivedAt: '11:00 AM',
-      storage: '3°C · 92% Humidity', batchId: 'FRS-MTR-0308', qty: '25 kg'
+      storage: '3°C · 92% Humidity', batchId: getBatchId('MTR', 0), qty: '25 kg'
     },
     nutrition: [
       { label: 'Calories', value: '81 kcal', per: 'per 100g' },
@@ -759,7 +771,7 @@ const PRODUCTS = {
     batch: {
       harvested: 'Yesterday', farm: 'Joshi Polyhouse', location: 'Alwar, Rajasthan',
       transit: '7 hrs', arrivedAt: 'Yesterday 4:00 PM',
-      storage: '10°C · 85% Humidity', batchId: 'FRS-KRL-0307', qty: '18 kg'
+      storage: '10°C · 85% Humidity', batchId: getBatchId('KRL', 1), qty: '18 kg'
     },
     nutrition: [
       { label: 'Calories', value: '17 kcal', per: 'per 100g' },
@@ -795,7 +807,7 @@ const PRODUCTS = {
     batch: {
       harvested: '3 days ago', farm: 'Coorg Estates', location: 'Nagpur, Maharashtra',
       transit: '16 hrs', arrivedAt: '2 days ago',
-      storage: '8°C · 85% Humidity', batchId: 'FRS-SNT-0305', qty: '60 kg'
+      storage: '8°C · 85% Humidity', batchId: getBatchId('SNT', 3), qty: '60 kg'
     },
     nutrition: [
       { label: 'Calories', value: '47 kcal', per: 'per 100g' },
@@ -830,7 +842,7 @@ const PRODUCTS = {
     batch: {
       harvested: '4 days ago', farm: 'Coorg Estates', location: 'Coorg, Karnataka',
       transit: '20 hrs', arrivedAt: '3 days ago',
-      storage: '13°C · 75% Humidity', batchId: 'FRS-PPT-0304', qty: '40 kg'
+      storage: '13°C · 75% Humidity', batchId: getBatchId('PPT', 4), qty: '40 kg'
     },
     nutrition: [
       { label: 'Calories', value: '43 kcal', per: 'per 100g' },
@@ -865,7 +877,7 @@ const PRODUCTS = {
     batch: {
       harvested: '2 days ago', farm: 'Nashik Orchards', location: 'Allahabad, UP',
       transit: '14 hrs', arrivedAt: 'Yesterday',
-      storage: '8°C · 88% Humidity', batchId: 'FRS-AMR-0306', qty: '35 kg'
+      storage: '8°C · 88% Humidity', batchId: getBatchId('AMR', 2), qty: '35 kg'
     },
     nutrition: [
       { label: 'Calories', value: '68 kcal', per: 'per 100g' },
@@ -900,7 +912,7 @@ const PRODUCTS = {
     batch: {
       harvested: '5 days ago', farm: 'Coorg Estates', location: 'Solapur, Maharashtra',
       transit: '18 hrs', arrivedAt: '4 days ago',
-      storage: '5°C · 90% Humidity', batchId: 'FRS-ANR-0303', qty: '45 kg'
+      storage: '5°C · 90% Humidity', batchId: getBatchId('ANR', 5), qty: '45 kg'
     },
     nutrition: [
       { label: 'Calories', value: '83 kcal', per: 'per 100g' },

@@ -146,6 +146,13 @@ if (waitlistForm) {
       });
 
       if (response.ok) {
+        // Persist to localStorage as a local backup
+        const storageKey = 'fresco_waitlist';
+        const existing = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        if (!existing.some(entry => entry.email === email)) {
+          existing.push({ name, email, city, joinedAt: new Date().toISOString() });
+          localStorage.setItem(storageKey, JSON.stringify(existing));
+        }
         // Success — show celebration screen
         waitlistForm.classList.add('hidden');
         waitlistSuccess.classList.remove('hidden');

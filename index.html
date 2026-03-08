@@ -655,55 +655,55 @@
   </section>
 
   <!-- ========= SMART TOOLS SHOWCASE ========= -->
-  <section id="smart-tools" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 60%,#f0fdf4 100%);padding:100px 40px;">
-    <div style="max-width:1100px;margin:0 auto;">
-      <div style="text-align:center;margin-bottom:60px;">
-        <span style="display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.12em;color:#16a34a;background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.2);padding:5px 14px;border-radius:99px;margin-bottom:16px;">SMART TOOLS</span>
-        <h2 style="font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;color:#111827;margin-bottom:12px;">Know More Before You Buy</h2>
-        <p style="color:#6b7280;font-size:1rem;line-height:1.75;max-width:520px;margin:0 auto;">We built interactive tools that help you shop smarter — compare nutrition, plan your weekly groceries, and check what's actually in store today.</p>
+  <section id="smart-tools">
+    <div class="smart-tools-inner">
+      <div class="smart-tools-header">
+        <span class="smart-tools-tag">SMART TOOLS</span>
+        <h2 class="smart-tools-title">Know More Before You Buy</h2>
+        <p class="smart-tools-sub">We built interactive tools that help you shop smarter — compare nutrition, plan your weekly groceries, and check what's actually in store today.</p>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-bottom:48px;">
+      <div class="smart-tools-grid">
 
         <!-- Compare Tool Card -->
-        <a href="tools.html#compare" style="text-decoration:none;display:block;background:#fff;border:1.5px solid #e5e7eb;border-radius:24px;padding:32px;transition:all .2s ease;box-shadow:0 2px 12px rgba(0,0,0,.04);" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,.1)'" onmouseout="this.style.transform='';this.style.boxShadow='0 2px 12px rgba(0,0,0,.04)'">
-          <div style="font-size:2.5rem;margin-bottom:16px;">⚖️</div>
-          <h3 style="font-family:'Outfit',sans-serif;font-weight:800;font-size:1.1rem;color:#111827;margin-bottom:8px;">Nutrition Comparator</h3>
-          <p style="color:#6b7280;font-size:.85rem;line-height:1.7;margin-bottom:20px;">Pick any two vegetables and see a head-to-head nutrition breakdown — calories, protein, fibre, vitamins and more.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
-            <span style="font-size:.7rem;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;padding:3px 10px;border-radius:99px;font-weight:600;">🥦 Spinach vs 🥕 Carrot</span>
-            <span style="font-size:.7rem;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;padding:3px 10px;border-radius:99px;font-weight:600;">🍅 Tomato vs 🥔 Potato</span>
+        <a href="tools.html#compare" class="tool-showcase-card">
+          <div class="tool-showcase-icon">⚖️</div>
+          <h3 class="tool-showcase-title">Nutrition Comparator</h3>
+          <p class="tool-showcase-desc">Pick any two vegetables and see a head-to-head nutrition breakdown — calories, protein, fibre, vitamins and more.</p>
+          <div class="tool-showcase-pills">
+            <span class="tool-showcase-pill">🥦 Spinach vs 🥕 Carrot</span>
+            <span class="tool-showcase-pill">🍅 Tomato vs 🥔 Potato</span>
           </div>
-          <span style="font-size:.82rem;font-weight:700;color:#16a34a;">Try it → </span>
+          <span class="tool-showcase-link">Try it → </span>
         </a>
 
         <!-- Box Builder Card -->
-        <a href="tools.html" onclick="setTimeout(()=>{document.querySelector('[data-tool=box]')?.click()},100)" style="text-decoration:none;display:block;background:#fff;border:1.5px solid #e5e7eb;border-radius:24px;padding:32px;transition:all .2s ease;box-shadow:0 2px 12px rgba(0,0,0,.04);" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,.1)'" onmouseout="this.style.transform='';this.style.boxShadow='0 2px 12px rgba(0,0,0,.04)'">
-          <div style="font-size:2.5rem;margin-bottom:16px;">📦</div>
-          <h3 style="font-family:'Outfit',sans-serif;font-weight:800;font-size:1.1rem;color:#111827;margin-bottom:8px;">Weekly Box Builder</h3>
-          <p style="color:#6b7280;font-size:.85rem;line-height:1.7;margin-bottom:20px;">Select up to 5 vegetables, and instantly see combined nutrition, estimated weekly cost, and recipes you can make with them.</p>
-          <div style="background:#f9fafb;border-radius:12px;padding:12px 16px;margin-bottom:20px;">
-            <div style="font-size:.78rem;color:#374151;font-weight:600;">🧮 Example: Tomato + Spinach + Potato = ₹68–₹87/week</div>
+        <a href="tools.html" onclick="setTimeout(()=>{document.querySelector('[data-tool=box]')?.click()},100)" class="tool-showcase-card">
+          <div class="tool-showcase-icon">📦</div>
+          <h3 class="tool-showcase-title">Weekly Box Builder</h3>
+          <p class="tool-showcase-desc">Select up to 5 vegetables, and instantly see combined nutrition, estimated weekly cost, and recipes you can make with them.</p>
+          <div class="tool-showcase-example">
+            <div class="tool-showcase-example-text">🧮 Example: Tomato + Spinach + Potato = ₹68–₹87/week</div>
           </div>
-          <span style="font-size:.82rem;font-weight:700;color:#16a34a;">Build your box → </span>
+          <span class="tool-showcase-link">Build your box → </span>
         </a>
 
         <!-- Stock Board Card -->
-        <a href="tools.html" onclick="setTimeout(()=>{document.querySelector('[data-tool=stock]')?.click()},100)" style="text-decoration:none;display:block;background:#fff;border:1.5px solid #e5e7eb;border-radius:24px;padding:32px;transition:all .2s ease;box-shadow:0 2px 12px rgba(0,0,0,.04);" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,.1)'" onmouseout="this.style.transform='';this.style.boxShadow='0 2px 12px rgba(0,0,0,.04)'">
-          <div style="font-size:2.5rem;margin-bottom:16px;">📍</div>
-          <h3 style="font-family:'Outfit',sans-serif;font-weight:800;font-size:1.1rem;color:#111827;margin-bottom:8px;">Today's Stock Board</h3>
-          <p style="color:#6b7280;font-size:.85rem;line-height:1.7;margin-bottom:20px;">Check what's in store before you step out — freshness scores, batch harvest times, farm name, and stock levels for each vegetable.</p>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
-            <span style="width:8px;height:8px;border-radius:50%;background:#16a34a;display:inline-block;"></span>
-            <span style="font-size:.78rem;color:#16a34a;font-weight:700;">26 products live right now</span>
+        <a href="tools.html" onclick="setTimeout(()=>{document.querySelector('[data-tool=stock]')?.click()},100)" class="tool-showcase-card">
+          <div class="tool-showcase-icon">📍</div>
+          <h3 class="tool-showcase-title">Today's Stock Board</h3>
+          <p class="tool-showcase-desc">Check what's in store before you step out — freshness scores, batch harvest times, farm name, and stock levels for each vegetable.</p>
+          <div class="tool-showcase-badge">
+            <span class="tool-showcase-dot"></span>
+            <span class="tool-showcase-badge-text">26 products live right now</span>
           </div>
-          <span style="font-size:.82rem;font-weight:700;color:#16a34a;">Check stock → </span>
+          <span class="tool-showcase-link">Check stock → </span>
         </a>
 
       </div>
 
-      <div style="text-align:center;">
-        <a href="tools.html" style="display:inline-flex;align-items:center;gap:8px;background:#16a34a;color:#fff;padding:14px 32px;border-radius:99px;text-decoration:none;font-weight:700;font-size:.92rem;box-shadow:0 4px 16px rgba(22,163,74,.3);transition:all .2s ease;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(22,163,74,.4)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(22,163,74,.3)'">
+      <div class="smart-tools-cta">
+        <a href="tools.html" class="btn-smart-tools">
           Explore All Smart Tools
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
