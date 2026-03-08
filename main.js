@@ -115,9 +115,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// ---- Waitlist Form — connected to Formspree ----
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvzwgale';
-
+// ---- Waitlist Form — saved directly to Supabase ----
 const waitlistForm = document.getElementById('waitlistForm');
 const waitlistSuccess = document.getElementById('waitlistSuccess');
 
@@ -132,33 +130,28 @@ if (waitlistForm) {
 
     if (!name || !email || !city) return;
 
-    // Loading state
     const originalText = btn.querySelector('span').textContent;
     btn.querySelector('span').textContent = 'Submitting...';
     btn.style.opacity = '0.7';
     btn.disabled = true;
 
     try {
-      const response = await fetch(FORMSPREE_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: JSON.stringify({ name, email, city }),
-      });
+      const { error } = await _supabase.from('waitlist').insert([{
+        name,
+        email,
+        city,
+        source: document.referrer || 'direct',
+      }]);
 
-      if (response.ok) {
-        // Persist to localStorage as a local backup
-        const storageKey = 'fresco_waitlist';
-        const existing = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        if (!existing.some(entry => entry.email === email)) {
-          existing.push({ name, email, city, joinedAt: new Date().toISOString() });
-          localStorage.setItem(storageKey, JSON.stringify(existing));
-        }
-        // Success — show celebration screen
+      if (!error) {
         waitlistForm.classList.add('hidden');
         waitlistSuccess.classList.remove('hidden');
         waitlistSuccess.style.animation = 'fadeInUp 0.5s ease';
+      } else if (error.code === '23505') {
+        // Duplicate email — still show success, don't alarm user
+        waitlistForm.classList.add('hidden');
+        waitlistSuccess.classList.remove('hidden');
       } else {
-        // Formspree returned an error
         btn.querySelector('span').textContent = 'Something went wrong — try again';
         btn.style.opacity = '1';
         btn.style.background = '#dc2626';
@@ -169,7 +162,6 @@ if (waitlistForm) {
         }, 3000);
       }
     } catch (err) {
-      // Network error
       btn.querySelector('span').textContent = 'No connection — try again';
       btn.style.opacity = '1';
       btn.style.background = '#dc2626';
