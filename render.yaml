@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: fresco
+    env: static
+    buildCommand: ""
+    staticPublishPath: .
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /category
+        destination: /category.html
+      - type: rewrite
+        source: /product
+        destination: /product.html
