@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#16a34a"/>
+  <text x="256" y="340" font-size="260" text-anchor="middle" dominant-baseline="middle">🌿</text>
+  <text x="256" y="460" font-size="72" text-anchor="middle" fill="white" font-family="sans-serif" font-weight="700">Fresco</text>
+</svg>

@@ -105,18 +105,24 @@
   <script>
     let profile = null;
     let scans = [];
+    let orders = [];
+    let loyaltyTxns = [];
 
     (async () => {
       const { data: { session } } = await _supabase.auth.getSession();
       if (!session) { window.location.href = '/consumer/login.html'; return; }
 
-      const [{ data: p }, { data: s }] = await Promise.all([
+      const [{ data: p }, { data: s }, { data: o }, { data: lt }] = await Promise.all([
         _supabase.from('profiles').select('*').eq('id', session.user.id).single(),
-        _supabase.from('qr_scans').select('*').eq('user_id', session.user.id).order('scanned_at', { ascending: false }).limit(20)
+        _supabase.from('qr_scans').select('*').eq('user_id', session.user.id).order('scanned_at', { ascending: false }).limit(20),
+        _supabase.from('orders').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }).limit(20),
+        _supabase.from('loyalty_txns').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }).limit(10)
       ]);
 
       profile = p || { email: session.user.email, full_name: '', role: 'consumer' };
       scans = s || [];
+      orders = o || [];
+      loyaltyTxns = lt || [];
       render();
     })();
 
@@ -172,6 +178,47 @@
               <span id="saveMsg" style="margin-left:12px;color:#16a34a;font-size:.87rem;font-weight:600;display:none">Saved ✓</span>
             </div>
           </form>
+        </div>
+
+        <!-- Loyalty Points -->
+        <div class="pf-card">
+          <div class="pf-card-title">⭐ Loyalty Points</div>
+          <div style="display:flex;align-items:center;gap:16px;background:#fffbeb;border:1.5px solid #fde047;border-radius:12px;padding:16px 20px">
+            <div style="text-align:center">
+              <div style="font-size:2rem;font-weight:800;color:#d97706;font-family:'Outfit',sans-serif">${profile.loyalty_points || 0}</div>
+              <div style="font-size:.75rem;color:#92400e;font-weight:600">points</div>
+            </div>
+            <div>
+              <div style="font-weight:700;color:#92400e;margin-bottom:2px">Your Reward Balance</div>
+              <div style="font-size:.8rem;color:#b45309">Earn 1 pt per ₹10 spent</div>
+              <div style="font-size:.8rem;color:#b45309">50 pts = ₹5 off at checkout</div>
+            </div>
+          </div>
+          ${loyaltyTxns.length ? `
+          <div style="margin-top:16px">
+            <div style="font-weight:600;color:#374151;font-size:.85rem;margin-bottom:8px">Recent Activity</div>
+            ${loyaltyTxns.map(t => `
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f3f4f6">
+                <span style="font-size:.85rem;color:#374151">${t.reason || (t.points > 0 ? 'Earned from order' : 'Redeemed at checkout')}</span>
+                <span style="font-weight:700;font-size:.88rem;color:${t.points > 0 ? '#16a34a' : '#d97706'}">${t.points > 0 ? '+' : ''}${t.points} pts</span>
+              </div>`).join('')}
+          </div>` : '<p class="pf-empty" style="margin-top:12px">Place an order to start earning points!</p>'}
+        </div>
+
+        <!-- Order History -->
+        <div class="pf-card">
+          <div class="pf-card-title">📦 Order History</div>
+          ${orders.length ? orders.map(o => `
+            <div style="padding:14px 0;border-bottom:1px solid #f3f4f6">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                <div style="font-weight:700;color:#111827;font-size:.92rem">#${o.order_number || o.id}</div>
+                <span style="font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:999px;background:${
+                  o.status==='delivered'?'#16a34a':o.status==='ready'?'#2563eb':o.status==='cancelled'?'#dc2626':'#d97706'
+                };color:#fff">${o.status}</span>
+              </div>
+              <div style="font-size:.82rem;color:#6b7280;margin-bottom:4px">${fmtDt(o.created_at)}${o.pickup_date ? ' · Pickup: ' + o.pickup_date : ''}</div>
+              <div style="font-weight:700;color:#16a34a">₹${o.total}</div>
+            </div>`).join('') : '<p class="pf-empty">No orders yet. <a href="/category.html" style="color:#16a34a;font-weight:600">Start shopping →</a></p>'}
         </div>
 
         <!-- QR Scan History -->

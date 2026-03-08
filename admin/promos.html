@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promo Codes — Fresco Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body class="admin-body">
+
+  <div class="admin-layout" id="app">
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;width:100%;color:var(--gray-400)">Loading…</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    let _role = null;
+    let _promos = [];
+
+    (async () => {
+      const auth = await requireAdmin(['owner', 'staff']);
+      if (!auth) return;
+      _role = auth.profile.role;
+
+      document.getElementById('app').innerHTML = `
+        ${renderSidebar('promos', _role)}
+        <main class="admin-main">
+          <div class="admin-topbar">
+            <h1 class="admin-page-title">🏷️ Promo Codes</h1>
+            <div class="topbar-actions">
+              <button class="btn-admin-primary" onclick="showCreateModal()">+ New Promo</button>
+            </div>
+          </div>
+          <div class="admin-card" style="overflow:hidden">
+            <div id="promosTable"><div style="padding:40px;text-align:center;color:var(--gray-400)">Loading…</div></div>
+          </div>
+        </main>`;
+
+      await loadPromos();
+    })();
+
+    async function loadPromos() {
+      const { data } = await _supabase.from('promo_codes').select('*').order('created_at', { ascending: false });
+      _promos = data || [];
+      renderTable();
+    }
+
+    function renderTable() {
+      if (!_promos.length) {
+        document.getElementById('promosTable').innerHTML = `
+          <div style="padding:60px;text-align:center;color:var(--gray-400)">
+            <div style="font-size:2.5rem;margin-bottom:12px">🏷️</div>
+            No promo codes yet. Create your first one!
+          </div>`;
+        return;
+      }
+
+      document.getElementById('promosTable').innerHTML = `
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Code</th><th>Type</th><th>Value</th><th>Min Order</th><th>Uses</th><th>Expires</th><th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${_promos.map(p => `
+              <tr>
+                <td><strong style="font-family:monospace;letter-spacing:.05em;color:#15803d;font-size:.9rem">${escHtml(p.code)}</strong></td>
+                <td style="font-size:.82rem">${p.discount_type === 'percent' ? '% Percent' : '₹ Flat'}</td>
+                <td style="font-weight:700">${p.discount_type === 'percent' ? p.discount_value + '%' : '₹' + p.discount_value}</td>
+                <td style="font-size:.82rem">${p.min_order ? '₹' + p.min_order : '—'}</td>
+                <td style="font-size:.82rem">${p.uses_count}${p.max_uses ? ' / ' + p.max_uses : ''}</td>
+                <td style="font-size:.82rem">${p.expires_at ? new Date(p.expires_at).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) : 'No expiry'}</td>
+                <td>
+                  <span style="background:${p.is_active ? '#f0fdf4' : '#f3f4f6'};color:${p.is_active ? '#15803d' : '#6b7280'};border:1px solid ${p.is_active ? '#bbf7d0' : '#e5e7eb'};padding:3px 10px;border-radius:999px;font-size:.75rem;font-weight:700">
+                    ${p.is_active ? '● Active' : '○ Inactive'}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn btn-sm" onclick="toggleActive(${p.id}, ${p.is_active})">${p.is_active ? 'Deactivate' : 'Activate'}</button>
+                  <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;margin-left:6px" onclick="deletePromo(${p.id}, '${escHtml(p.code)}')">Delete</button>
+                </td>
+              </tr>`).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    function showCreateModal() {
+      const overlay = document.createElement('div');
+      overlay.className = 'admin-modal-overlay';
+      overlay.id = 'promoModal';
+      overlay.innerHTML = `
+        <div class="admin-modal" style="max-width:440px">
+          <h3 style="font-weight:700;margin-bottom:20px;font-family:'Fraunces',serif">New Promo Code</h3>
+          <div style="display:grid;gap:14px">
+            <div><label class="admin-label">Code *</label>
+              <input id="pm-code" class="admin-input" placeholder="FRESCO10" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div><label class="admin-label">Type *</label>
+                <select id="pm-type" class="admin-input">
+                  <option value="percent">Percent (%)</option>
+                  <option value="flat">Flat (₹)</option>
+                </select></div>
+              <div><label class="admin-label">Value *</label>
+                <input id="pm-val" type="number" class="admin-input" placeholder="10" min="1"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div><label class="admin-label">Min Order ₹</label>
+                <input id="pm-min" type="number" class="admin-input" placeholder="0" min="0"></div>
+              <div><label class="admin-label">Max Uses</label>
+                <input id="pm-max" type="number" class="admin-input" placeholder="Unlimited" min="1"></div>
+            </div>
+            <div><label class="admin-label">Expires On</label>
+              <input id="pm-exp" type="date" class="admin-input"></div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
+            <button class="btn" onclick="document.getElementById('promoModal').remove()">Cancel</button>
+            <button class="btn-admin-primary" onclick="createPromo()">Create Promo</button>
+          </div>
+        </div>`;
+      document.body.appendChild(overlay);
+    }
+
+    async function createPromo() {
+      const code = (document.getElementById('pm-code')?.value || '').trim().toUpperCase();
+      const type = document.getElementById('pm-type')?.value;
+      const val = parseFloat(document.getElementById('pm-val')?.value);
+      const min = parseFloat(document.getElementById('pm-min')?.value) || 0;
+      const max = parseInt(document.getElementById('pm-max')?.value) || null;
+      const exp = document.getElementById('pm-exp')?.value || null;
+
+      if (!code || !val) { showToast('Code and value are required', 'error'); return; }
+
+      const { error } = await _supabase.from('promo_codes').insert({
+        code, discount_type: type, discount_value: val,
+        min_order: min, max_uses: max, expires_at: exp
+      });
+
+      if (error) { showToast(error.code === '23505' ? 'Code already exists' : error.message, 'error'); return; }
+
+      document.getElementById('promoModal')?.remove();
+      showToast('Promo code created ✓');
+      await loadPromos();
+    }
+
+    async function toggleActive(id, current) {
+      const { error } = await _supabase.from('promo_codes').update({ is_active: !current }).eq('id', id);
+      if (error) { showToast('Failed: ' + error.message, 'error'); return; }
+      showToast(current ? 'Deactivated' : 'Activated ✓');
+      await loadPromos();
+    }
+
+    async function deletePromo(id, code) {
+      const ok = await adminConfirm(`Delete promo code "${code}"? This cannot be undone.`);
+      if (!ok) return;
+      await _supabase.from('promo_codes').delete().eq('id', id);
+      showToast('Deleted');
+      await loadPromos();
+    }
+
+    function escHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+  </script>
+</body>
+</html>

@@ -82,6 +82,9 @@ function renderSidebar(activePage, role) {
         <a href="orders.html" class="sidebar-link ${activePage === 'orders' ? 'active' : ''}">
           <span>🛒</span> Orders
         </a>
+        <a href="promos.html" class="sidebar-link ${activePage === 'promos' ? 'active' : ''}">
+          <span>🏷️</span> Promo Codes
+        </a>
         <a href="products.html" class="sidebar-link ${activePage === 'products' ? 'active' : ''}">
           <span>🥬</span> Products
         </a>

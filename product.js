@@ -1166,5 +1166,121 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   updateAtcDisplay();
+
+  // Load reviews
+  loadReviews(key);
+
   console.log(`🌿 Fresco — ${PRODUCTS[key].name} page loaded.`);
 });
+
+// ==========================================
+// REVIEWS
+// ==========================================
+async function loadReviews(slug) {
+  const el = document.getElementById('reviews-content');
+  if (!el) return;
+
+  const [{ data: reviews }, { data: { session } }] = await Promise.all([
+    _supabase.from('reviews').select('*').eq('product_slug', slug).order('created_at', { ascending: false }),
+    _supabase.auth.getSession()
+  ]);
+
+  const list = reviews || [];
+  const avgRating = list.length ? (list.reduce((s, r) => s + r.rating, 0) / list.length).toFixed(1) : null;
+  const userId = session?.user?.id;
+  const alreadyReviewed = list.some(r => r.user_id === userId);
+
+  const stars = (n, hl = false) => [1,2,3,4,5].map(i =>
+    `<span style="font-size:${hl?'1.4':'1'}rem;color:${i <= n ? '#f59e0b' : '#e5e7eb'}">★</span>`
+  ).join('');
+
+  el.innerHTML = `
+    ${avgRating ? `
+    <div style="display:flex;align-items:center;gap:16px;background:#fffbeb;border:1.5px solid #fde047;border-radius:16px;padding:16px 20px;margin-bottom:24px">
+      <div style="text-align:center">
+        <div style="font-size:2.2rem;font-weight:800;color:#d97706;font-family:'Outfit',sans-serif">${avgRating}</div>
+        <div style="font-size:.75rem;color:#92400e">${list.length} review${list.length !== 1 ? 's' : ''}</div>
+      </div>
+      <div>${stars(Math.round(Number(avgRating)), true)}</div>
+    </div>` : ''}
+
+    ${session && !alreadyReviewed ? `
+    <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:16px;padding:20px;margin-bottom:24px" id="reviewForm">
+      <div style="font-weight:700;color:#14532d;margin-bottom:12px;font-size:.95rem">Write a Review</div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:.82rem;font-weight:600;color:#374151;margin-bottom:6px">Your Rating *</div>
+        <div id="starPicker" style="display:flex;gap:6px;cursor:pointer">
+          ${[1,2,3,4,5].map(i => `<span data-star="${i}" onclick="pickStar(${i})" style="font-size:1.8rem;color:#e5e7eb;transition:.1s">★</span>`).join('')}
+        </div>
+      </div>
+      <textarea id="reviewComment" placeholder="Share your experience with this vegetable…" style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:.88rem;font-family:'Outfit',sans-serif;resize:vertical;min-height:80px;box-sizing:border-box;outline:none"></textarea>
+      <button onclick="submitReview('${slug}')" style="margin-top:10px;background:#16a34a;color:#fff;border:none;border-radius:999px;padding:10px 24px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:'Outfit',sans-serif">Submit Review</button>
+      <div id="reviewErr" style="margin-top:8px;font-size:.82rem;color:#dc2626;display:none"></div>
+    </div>` : session && alreadyReviewed ? `
+    <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:.85rem;color:#15803d;font-weight:600">
+      ✓ You've already reviewed this product. Thank you!
+    </div>` : `
+    <div style="background:#f9fafb;border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:.85rem;color:#6b7280">
+      <a href="/consumer/login.html" style="color:#16a34a;font-weight:700">Sign in</a> to write a review.
+    </div>`}
+
+    <div id="reviewsList">
+      ${list.length ? list.map(r => `
+        <div style="padding:16px 0;border-bottom:1px solid #f3f4f6">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <div style="width:34px;height:34px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;flex-shrink:0">${(r.user_name||'?')[0].toUpperCase()}</div>
+            <div>
+              <div style="font-weight:700;font-size:.88rem;color:#111827">${escHtmlR(r.user_name || 'Customer')}</div>
+              <div style="font-size:.75rem;color:#9ca3af">${new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>
+            </div>
+            <div style="margin-left:auto">${stars(r.rating)}</div>
+          </div>
+          ${r.comment ? `<p style="font-size:.88rem;color:#374151;line-height:1.7;margin:0 0 0 44px">${escHtmlR(r.comment)}</p>` : ''}
+        </div>`).join('') : '<p style="color:#9ca3af;text-align:center;padding:30px 0;font-size:.9rem">No reviews yet — be the first!</p>'}
+    </div>`;
+
+  window._selectedStar = 0;
+}
+
+window.pickStar = function(n) {
+  window._selectedStar = n;
+  document.querySelectorAll('#starPicker span').forEach(s => {
+    s.style.color = parseInt(s.dataset.star) <= n ? '#f59e0b' : '#e5e7eb';
+  });
+};
+
+window.submitReview = async function(slug) {
+  const rating = window._selectedStar;
+  const comment = (document.getElementById('reviewComment')?.value || '').trim();
+  const errEl = document.getElementById('reviewErr');
+
+  if (!rating) { errEl.style.display = 'block'; errEl.textContent = 'Please select a star rating.'; return; }
+
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) { errEl.style.display = 'block'; errEl.textContent = 'Please sign in first.'; return; }
+
+  const { data: profile } = await _supabase.from('profiles').select('full_name').eq('id', session.user.id).single();
+
+  const { error } = await _supabase.from('reviews').insert({
+    user_id: session.user.id,
+    user_name: profile?.full_name || session.user.email.split('@')[0],
+    product_slug: slug,
+    rating,
+    comment: comment || null
+  });
+
+  if (error) {
+    errEl.style.display = 'block';
+    errEl.textContent = error.code === '23505' ? 'You already reviewed this product.' : 'Failed: ' + error.message;
+    return;
+  }
+
+  document.getElementById('reviewForm').innerHTML = `
+    <div style="text-align:center;padding:16px;color:#15803d;font-weight:700">🎉 Thanks for your review!</div>`;
+  loadReviews(slug);
+};
+
+function escHtmlR(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}

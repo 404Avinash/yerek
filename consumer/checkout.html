@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#16a34a">
+  <link rel="manifest" href="/manifest.json">
   <title>Checkout — Fresco</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
@@ -121,6 +123,10 @@
     let _profile = null;
     let _selectedDate = null;
     let _selectedSlot = null;
+    let _discount = 0;
+    let _appliedPromo = null;
+    let _useLoyalty = false;
+    let _loyaltyDiscount = 0;
 
     const SLOTS = [
       { id: 'morning', icon: '🌅', time: '9:00 – 11:00 AM', label: 'Morning' },
@@ -271,19 +277,47 @@
           </div>
         </div>
 
+        <!-- Promo Code -->
+        <div class="co-card">
+          <div class="co-section-title">🏷️ Promo Code</div>
+          <div style="display:flex;gap:10px">
+            <input type="text" id="promoInput" placeholder="Enter promo code" style="flex:1;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:.88rem;font-family:'Outfit',sans-serif;outline:none;text-transform:uppercase">
+            <button onclick="applyPromo()" style="background:#16a34a;color:#fff;border:none;border-radius:10px;padding:10px 18px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap">Apply</button>
+          </div>
+          <div id="promoMsg" style="margin-top:8px;font-size:.83rem;display:none"></div>
+        </div>
+
+        ${_session && (_profile?.loyalty_points || 0) >= 50 ? `
+        <!-- Loyalty Points -->
+        <div class="co-card">
+          <div class="co-section-title">⭐ Loyalty Points</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#fefce8;border:1.5px solid #fde047;border-radius:12px;padding:12px 16px">
+            <div>
+              <div style="font-weight:700;color:#713f12">You have <span style="font-size:1.1rem;color:#d97706">${_profile.loyalty_points} pts</span></div>
+              <div style="font-size:.78rem;color:#92400e;margin-top:2px">50 pts = ₹5 off</div>
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+              <input type="checkbox" id="loyaltyCheck" onchange="toggleLoyalty(this)" style="width:18px;height:18px;accent-color:#d97706">
+              <span style="font-size:.85rem;font-weight:600;color:#713f12">Use points (−₹${Math.floor((_profile.loyalty_points || 0) / 50) * 5})</span>
+            </label>
+          </div>
+        </div>` : ''}
+
         <!-- Order Summary -->
         <div class="co-card">
           <div class="co-section-title">🧾 Order Summary</div>
           ${orderItems}
           <div class="co-total-row"><span style="color:#6b7280;font-size:.88rem">Packaging</span><span style="color:#16a34a;font-weight:700;font-size:.88rem">FREE</span></div>
-          <div class="co-total-row grand"><span>Total</span><span style="color:#15803d">₹${cartTotal}</span></div>
+          <div class="co-total-row" id="promoDiscountRow" style="display:none"><span style="color:#16a34a;font-size:.88rem">Promo Discount</span><span id="promoDiscountAmt" style="color:#16a34a;font-weight:700;font-size:.88rem"></span></div>
+          <div class="co-total-row" id="loyaltyDiscountRow" style="display:none"><span style="color:#d97706;font-size:.88rem">⭐ Loyalty Discount</span><span id="loyaltyDiscountAmt" style="color:#d97706;font-weight:700;font-size:.88rem"></span></div>
+          <div class="co-total-row grand"><span>Total</span><span style="color:#15803d" id="coFinalTotal">₹${cartTotal}</span></div>
         </div>
 
         <!-- Place Order -->
         <div class="co-card">
           <div id="co-err" class="co-err hidden" style="margin-bottom:14px"></div>
           <button class="co-submit" id="coSubmitBtn" onclick="placeOrder()">
-            ✅ Place Order — ₹${cartTotal}
+            ✅ Place Order — <span id="coSubmitTotal">₹${cartTotal}</span>
           </button>
           <p style="text-align:center;margin-top:12px;font-size:.8rem;color:#9ca3af">
             Pay at the store when you pick up. No advance payment needed.
@@ -292,6 +326,81 @@
 
       // Store dates for select handler
       window._pickupDates = dates;
+    }
+
+    async function applyPromo() {
+      const code = (document.getElementById('promoInput')?.value || '').trim().toUpperCase();
+      const msg = document.getElementById('promoMsg');
+      if (!code) return;
+
+      const cartTotal = getCartTotal();
+      const { data, error } = await _supabase.from('promo_codes')
+        .select('*').eq('code', code).eq('is_active', true).single();
+
+      if (error || !data) {
+        msg.style.display = 'block'; msg.style.color = '#dc2626';
+        msg.textContent = '✕ Invalid or expired promo code.';
+        _discount = 0; _appliedPromo = null;
+        updateTotals(); return;
+      }
+      if (data.min_order && cartTotal < data.min_order) {
+        msg.style.display = 'block'; msg.style.color = '#d97706';
+        msg.textContent = `⚠️ Min order ₹${data.min_order} required for this code.`;
+        _discount = 0; _appliedPromo = null;
+        updateTotals(); return;
+      }
+      if (data.expires_at && new Date(data.expires_at) < new Date()) {
+        msg.style.display = 'block'; msg.style.color = '#dc2626';
+        msg.textContent = '✕ This promo code has expired.';
+        _discount = 0; _appliedPromo = null;
+        updateTotals(); return;
+      }
+      if (data.max_uses !== null && data.uses_count >= data.max_uses) {
+        msg.style.display = 'block'; msg.style.color = '#dc2626';
+        msg.textContent = '✕ This promo code has been fully redeemed.';
+        _discount = 0; _appliedPromo = null;
+        updateTotals(); return;
+      }
+
+      _appliedPromo = data;
+      if (data.discount_type === 'percent') {
+        _discount = Math.round(cartTotal * data.discount_value / 100);
+      } else {
+        _discount = data.discount_value;
+      }
+      _discount = Math.min(_discount, cartTotal);
+
+      msg.style.display = 'block'; msg.style.color = '#16a34a';
+      msg.textContent = `✓ "${code}" applied! You save ₹${_discount}`;
+      updateTotals();
+    }
+
+    function toggleLoyalty(checkbox) {
+      const pts = _profile?.loyalty_points || 0;
+      _loyaltyDiscount = Math.floor(pts / 50) * 5;
+      _useLoyalty = checkbox.checked;
+      updateTotals();
+    }
+
+    function updateTotals() {
+      const base = getCartTotal();
+      const total = Math.max(0, base - _discount - (_useLoyalty ? _loyaltyDiscount : 0));
+
+      const promoRow = document.getElementById('promoDiscountRow');
+      const loyaltyRow = document.getElementById('loyaltyDiscountRow');
+      const finalTotal = document.getElementById('coFinalTotal');
+      const submitTotal = document.getElementById('coSubmitTotal');
+
+      if (promoRow) promoRow.style.display = _discount > 0 ? 'flex' : 'none';
+      const promoAmt = document.getElementById('promoDiscountAmt');
+      if (promoAmt) promoAmt.textContent = `−₹${_discount}`;
+
+      if (loyaltyRow) loyaltyRow.style.display = _useLoyalty ? 'flex' : 'none';
+      const loyaltyAmt = document.getElementById('loyaltyDiscountAmt');
+      if (loyaltyAmt) loyaltyAmt.textContent = `−₹${_loyaltyDiscount}`;
+
+      if (finalTotal) finalTotal.textContent = `₹${total}`;
+      if (submitTotal) submitTotal.textContent = `₹${total}`;
     }
 
     function selectDate(idx, btn) {
@@ -334,7 +443,8 @@
 
       const orderNumber = genOrderNumber();
       const slotInfo = SLOTS.find(s => s.id === _selectedSlot);
-      const total = getCartTotal();
+      const baseTotal = getCartTotal();
+      const total = Math.max(0, baseTotal - _discount - (_useLoyalty ? _loyaltyDiscount : 0));
 
       // Insert order
       const { data: order, error: orderErr } = await _supabase.from('orders').insert({
@@ -353,7 +463,7 @@
       if (orderErr) {
         errEl.textContent = 'Failed to place order: ' + orderErr.message;
         errEl.classList.remove('hidden');
-        btn.disabled = false; btn.textContent = '✅ Place Order — ₹' + total;
+        btn.disabled = false; btn.innerHTML = '✅ Place Order — <span id="coSubmitTotal">₹' + total + '</span>';
         return;
       }
 
@@ -370,8 +480,36 @@
 
       await _supabase.from('order_items').insert(items);
 
+      // Award loyalty points (1 pt per ₹10 spent) + deduct if used
+      if (_session?.user?.id) {
+        const earned = Math.floor(total / 10);
+        const pointsDelta = earned - (_useLoyalty ? (_profile?.loyalty_points || 0) : 0);
+        const newBalance = Math.max(0, (_profile?.loyalty_points || 0) - (_useLoyalty ? _loyaltyDiscount / 5 * 50 : 0) + earned);
+
+        await Promise.all([
+          _supabase.from('profiles').update({ loyalty_points: newBalance }).eq('id', _session.user.id),
+          earned > 0 ? _supabase.from('loyalty_txns').insert({
+            user_id: _session.user.id, points: earned,
+            reason: `Earned on order ${orderNumber}`, order_id: order.id
+          }) : Promise.resolve(),
+          _useLoyalty ? _supabase.from('loyalty_txns').insert({
+            user_id: _session.user.id, points: -Math.round(_loyaltyDiscount / 5 * 50),
+            reason: `Redeemed on order ${orderNumber}`, order_id: order.id
+          }) : Promise.resolve(),
+        ]);
+      }
+
+      // Increment promo uses
+      if (_appliedPromo) {
+        await _supabase.from('promo_codes')
+          .update({ uses_count: (_appliedPromo.uses_count || 0) + 1 })
+          .eq('id', _appliedPromo.id);
+      }
+
       // Clear cart
       clearCart();
+
+      const earnedPts = _session ? Math.floor(total / 10) : 0;
 
       // Show confirmation
       document.getElementById('coMain').innerHTML = `
@@ -384,6 +522,7 @@
             Slot: <strong>${slotInfo.icon} ${slotInfo.time}</strong><br><br>
             We'll start packing your fresh produce. Come to the Fresco store at the scheduled time — it'll be ready and bagged for you.
           </p>
+          ${earnedPts > 0 ? `<div style="background:#fefce8;border:1.5px solid #fde047;border-radius:12px;padding:10px 16px;margin-bottom:16px;font-size:.88rem;color:#713f12;font-weight:600">⭐ You earned ${earnedPts} loyalty points on this order!</div>` : ''}
           <div class="co-confirm-actions">
             <a href="/" class="btn-primary-sm">Back to Home</a>
             ${_session ? `<a href="/consumer/profile.html" class="btn-outline-sm">My Account</a>` : ''}
