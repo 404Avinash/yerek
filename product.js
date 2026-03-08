@@ -571,6 +571,360 @@ const PRODUCTS = {
     farm: { name: 'HP Apple Growers', owner: 'Mohan Thakur', location: 'Shimla, Himachal Pradesh', years: 3, emoji: '🍎', supply: '40%', certified: true },
     related: ['guava', 'pomegranate', 'banana'],
   },
+  // ---- MISSING TUBERS ----
+  yam: {
+    name: 'Yam', aka: 'Suran / Jimikand', emoji: '🍠', category: 'tuber',
+    categoryName: 'Tuber Vegetables',
+    tagline: 'A winter delicacy. Starchy, earthy, and deeply nourishing.',
+    desc: 'Large purple-skinned yam from Mathur Harvest, Aligarh. Harvested at full maturity for maximum starch content. A winter staple used in traditional Indian preparations — from curries to crisps.',
+    freshness: '8.8', status: 'Seasonal', seasonal: true,
+    batch: {
+      harvested: '5 days ago', farm: 'Mathur Harvest', location: 'Aligarh, UP',
+      transit: '11 hrs', arrivedAt: '4 days ago',
+      storage: '13°C · 75% Humidity', batchId: 'FRS-SRN-0303', qty: '50 kg'
+    },
+    nutrition: [
+      { label: 'Calories', value: '118 kcal', per: 'per 100g' },
+      { label: 'Potassium', value: '816mg', per: '23% DV' },
+      { label: 'Vitamin C', value: '17.1mg', per: '19% DV' },
+      { label: 'Vitamin B6', value: '0.3mg', per: '18% DV' },
+      { label: 'Fibre', value: '4.1g', per: '15% DV' },
+      { label: 'Carbohydrates', value: '27.9g', per: 'per 100g' },
+    ],
+    storage: [
+      '🌑 Store in a cool, dark, dry place — not the fridge',
+      '🌡️ Ideal temperature: 10–15°C',
+      '📅 Lasts 2–3 weeks at room temperature',
+      '🚫 Avoid washing before storage — moisture causes rot',
+      '🧤 Raw yam can irritate skin — handle with gloves or oil hands before peeling',
+    ],
+    recipes: [
+      { name: 'Suran Ki Sabzi', time: '30 min', emoji: '🍛', desc: 'Spiced yam curry with tamarind and mustard seeds — a Maharashtrian classic.' },
+      { name: 'Jimikand Fry', time: '25 min', emoji: '🍳', desc: 'Crispy pan-fried yam slices with chilli and coriander.' },
+      { name: 'Yam Chips', time: '20 min', emoji: '🥔', desc: 'Thinly sliced yam tossed in oil and salt, baked until golden and crisp.' },
+    ],
+    farm: { name: 'Mathur Harvest', owner: 'Prem Mathur', location: 'Aligarh, UP', years: 2, emoji: '🌿', supply: '30%', certified: true },
+    related: ['potato', 'sweet-potato', 'colocasia'],
+  },
+
+  colocasia: {
+    name: 'Colocasia', aka: 'Arbi', emoji: '🫙', category: 'tuber',
+    categoryName: 'Tuber Vegetables',
+    tagline: 'Creamy texture when cooked. Cleaned and farm-fresh.',
+    desc: 'Small taro roots from Yadav Tubers, Agra — carefully cleaned and sorted. Colocasia has a uniquely creamy, slightly sticky texture when cooked and is a staple in Bengali and North Indian cuisine.',
+    freshness: '8.9', status: 'Fresh', seasonal: false,
+    batch: {
+      harvested: '3 days ago', farm: 'Yadav Tubers', location: 'Agra, UP',
+      transit: '10 hrs', arrivedAt: '2 days ago',
+      storage: '12°C · 78% Humidity', batchId: 'FRS-ARB-0305', qty: '30 kg'
+    },
+    nutrition: [
+      { label: 'Calories', value: '112 kcal', per: 'per 100g' },
+      { label: 'Carbohydrates', value: '26.5g', per: 'per 100g' },
+      { label: 'Potassium', value: '591mg', per: '17% DV' },
+      { label: 'Vitamin E', value: '2.4mg', per: '16% DV' },
+      { label: 'Magnesium', value: '33mg', per: '8% DV' },
+      { label: 'Fibre', value: '4.1g', per: '15% DV' },
+    ],
+    storage: [
+      '🌑 Store in a cool, dry, dark place — not the refrigerator',
+      '🌡️ Ideal temperature: 10–13°C',
+      '📅 Lasts 1–2 weeks in proper conditions',
+      '🚫 Raw taro can cause skin irritation — cook thoroughly before eating',
+      '💧 Do not store wet or unwashed roots — they rot quickly',
+    ],
+    recipes: [
+      { name: 'Arbi Ki Sabzi', time: '25 min', emoji: '🍛', desc: 'Spiced colocasia curry with amchur and cumin — a North Indian staple.' },
+      { name: 'Arbi Fry', time: '20 min', emoji: '🍳', desc: 'Boiled and pan-fried arbi with carom seeds — crispy outside, soft inside.' },
+      { name: 'Patrode', time: '60 min', emoji: '🌿', desc: 'Colocasia leaves rolled with spiced besan paste and steamed — Coastal classic.' },
+    ],
+    farm: { name: 'Yadav Tubers', owner: 'Santosh Yadav', location: 'Agra, UP', years: 3, emoji: '🥔', supply: '55%', certified: true },
+    related: ['potato', 'yam', 'sweet-potato'],
+  },
+
+  // ---- MISSING LEAFY ----
+  amaranth: {
+    name: 'Amaranth', aka: 'Chaulai', emoji: '🌿', category: 'leafy',
+    categoryName: 'Leafy Vegetables',
+    tagline: 'Ancient grain leaf. Iron-dense. A traditional seasonal treasure.',
+    desc: 'Dark red and green amaranth leaves from Verma Farms, Panipat. One of the most iron-rich leafy greens available, traditionally eaten across India as a cooling summer vegetable.',
+    freshness: '8.9', status: 'Seasonal', seasonal: true,
+    batch: {
+      harvested: 'Yesterday, 5:00 AM', farm: 'Verma Farms', location: 'Panipat, Haryana',
+      transit: '6 hrs', arrivedAt: 'Yesterday 11:00 AM',
+      storage: '4°C · 80% Humidity', batchId: 'FRS-CHL-0307', qty: '12 kg'
+    },
+    nutrition: [
+      { label: 'Calories', value: '23 kcal', per: 'per 100g' },
+      { label: 'Protein', value: '2.5g', per: 'per 100g' },
+      { label: 'Iron', value: '2.3mg', per: '13% DV' },
+      { label: 'Calcium', value: '215mg', per: '22% DV' },
+      { label: 'Vitamin C', value: '43mg', per: '48% DV' },
+      { label: 'Vitamin K', value: '1140µg', per: '950% DV' },
+    ],
+    storage: [
+      '🧊 Refrigerate loosely in a plastic bag',
+      '📅 Best used within 2 days — very delicate',
+      '🌡️ Keep at 3–5°C',
+      '💧 Slightly moist is fine, but not wet',
+      '🍃 Separate leaves from stems before refrigerating',
+    ],
+    recipes: [
+      { name: 'Chaulai Saag', time: '20 min', emoji: '🍛', desc: 'Simple stir-fried amaranth leaves with garlic and dry chilli — served with roti.' },
+      { name: 'Chaulai Dal', time: '25 min', emoji: '🍲', desc: 'Lentil dal cooked with amaranth — nutritious and earthy.' },
+      { name: 'Amaranth Stir Fry', time: '15 min', emoji: '🥬', desc: 'Quick sauté with mustard seeds, turmeric, and coconut.' },
+    ],
+    farm: { name: 'Verma Farms', owner: 'Dinesh Verma', location: 'Panipat, Haryana', years: 1, emoji: '🌱', supply: '22%', certified: false },
+    related: ['spinach', 'fenugreek', 'coriander'],
+  },
+
+  // ---- MISSING ROOT ----
+  turnip: {
+    name: 'Turnip', aka: 'Shalgam', emoji: '🫐', category: 'root',
+    categoryName: 'Root Vegetables',
+    tagline: 'Traditional winter root. Mild, peppery, and deeply versatile.',
+    desc: 'White and purple turnips from Gupta Roots, Rohtak — a traditional winter root vegetable with a mild peppery flavour that mellows when cooked. Both the root and greens are edible and nutritious.',
+    freshness: '8.8', status: 'Seasonal', seasonal: true,
+    batch: {
+      harvested: '4 days ago', farm: 'Gupta Roots', location: 'Rohtak, Haryana',
+      transit: '6 hrs', arrivedAt: '3 days ago',
+      storage: '4°C · 88% Humidity', batchId: 'FRS-SHG-0304', qty: '28 kg'
+    },
+    nutrition: [
+      { label: 'Calories', value: '28 kcal', per: 'per 100g' },
+      { label: 'Vitamin C', value: '21mg', per: '23% DV' },
+      { label: 'Fibre', value: '1.8g', per: '6% DV' },
+      { label: 'Potassium', value: '191mg', per: '5% DV' },
+      { label: 'Folate', value: '15µg', per: '4% DV' },
+      { label: 'Calcium', value: '30mg', per: '3% DV' },
+    ],
+    storage: [
+      '🧊 Remove tops and refrigerate in a bag',
+      '📅 Lasts 1–2 weeks refrigerated',
+      '🌡️ Optimal at 0–4°C',
+      '🍃 Store turnip greens separately — use within 3 days',
+      '💧 Keep slightly moist to avoid drying out',
+    ],
+    recipes: [
+      { name: 'Shalgam Gosht', time: '50 min', emoji: '🍲', desc: 'Slow-cooked mutton with turnips — a Punjabi winter favourite.' },
+      { name: 'Shalgam Saag', time: '25 min', emoji: '🥬', desc: 'Turnip greens cooked with garlic and mustard — simple and satisfying.' },
+      { name: 'Turnip Pickle', time: '10 min', emoji: '🫙', desc: 'Quick-pickled in vinegar with red chilli and black pepper.' },
+    ],
+    farm: { name: 'Gupta Roots', owner: 'Mahesh Gupta', location: 'Rohtak, Haryana', years: 2, emoji: '🌰', supply: '30%', certified: true },
+    related: ['radish', 'carrot', 'beetroot'],
+  },
+
+  // ---- MISSING FRUITING ----
+  peas: {
+    name: 'Peas', aka: 'Matar', emoji: '🫛', category: 'fruiting',
+    categoryName: 'Fruiting Vegetables',
+    tagline: 'Sweet green pods. Hand-picked at peak ripeness.',
+    desc: 'Sweet green peas in the pod from Khatri Gardens, Rewari — a winter seasonal highlight. Hand-picked at the perfect stage when the peas are plump, sweet, and tender. Shelled fresh for maximum flavour.',
+    freshness: '9.3', status: 'Seasonal', seasonal: true,
+    batch: {
+      harvested: 'Today, 4:00 AM', farm: 'Khatri Gardens', location: 'Rewari, Haryana',
+      transit: '7 hrs', arrivedAt: '11:00 AM',
+      storage: '3°C · 92% Humidity', batchId: 'FRS-MTR-0308', qty: '25 kg'
+    },
+    nutrition: [
+      { label: 'Calories', value: '81 kcal', per: 'per 100g' },
+      { label: 'Protein', value: '5.4g', per: 'per 100g' },
+      { label: 'Vitamin C', value: '40mg', per: '44% DV' },
+      { label: 'Vitamin K', value: '24.8µg', per: '21% DV' },
+      { label: 'Fibre', value: '5.7g', per: '20% DV' },
+      { label: 'Folate', value: '65µg', per: '16% DV' },
+    ],
+    storage: [
+      '🧊 Keep pods in the refrigerator in a perforated bag',
+      '📅 Best within 3–4 days of purchase',
+      '🌡️ Store at 0–3°C',
+      '🫛 Shell just before cooking for maximum sweetness',
+      '🔒 Blanch and freeze shelled peas for up to 12 months',
+    ],
+    recipes: [
+      { name: 'Matar Paneer', time: '30 min', emoji: '🍛', desc: 'The iconic peas and cottage cheese curry in spiced tomato gravy.' },
+      { name: 'Matar Pulao', time: '20 min', emoji: '🍚', desc: 'Fragrant basmati rice cooked with fresh green peas and whole spices.' },
+      { name: 'Aloo Matar', time: '25 min', emoji: '🥔', desc: 'Potato and peas curry — a timeless everyday North Indian meal.' },
+    ],
+    farm: { name: 'Khatri Gardens', owner: 'Sunita Khatri', location: 'Rewari, Haryana', years: 1, emoji: '🍆', supply: '25%', certified: false },
+    related: ['tomato', 'capsicum', 'brinjal'],
+  },
+
+  'bitter-gourd': {
+    name: 'Bitter Gourd', aka: 'Karela', emoji: '🥒', category: 'fruiting',
+    categoryName: 'Fruiting Vegetables',
+    tagline: 'Medicinal. Bold. Selected before over-maturity sets in.',
+    desc: 'Fresh ridged bitter gourd from Joshi Polyhouse, Alwar. Selected at exactly the right maturity stage — before the seeds harden and the bitterness becomes overwhelming. Known for regulating blood sugar.',
+    freshness: '8.9', status: 'Seasonal', seasonal: true,
+    batch: {
+      harvested: 'Yesterday', farm: 'Joshi Polyhouse', location: 'Alwar, Rajasthan',
+      transit: '7 hrs', arrivedAt: 'Yesterday 4:00 PM',
+      storage: '10°C · 85% Humidity', batchId: 'FRS-KRL-0307', qty: '18 kg'
+    },
+    nutrition: [
+      { label: 'Calories', value: '17 kcal', per: 'per 100g' },
+      { label: 'Vitamin C', value: '84mg', per: '93% DV' },
+      { label: 'Vitamin A', value: '471IU', per: '9% DV' },
+      { label: 'Iron', value: '0.4mg', per: '2% DV' },
+      { label: 'Charantin', value: 'Present', per: 'blood sugar' },
+      { label: 'Fibre', value: '2.8g', per: '10% DV' },
+    ],
+    storage: [
+      '🧊 Store in fridge in a perforated plastic bag',
+      '📅 Best within 5 days of purchase',
+      '🌡️ Keep at 8–10°C',
+      '🚫 Don\'t wash before storing — speeds spoilage',
+      '🔪 Remove seeds to reduce bitterness when cooking',
+    ],
+    recipes: [
+      { name: 'Karela Sabzi', time: '25 min', emoji: '🍛', desc: 'Stuffed or sliced bitter gourd stir-fried with onions, spices, and jaggery.' },
+      { name: 'Karela Chips', time: '20 min', emoji: '🥒', desc: 'Thinly sliced, salted, and pan-fried until crispy — addictive!' },
+      { name: 'Karela Juice', time: '5 min', emoji: '🥤', desc: 'Fresh bitter gourd juice with lemon and ginger — traditional morning health drink.' },
+    ],
+    farm: { name: 'Joshi Polyhouse', owner: 'Deepak Joshi', location: 'Alwar, Rajasthan', years: 2, emoji: '🫑', supply: '35%', certified: true },
+    related: ['tomato', 'brinjal', 'capsicum'],
+  },
+
+  // ---- MISSING FRUITS ----
+  orange: {
+    name: 'Orange', aka: 'Santra', emoji: '🍊', category: 'fruits',
+    categoryName: 'Fruits',
+    tagline: 'Nagpur mandarins. Thin-skinned, seedless, sweet.',
+    desc: 'Juicy Nagpur-style mandarin oranges from Coorg Estates — thin-skinned, seedless, and naturally sweet with a clean acidic balance. A Vitamin C powerhouse that\'s in peak season right now.',
+    freshness: '9.2', status: 'Seasonal', seasonal: true,
+    batch: {
+      harvested: '3 days ago', farm: 'Coorg Estates', location: 'Nagpur, Maharashtra',
+      transit: '16 hrs', arrivedAt: '2 days ago',
+      storage: '8°C · 85% Humidity', batchId: 'FRS-SNT-0305', qty: '60 kg'
+    },
+    nutrition: [
+      { label: 'Calories', value: '47 kcal', per: 'per 100g' },
+      { label: 'Vitamin C', value: '53.2mg', per: '59% DV' },
+      { label: 'Folate', value: '30µg', per: '8% DV' },
+      { label: 'Potassium', value: '181mg', per: '5% DV' },
+      { label: 'Thiamine', value: '0.1mg', per: '7% DV' },
+      { label: 'Fibre', value: '2.4g', per: '9% DV' },
+    ],
+    storage: [
+      '🌡️ Room temperature for 1 week or refrigerate for up to 3 weeks',
+      '🧊 Refrigerate in the crisper for extended shelf life',
+      '🚫 Don\'t store in airtight bags — need airflow',
+      '📅 Best within 2 weeks of purchase',
+      '🍊 Zest the peel before juicing — great for baking!',
+    ],
+    recipes: [
+      { name: 'Santra Sharbat', time: '5 min', emoji: '🥤', desc: 'Fresh-squeezed orange juice with black salt and roasted cumin.' },
+      { name: 'Orange Halwa', time: '30 min', emoji: '🍮', desc: 'Semolina halwa infused with fresh orange juice — bright and citrusy.' },
+      { name: 'Orange Raita', time: '10 min', emoji: '🥣', desc: 'Chilled yogurt with orange segments, cumin and mint — refreshing summer side.' },
+    ],
+    farm: { name: 'Coorg Estates', owner: 'Anand Shetty', location: 'Nagpur, Maharashtra', years: 1, emoji: '🍊', supply: '25%', certified: true },
+    related: ['banana', 'guava', 'pomegranate', 'apple'],
+  },
+
+  papaya: {
+    name: 'Papaya', aka: 'Papita', emoji: '🍈', category: 'fruits',
+    categoryName: 'Fruits',
+    tagline: 'Semi-ripe. High enzyme content. Sourced from southern farms.',
+    desc: 'Yellow-fleshed papayas from Coorg Estates, Karnataka — sourced semi-ripe so they reach perfect sweetness at your home within 1–2 days. Rich in papain enzyme that aids digestion.',
+    freshness: '9.0', status: 'Fresh', seasonal: false,
+    batch: {
+      harvested: '4 days ago', farm: 'Coorg Estates', location: 'Coorg, Karnataka',
+      transit: '20 hrs', arrivedAt: '3 days ago',
+      storage: '13°C · 75% Humidity', batchId: 'FRS-PPT-0304', qty: '40 kg'
+    },
+    nutrition: [
+      { label: 'Calories', value: '43 kcal', per: 'per 100g' },
+      { label: 'Vitamin C', value: '61.8mg', per: '69% DV' },
+      { label: 'Vitamin A', value: '47µg', per: '5% DV' },
+      { label: 'Folate', value: '37µg', per: '9% DV' },
+      { label: 'Papain', value: 'High', per: 'digestive enzyme' },
+      { label: 'Potassium', value: '182mg', per: '5% DV' },
+    ],
+    storage: [
+      '🌡️ Store at room temp until ripe (skin turns yellow)',
+      '🧊 Once ripe, refrigerate for up to 5 days',
+      '📅 Unripe papaya ripens in 2–5 days at room temp',
+      '🔪 Cut papaya must be wrapped and refrigerated',
+      '🌑 Keep unripe papaya away from direct sunlight',
+    ],
+    recipes: [
+      { name: 'Raw Papaya Sabzi', time: '20 min', emoji: '🍛', desc: 'Grated raw papaya stir-fried with mustard seeds and curry leaves — South Indian style.' },
+      { name: 'Papaya Salad', time: '10 min', emoji: '🥗', desc: 'Ripe papaya with chaat masala, lemon, and coriander — refreshing and digestive.' },
+      { name: 'Papaya Smoothie', time: '5 min', emoji: '🥤', desc: 'Blended ripe papaya with yogurt, honey, and cardamom.' },
+    ],
+    farm: { name: 'Coorg Estates', owner: 'Anand Shetty', location: 'Coorg, Karnataka', years: 1, emoji: '🍊', supply: '25%', certified: true },
+    related: ['banana', 'guava', 'apple'],
+  },
+
+  guava: {
+    name: 'Guava', aka: 'Amrood', emoji: '🍐', category: 'fruits',
+    categoryName: 'Fruits',
+    tagline: 'Allahabad belt guavas. Pink and white. Crunchy or soft-ripe.',
+    desc: 'Pink and white guavas from the famous Allahabad belt — the most prized guava-growing region in India. Available in crunchy (underripe) and soft-ripe varieties. Exceptionally high in Vitamin C.',
+    freshness: '9.3', status: 'Fresh', seasonal: false,
+    batch: {
+      harvested: '2 days ago', farm: 'Nashik Orchards', location: 'Allahabad, UP',
+      transit: '14 hrs', arrivedAt: 'Yesterday',
+      storage: '8°C · 88% Humidity', batchId: 'FRS-AMR-0306', qty: '35 kg'
+    },
+    nutrition: [
+      { label: 'Calories', value: '68 kcal', per: 'per 100g' },
+      { label: 'Vitamin C', value: '228mg', per: '253% DV' },
+      { label: 'Fibre', value: '5.4g', per: '19% DV' },
+      { label: 'Folate', value: '49µg', per: '12% DV' },
+      { label: 'Potassium', value: '417mg', per: '12% DV' },
+      { label: 'Lycopene', value: 'High', per: '(pink variety)' },
+    ],
+    storage: [
+      '🧊 Store ripe guavas in the refrigerator',
+      '🌡️ Unripe guavas ripen best at 20–25°C room temp',
+      '📅 Ripe guavas last 2–4 days in the fridge',
+      '🚫 Don\'t stack — bruises quickly',
+      '🍃 Guava leaves make excellent herbal tea!',
+    ],
+    recipes: [
+      { name: 'Amrood Ki Chaat', time: '10 min', emoji: '🥗', desc: 'Guava with black salt, red chilli powder, and lemon — a classic street snack.' },
+      { name: 'Guava Juice', time: '5 min', emoji: '🥤', desc: 'Blended guava with ginger water and kala namak — refreshing and digestive.' },
+      { name: 'Guava Jelly', time: '40 min', emoji: '🫙', desc: 'Homemade guava jelly set with lemon juice — spread on roti or bread.' },
+    ],
+    farm: { name: 'Nashik Orchards', owner: 'Vijay Patil', location: 'Allahabad, UP', years: 2, emoji: '🍇', supply: '35%', certified: true },
+    related: ['banana', 'papaya', 'orange', 'apple'],
+  },
+
+  pomegranate: {
+    name: 'Pomegranate', aka: 'Anar', emoji: '🍎', category: 'fruits',
+    categoryName: 'Fruits',
+    tagline: 'Bhagwa variety. Deep red arils. Naturally sweet with low acidity.',
+    desc: 'Bhagwa pomegranates from Solapur farms, Maharashtra — India\'s most prized pomegranate variety. Deep ruby-red arils with natural sweetness and low acidity. Rich in antioxidants and heart-healthy polyphenols.',
+    freshness: '9.1', status: 'Seasonal', seasonal: true,
+    batch: {
+      harvested: '5 days ago', farm: 'Coorg Estates', location: 'Solapur, Maharashtra',
+      transit: '18 hrs', arrivedAt: '4 days ago',
+      storage: '5°C · 90% Humidity', batchId: 'FRS-ANR-0303', qty: '45 kg'
+    },
+    nutrition: [
+      { label: 'Calories', value: '83 kcal', per: 'per 100g' },
+      { label: 'Vitamin C', value: '10.2mg', per: '11% DV' },
+      { label: 'Vitamin K', value: '16.4µg', per: '14% DV' },
+      { label: 'Folate', value: '38µg', per: '10% DV' },
+      { label: 'Potassium', value: '236mg', per: '7% DV' },
+      { label: 'Punicalagins', value: 'High', per: 'powerful antioxidant' },
+    ],
+    storage: [
+      '🧊 Refrigerate whole pomegranates for up to 2 months',
+      '🌡️ Store at 5–8°C',
+      '📅 Arils (seeds) store for 5 days in airtight container',
+      '🔒 Whole fruit keeps far longer than seeded',
+      '🍎 Tap the back of a half-pomegranate to release seeds quickly!',
+    ],
+    recipes: [
+      { name: 'Anar Ki Chaat', time: '10 min', emoji: '🥗', desc: 'Pomegranate arils with chaat masala, roasted cumin, and coriander — simple and stunning.' },
+      { name: 'Pomegranate Raita', time: '10 min', emoji: '🥣', desc: 'Thick yogurt with ruby arils and mint — beautiful alongside biryani.' },
+      { name: 'Anar Juice', time: '5 min', emoji: '🥤', desc: 'Fresh-pressed pomegranate juice — no sugar needed.' },
+    ],
+    farm: { name: 'Coorg Estates', owner: 'Anand Shetty', location: 'Solapur, Maharashtra', years: 1, emoji: '🍊', supply: '25%', certified: true },
+    related: ['apple', 'guava', 'orange'],
+  },
 };
 
 // ==========================================
@@ -592,12 +946,12 @@ function initReveal() {
 }
 
 // ==========================================
-// GET ITEM KEY FROM URL
+// GET ITEM KEY FROM URL — returns null if not found (no silent fallback)
 // ==========================================
 function getItemKey() {
   const params = new URLSearchParams(window.location.search);
-  const key = params.get('item') || 'tomato';
-  return PRODUCTS[key] ? key : 'tomato';
+  const key = params.get('item') || '';
+  return (key && PRODUCTS[key]) ? key : null;
 }
 
 // ==========================================
@@ -732,6 +1086,26 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   const key = getItemKey();
+  if (!key) {
+    // Product not found — show a helpful error state
+    document.body.innerHTML = `
+      <nav id="navbar" class="scrolled" style="position:fixed;top:0;left:0;right:0;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;padding:0 40px;height:68px;z-index:1000;">
+        <a href="index.html" style="font-family:Outfit,sans-serif;font-weight:800;font-size:1.2rem;color:#166534;text-decoration:none;">🌿 Fresco</a>
+      </nav>
+      <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Outfit,sans-serif;padding:80px 24px 0;text-align:center;">
+        <div style="font-size:4rem;margin-bottom:16px;">🥬</div>
+        <h1 style="font-size:1.8rem;font-weight:700;color:#111827;margin-bottom:8px;">Product not found</h1>
+        <p style="color:#6b7280;max-width:400px;line-height:1.7;margin-bottom:32px;">
+          We couldn't find this vegetable in our store. It may have been removed, misspelled, or is not yet available.
+        </p>
+        <a href="index.html#categories"
+           style="background:#16a34a;color:#fff;padding:12px 28px;border-radius:99px;text-decoration:none;font-weight:600;font-size:.9rem;">
+          ← Back to Store
+        </a>
+      </div>
+    `;
+    return;
+  }
   render(key);
   initReveal();
   initQrAnimation();
