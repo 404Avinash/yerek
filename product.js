@@ -1082,9 +1082,13 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 });
 
 // ==========================================
-// INIT
+// INIT — only run on product.html
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
+  // Guard: only run product-page logic when we're actually on product.html
+  if (!window.location.pathname.includes('product.html') &&
+      !window.location.pathname.endsWith('/product')) return;
+
   const key = getItemKey();
   if (!key) {
     // Product not found — show a helpful error state

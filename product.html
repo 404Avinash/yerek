@@ -416,11 +416,11 @@
     </div>
   </footer>
 
-  <script src="product.js"></script>
+  <script src="product.js?v=2"></script>
   <script>
     // Wire QR panel from product data after render
     document.addEventListener('DOMContentLoaded', () => {
-      const key = new URLSearchParams(window.location.search).get('item') || 'tomato';
+      const key = new URLSearchParams(window.location.search).get('item');
       if (typeof PRODUCTS !== 'undefined' && PRODUCTS[key]) {
         const p = PRODUCTS[key];
         const qrEmoji = document.getElementById('qr-emoji');
