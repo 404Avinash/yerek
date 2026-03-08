@@ -748,7 +748,170 @@
   #navbar .cat-breadcrumb { display: none; }
 }
 @media (max-width: 480px) {
-  .produce-grid { grid-template-columns: 1fr; }
+  .produce-grid { grid-template-columns: repeat(2, 1fr); }
   .cat-hero-card-grid { grid-template-columns: repeat(2, 1fr); }
   .cat-hero-meta { gap: 8px; }
 }
+
+/* ==========================================
+   ZEPTO/BLINKIT-STYLE ENHANCEMENTS
+   ========================================== */
+
+/* Sort select in filter row */
+.produce-sort-select {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: .78rem;
+  font-weight: 600;
+  color: #374151;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  outline: none;
+  transition: .18s;
+  margin-left: 4px;
+}
+.produce-sort-select:hover { border-color: #16a34a; color: #16a34a; }
+
+/* Popular badge on card image */
+.pc-popular-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #fff7ed;
+  border: 1.5px solid #fed7aa;
+  color: #c2410c;
+  font-size: .68rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: 'Outfit', sans-serif;
+  z-index: 2;
+}
+
+/* Discount badge on card image */
+.pc-discount-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #16a34a;
+  color: #fff;
+  font-size: .68rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: 'Outfit', sans-serif;
+  z-index: 2;
+}
+
+/* ADD button — Blinkit green pill */
+.pc-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff;
+  color: #16a34a;
+  border: 2px solid #16a34a;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: .82rem;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  transition: .15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.pc-add-btn:hover {
+  background: #16a34a;
+  color: #fff;
+}
+.pc-add-btn:active { transform: scale(.95); }
+
+/* Inline qty widget */
+.pc-qty-widget {
+  display: inline-flex;
+  align-items: center;
+  background: #16a34a;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.pc-qty-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 6px 10px;
+  line-height: 1;
+  transition: background .12s;
+  font-family: 'Outfit', sans-serif;
+}
+.pc-qty-btn:hover { background: rgba(0,0,0,.12); }
+.pc-qty-val {
+  font-size: .8rem;
+  font-weight: 700;
+  color: #fff;
+  min-width: 42px;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Floating cart bottom bar */
+.cat-cart-float-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120px);
+  background: #14532d;
+  color: #fff;
+  border-radius: 16px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-width: 320px;
+  max-width: 500px;
+  width: calc(100% - 48px);
+  box-shadow: 0 8px 32px rgba(20,83,45,.35);
+  z-index: 999;
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.cat-cart-float-bar.visible {
+  transform: translateX(-50%) translateY(0);
+}
+.cat-cart-float-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: .88rem;
+  font-weight: 600;
+  opacity: .9;
+}
+.cat-cart-float-icon { font-size: 1.2rem; }
+.cat-cart-float-cta {
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 18px;
+  font-size: .88rem;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .15s;
+}
+.cat-cart-float-cta:hover { background: #15803d; }
+
+@media (max-width: 480px) {
+  .produce-sort-select { font-size: .72rem; padding: 5px 10px; }
+  .cat-cart-float-bar { min-width: unset; }
+  .pc-qty-btn { padding: 5px 8px; }
+}
+

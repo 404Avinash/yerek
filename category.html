@@ -82,6 +82,12 @@
           <button class="filter-btn active" data-filter="all">All</button>
           <button class="filter-btn" data-filter="fresh">Fresh Today</button>
           <button class="filter-btn" data-filter="seasonal">Seasonal</button>
+          <select id="produceSort" class="produce-sort-select" title="Sort by">
+            <option value="default">🔽 Sort</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="freshness">Freshness Rating</option>
+          </select>
         </div>
       </div>
       <div class="produce-grid" id="produce-grid">
@@ -293,6 +299,17 @@
       </div>
     </div>
   </footer>
+
+  <!-- FLOATING CART BAR -->
+  <div id="catCartFloatBar" class="cat-cart-float-bar">
+    <div class="cat-cart-float-left">
+      <span class="cat-cart-float-icon">🛒</span>
+      <span id="catCartFloatCount">1 item</span>
+    </div>
+    <a href="/consumer/cart.html" class="cat-cart-float-cta">
+      View Cart &nbsp;&middot;&nbsp; <span id="catCartFloatTotal">₹0</span> &nbsp;→
+    </a>
+  </div>
 
   <script src="/js/cart.js"></script>
   <script src="category.js?v=2"></script>

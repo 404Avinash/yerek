@@ -36,12 +36,12 @@ const CATEGORIES = {
       { name: 'Verma Farms', location: 'Panipat, Haryana', emoji: '🌱', pct: '22%', years: '1 yr' },
     ],
     produce: [
-      { name: 'Spinach', aka: 'Palak', emoji: '🥬', desc: 'Iron-rich dark leafy greens, freshly harvested and packed with nutrients ready for your kitchen.', freshness: '9.6', origin: 'Sonipat', tag: 'fresh', available: true, price: 40 },
-      { name: 'Coriander', aka: 'Dhaniya', emoji: '🌿', desc: 'Aromatic herb bundles, sourced same-day from partner farms. Bright, fragrant and flavour-packed.', freshness: '9.4', origin: 'Karnal', tag: 'fresh', available: true, price: 60 },
-      { name: 'Fenugreek', aka: 'Methi', emoji: '🌱', desc: 'Slightly bitter, powerfully nutritious. A winter staple picked at the ideal growth stage.', freshness: '9.1', origin: 'Panipat', tag: 'seasonal', available: true, price: 50 },
-      { name: 'Lettuce', aka: 'Salad Patta', emoji: '🥗', desc: 'Crisp iceberg and romaine lettuce head varieties, grown under controlled greenhouse conditions.', freshness: '9.3', origin: 'Sonipat', tag: 'fresh', available: true, price: 80 },
-      { name: 'Mint', aka: 'Pudina', emoji: '🌿', desc: 'Cool, refreshing mint leaves. Freshly cut and bundled — perfect for chutneys, teas, and garnishes.', freshness: '9.5', origin: 'Karnal', tag: 'fresh', available: true, price: 70 },
-      { name: 'Amaranth', aka: 'Chaulai', emoji: '🌿', desc: 'Traditional iron-rich green, seasonal specialty from our long-term farm partners in Haryana.', freshness: '8.9', origin: 'Panipat', tag: 'seasonal', available: true, price: 50 },
+      { name: 'Spinach', aka: 'Palak', emoji: '🥬', desc: 'Iron-rich dark leafy greens, freshly harvested and packed with nutrients ready for your kitchen.', freshness: '9.6', origin: 'Sonipat', tag: 'fresh', available: true, price: 40, mrp: 55, popular: true },
+      { name: 'Coriander', aka: 'Dhaniya', emoji: '🌿', desc: 'Aromatic herb bundles, sourced same-day from partner farms. Bright, fragrant and flavour-packed.', freshness: '9.4', origin: 'Karnal', tag: 'fresh', available: true, price: 60, mrp: 75, popular: true },
+      { name: 'Fenugreek', aka: 'Methi', emoji: '🌱', desc: 'Slightly bitter, powerfully nutritious. A winter staple picked at the ideal growth stage.', freshness: '9.1', origin: 'Panipat', tag: 'seasonal', available: true, price: 50, mrp: 65 },
+      { name: 'Lettuce', aka: 'Salad Patta', emoji: '🥗', desc: 'Crisp iceberg and romaine lettuce head varieties, grown under controlled greenhouse conditions.', freshness: '9.3', origin: 'Sonipat', tag: 'fresh', available: true, price: 80, mrp: 100 },
+      { name: 'Mint', aka: 'Pudina', emoji: '🌿', desc: 'Cool, refreshing mint leaves. Freshly cut and bundled — perfect for chutneys, teas, and garnishes.', freshness: '9.5', origin: 'Karnal', tag: 'fresh', available: true, price: 70, mrp: 90, popular: true },
+      { name: 'Amaranth', aka: 'Chaulai', emoji: '🌿', desc: 'Traditional iron-rich green, seasonal specialty from our long-term farm partners in Haryana.', freshness: '8.9', origin: 'Panipat', tag: 'seasonal', available: true, price: 50, mrp: 60 },
     ],
   },
 
@@ -74,10 +74,10 @@ const CATEGORIES = {
       { name: 'Singh\'s Earth Farm', location: 'Hisar, Haryana', emoji: '🥔', pct: '20%', years: '1 yr' },
     ],
     produce: [
-      { name: 'Carrot', aka: 'Gajar', emoji: '🥕', desc: 'Vibrant orange carrots rich in beta-carotene. Grown in sandy loam soil for natural sweetness.', freshness: '9.3', origin: 'Sonipat', tag: 'fresh', available: true, price: 40 },
-      { name: 'Radish', aka: 'Mooli', emoji: '🫚', desc: 'Crisp white radish, a winter favourite. Harvested at peak size for the right balance of pungency.', freshness: '9.0', origin: 'Rohtak', tag: 'seasonal', available: true, price: 30 },
-      { name: 'Beetroot', aka: 'Chukandar', emoji: '🟣', desc: 'Deep red beetroot packed with antioxidants. Earthy and sweet — great for salads and juicing.', freshness: '9.1', origin: 'Hisar', tag: 'fresh', available: true, price: 50 },
-      { name: 'Turnip', aka: 'Shalgam', emoji: '🫐', desc: 'White and purple turnips, a traditional winter root vegetable with mild peppery flavour.', freshness: '8.8', origin: 'Rohtak', tag: 'seasonal', available: true, price: 35 },
+      { name: 'Carrot', aka: 'Gajar', emoji: '🥕', desc: 'Vibrant orange carrots rich in beta-carotene. Grown in sandy loam soil for natural sweetness.', freshness: '9.3', origin: 'Sonipat', tag: 'fresh', available: true, price: 40, mrp: 55, popular: true },
+      { name: 'Radish', aka: 'Mooli', emoji: '🫚', desc: 'Crisp white radish, a winter favourite. Harvested at peak size for the right balance of pungency.', freshness: '9.0', origin: 'Rohtak', tag: 'seasonal', available: true, price: 30, mrp: 40 },
+      { name: 'Beetroot', aka: 'Chukandar', emoji: '🟣', desc: 'Deep red beetroot packed with antioxidants. Earthy and sweet — great for salads and juicing.', freshness: '9.1', origin: 'Hisar', tag: 'fresh', available: true, price: 50, mrp: 65 },
+      { name: 'Turnip', aka: 'Shalgam', emoji: '🫐', desc: 'White and purple turnips, a traditional winter root vegetable with mild peppery flavour.', freshness: '8.8', origin: 'Rohtak', tag: 'seasonal', available: true, price: 35, mrp: 45 },
     ],
   },
 
@@ -110,10 +110,10 @@ const CATEGORIES = {
       { name: 'Narmada Farms', location: 'Gwalior, MP', emoji: '🥕', pct: '15%', years: '1 yr' },
     ],
     produce: [
-      { name: 'Potato', aka: 'Aloo', emoji: '🥔', desc: 'The everyday essential. Freshly washed potatoes from Agra\'s famous tuber belt, available in all sizes.', freshness: '9.0', origin: 'Agra, UP', tag: 'fresh', available: true, price: 25 },
-      { name: 'Sweet Potato', aka: 'Shakarkandi', emoji: '🍠', desc: 'Naturally sweet, fibre-rich sweet potatoes. A nutritious seasonal alternative perfect for roasting.', freshness: '9.2', origin: 'Gwalior, MP', tag: 'seasonal', available: true, price: 45 },
-      { name: 'Yam', aka: 'Suran / Jimikand', emoji: '🍠', desc: 'Large purple yam with starchy texture. A winter delicacy used in traditional Indian preparations.', freshness: '8.8', origin: 'Aligarh, UP', tag: 'seasonal', available: true, price: 55 },
-      { name: 'Colocasia', aka: 'Arbi', emoji: '🫙', desc: 'Small taro roots with a creamy texture when cooked. Farm-fresh and cleaned before stocking.', freshness: '8.9', origin: 'Agra, UP', tag: 'fresh', available: true, price: 60 },
+      { name: 'Potato', aka: 'Aloo', emoji: '🥔', desc: 'The everyday essential. Freshly washed potatoes from Agra\'s famous tuber belt, available in all sizes.', freshness: '9.0', origin: 'Agra, UP', tag: 'fresh', available: true, price: 25, mrp: 35, popular: true },
+      { name: 'Sweet Potato', aka: 'Shakarkandi', emoji: '🍠', desc: 'Naturally sweet, fibre-rich sweet potatoes. A nutritious seasonal alternative perfect for roasting.', freshness: '9.2', origin: 'Gwalior, MP', tag: 'seasonal', available: true, price: 45, mrp: 60 },
+      { name: 'Yam', aka: 'Suran / Jimikand', emoji: '🍠', desc: 'Large purple yam with starchy texture. A winter delicacy used in traditional Indian preparations.', freshness: '8.8', origin: 'Aligarh, UP', tag: 'seasonal', available: true, price: 55, mrp: 70 },
+      { name: 'Colocasia', aka: 'Arbi', emoji: '🫙', desc: 'Small taro roots with a creamy texture when cooked. Farm-fresh and cleaned before stocking.', freshness: '8.9', origin: 'Agra, UP', tag: 'fresh', available: true, price: 60, mrp: 75 },
     ],
   },
 
@@ -146,12 +146,12 @@ const CATEGORIES = {
       { name: 'Khatri Gardens', location: 'Rewari, Haryana', emoji: '🍆', pct: '25%', years: '1 yr' },
     ],
     produce: [
-      { name: 'Tomato', aka: 'Tamatar', emoji: '🍅', desc: 'Plump, vine-ripened tomatoes from Ramesh Farm, Sonipat. Bright red, firm and full of natural umami.', freshness: '9.1', origin: 'Sonipat', tag: 'fresh', available: true, price: 35 },
-      { name: 'Capsicum', aka: 'Shimla Mirch', emoji: '🫑', desc: 'Green, red, and yellow bell peppers from polyhouse farms in Alwar. Crisp, sweet and pesticide-tested.', freshness: '9.4', origin: 'Alwar', tag: 'fresh', available: true, price: 80 },
-      { name: 'Brinjal', aka: 'Baingan', emoji: '🍆', desc: 'Glossy purple brinjal in standard and baby varieties. Grown without excessive irrigation for firm texture.', freshness: '9.0', origin: 'Rewari', tag: 'fresh', available: true, price: 40 },
-      { name: 'Chilly', aka: 'Hari Mirch', emoji: '🌶️', desc: 'Fresh green chillies — mild to hot varieties available. Sourced daily to retain the essential oils and heat.', freshness: '9.5', origin: 'Sonipat', tag: 'fresh', available: true, price: 90 },
-      { name: 'Peas', aka: 'Matar', emoji: '🫛', desc: 'Sweet green peas, a winter seasonal highlight. Hand-picked pods from open field farms in Haryana.', freshness: '9.3', origin: 'Rewari', tag: 'seasonal', available: true, price: 70 },
-      { name: 'Bitter Gourd', aka: 'Karela', emoji: '🥒', desc: 'Fresh bitter gourd with characteristic ridges. Selected at the right stage before over-maturity sets in.', freshness: '8.9', origin: 'Alwar', tag: 'seasonal', available: true, price: 50 },
+      { name: 'Tomato', aka: 'Tamatar', emoji: '🍅', desc: 'Plump, vine-ripened tomatoes from Ramesh Farm, Sonipat. Bright red, firm and full of natural umami.', freshness: '9.1', origin: 'Sonipat', tag: 'fresh', available: true, price: 35, mrp: 50, popular: true },
+      { name: 'Capsicum', aka: 'Shimla Mirch', emoji: '🫑', desc: 'Green, red, and yellow bell peppers from polyhouse farms in Alwar. Crisp, sweet and pesticide-tested.', freshness: '9.4', origin: 'Alwar', tag: 'fresh', available: true, price: 80, mrp: 100, popular: true },
+      { name: 'Brinjal', aka: 'Baingan', emoji: '🍆', desc: 'Glossy purple brinjal in standard and baby varieties. Grown without excessive irrigation for firm texture.', freshness: '9.0', origin: 'Rewari', tag: 'fresh', available: true, price: 40, mrp: 55 },
+      { name: 'Chilly', aka: 'Hari Mirch', emoji: '🌶️', desc: 'Fresh green chillies — mild to hot varieties available. Sourced daily to retain the essential oils and heat.', freshness: '9.5', origin: 'Sonipat', tag: 'fresh', available: true, price: 90, mrp: 110 },
+      { name: 'Peas', aka: 'Matar', emoji: '🫛', desc: 'Sweet green peas, a winter seasonal highlight. Hand-picked pods from open field farms in Haryana.', freshness: '9.3', origin: 'Rewari', tag: 'seasonal', available: true, price: 70, mrp: 90 },
+      { name: 'Bitter Gourd', aka: 'Karela', emoji: '🥒', desc: 'Fresh bitter gourd with characteristic ridges. Selected at the right stage before over-maturity sets in.', freshness: '8.9', origin: 'Alwar', tag: 'seasonal', available: true, price: 50, mrp: 65 },
     ],
   },
 
@@ -184,12 +184,12 @@ const CATEGORIES = {
       { name: 'Coorg Estates', location: 'Coorg, Karnataka', emoji: '🍊', pct: '25%', years: '1 yr' },
     ],
     produce: [
-      { name: 'Banana', aka: 'Kela', emoji: '🍌', desc: 'Robusta and Elaichi banana varieties from Maharashtra. Available at various ripeness stages to suit your timing.', freshness: '9.1', origin: 'Nashik', tag: 'fresh', available: true, price: 50 },
-      { name: 'Apple', aka: 'Seb', emoji: '🍎', desc: 'Crisp Himachali apples from Shimla at peak seasonal harvest. Royal Delicious and Fuji varieties available.', freshness: '9.4', origin: 'Shimla', tag: 'seasonal', available: true, price: 150 },
-      { name: 'Orange', aka: 'Santra', emoji: '🍊', desc: 'Juicy Nagpur-style mandarins from partner orchards in Vidarbha. Thin-skinned, seedless and sweet.', freshness: '9.2', origin: 'Nagpur', tag: 'seasonal', available: true, price: 80 },
-      { name: 'Papaya', aka: 'Papita', emoji: '🍈', desc: 'Semi-ripe papayas sourced from southern farm partners. Yellow-fleshed varieties with high enzyme content.', freshness: '9.0', origin: 'Karnataka', tag: 'fresh', available: true, price: 45 },
-      { name: 'Guava', aka: 'Amrood', emoji: '🍐', desc: 'Pink and white guavas from Allahabad belt. Available in crunchy and soft-ripe options.', freshness: '9.3', origin: 'Allahabad, UP', tag: 'fresh', available: true, price: 60 },
-      { name: 'Pomegranate', aka: 'Anar', emoji: '🍎', desc: 'Bhagwa pomegranates — deep red arils, naturally sweet with low acidity. Sourced from Solapur farms.', freshness: '9.1', origin: 'Solapur, MH', tag: 'seasonal', available: true, price: 120 },
+      { name: 'Banana', aka: 'Kela', emoji: '🍌', desc: 'Robusta and Elaichi banana varieties from Maharashtra. Available at various ripeness stages to suit your timing.', freshness: '9.1', origin: 'Nashik', tag: 'fresh', available: true, price: 50, mrp: 65 },
+      { name: 'Apple', aka: 'Seb', emoji: '🍎', desc: 'Crisp Himachali apples from Shimla at peak seasonal harvest. Royal Delicious and Fuji varieties available.', freshness: '9.4', origin: 'Shimla', tag: 'seasonal', available: true, price: 150, mrp: 200, popular: true },
+      { name: 'Orange', aka: 'Santra', emoji: '🍊', desc: 'Juicy Nagpur-style mandarins from partner orchards in Vidarbha. Thin-skinned, seedless and sweet.', freshness: '9.2', origin: 'Nagpur', tag: 'seasonal', available: true, price: 80, mrp: 100 },
+      { name: 'Papaya', aka: 'Papita', emoji: '🍈', desc: 'Semi-ripe papayas sourced from southern farm partners. Yellow-fleshed varieties with high enzyme content.', freshness: '9.0', origin: 'Karnataka', tag: 'fresh', available: true, price: 45, mrp: 60 },
+      { name: 'Guava', aka: 'Amrood', emoji: '🍐', desc: 'Pink and white guavas from Allahabad belt. Available in crunchy and soft-ripe options.', freshness: '9.3', origin: 'Allahabad, UP', tag: 'fresh', available: true, price: 60, mrp: 80, popular: true },
+      { name: 'Pomegranate', aka: 'Anar', emoji: '🍎', desc: 'Bhagwa pomegranates — deep red arils, naturally sweet with low acidity. Sourced from Solapur farms.', freshness: '9.1', origin: 'Solapur, MH', tag: 'seasonal', available: true, price: 120, mrp: 160 },
     ],
   },
 };
@@ -327,37 +327,77 @@ function render(key) {
   }).join('');
 
   // Render produce grid
-  renderProduceGrid(key, 'all');
+  renderProduceGrid(key, 'all', 'default');
+  updateCartFloatBar();
 
   // Filter buttons
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', function () {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       this.classList.add('active');
-      renderProduceGrid(key, this.dataset.filter);
+      renderProduceGrid(key, this.dataset.filter, _currentSort);
     });
   });
+
+  // Sort dropdown
+  const sortEl = document.getElementById('produceSort');
+  if (sortEl) {
+    sortEl.addEventListener('change', function () {
+      renderProduceGrid(key, _currentFilter, this.value);
+    });
+  }
 }
 
-function renderProduceGrid(key, filter) {
+let _currentCatKey = '';
+let _currentFilter = 'all';
+let _currentSort = 'default';
+
+function renderProduceGrid(key, filter, sort) {
+  _currentCatKey = key;
+  _currentFilter = filter || 'all';
+  _currentSort = sort || _currentSort;
   const cat = CATEGORIES[key];
   const grid = document.getElementById('produce-grid');
-  const items = filter === 'all'
-    ? cat.produce
-    : cat.produce.filter(p => p.tag === filter);
+
+  let items = _currentFilter === 'all'
+    ? [...cat.produce]
+    : cat.produce.filter(p => p.tag === _currentFilter);
+
+  // Sort
+  if (_currentSort === 'price-asc')  items.sort((a, b) => a.price - b.price);
+  if (_currentSort === 'price-desc') items.sort((a, b) => b.price - a.price);
+  if (_currentSort === 'freshness')  items.sort((a, b) => parseFloat(b.freshness) - parseFloat(a.freshness));
 
   if (!items.length) {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray-400);font-size:.9rem;">No produce in this filter right now. Check back soon.</div>`;
     return;
   }
 
+  const cart = getCart();
+
   grid.innerHTML = items.map((p, i) => {
-    // Build product page key: lowercase, spaces → hyphens
     const itemKey = p.name.toLowerCase().replace(/\s+/g, '-');
     const price = p.price || 50;
+    const mrp = p.mrp || null;
+    const discPct = mrp ? Math.round((mrp - price) / mrp * 100) : 0;
+    const cartItem = cart.find(c => c.slug === itemKey);
+    const qty = cartItem ? cartItem.qty : 0;
+
+    const qtyWidget = qty > 0
+      ? `<div class="pc-qty-widget" id="qw-${itemKey}" onclick="event.stopPropagation()">
+           <button class="pc-qty-btn" onclick="catChangeQty('${itemKey}',${price},'${p.name}','${p.emoji}',-0.5)">−</button>
+           <span class="pc-qty-val">${qty} kg</span>
+           <button class="pc-qty-btn pc-qty-plus" onclick="catChangeQty('${itemKey}',${price},'${p.name}','${p.emoji}',0.5)">+</button>
+         </div>`
+      : `<button class="pc-add-btn" id="qw-${itemKey}" onclick="catChangeQty('${itemKey}',${price},'${p.name}','${p.emoji}',0.5);event.stopPropagation()">
+           <span style="font-size:1rem;line-height:1">+</span> ADD
+         </button>`;
+
     return `
-    <div class="produce-card" style="animation-delay:${i * 0.06}s;cursor:pointer;" onclick="window.location.href='product.html?item=${itemKey}'">
-      <div class="produce-card-image" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9);">
+    <div class="produce-card" style="animation-delay:${i * 0.06}s;" onclick="window.location.href='product.html?item=${itemKey}'">
+      <div class="produce-card-image" style="background:linear-gradient(135deg,#f8fafc,#f1f5f9);position:relative">
+        ${p.popular ? `<div class="pc-popular-badge">🔥 Popular</div>` : ''}
+        ${discPct >= 10 ? `<div class="pc-discount-badge">${discPct}% OFF</div>` : ''}
         ${p.emoji}
         <div class="produce-card-arrow-overlay">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -366,20 +406,66 @@ function renderProduceGrid(key, filter) {
       <div class="produce-card-body">
         <div class="produce-card-name">${p.name}</div>
         <div class="produce-card-aka">${p.aka}</div>
-        <div class="produce-card-desc">${p.desc}</div>
-        <div class="produce-card-meta">
+        <div class="produce-card-meta" style="margin-bottom:10px">
           <div class="freshness-badge">⭐ ${p.freshness}/10</div>
           <div class="origin-badge">📍 ${p.origin}</div>
         </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
-          <span style="font-size:.9rem;font-weight:800;color:#15803d;font-family:'Outfit',sans-serif">₹${price}<span style="font-size:.72rem;font-weight:500;color:#6b7280">/kg</span></span>
-          <button class="atc-btn" onclick="addToCart('${itemKey}','${p.name}','${p.emoji}',${price});event.stopPropagation();">
-            + Cart
-          </button>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <div>
+            <span style="font-size:1rem;font-weight:800;color:#15803d;font-family:'Outfit',sans-serif">₹${price}<span style="font-size:.72rem;font-weight:500;color:#6b7280">/kg</span></span>
+            ${mrp ? `<div style="font-size:.72rem;color:#9ca3af;font-family:'Outfit',sans-serif"><s>₹${mrp}</s> <span style="color:#16a34a;font-weight:700">You save ₹${mrp-price}</span></div>` : ''}
+          </div>
+          ${qtyWidget}
         </div>
       </div>
-    </div>
-  `}).join('');
+    </div>`
+  }).join('');
+
+  updateCartFloatBar();
+}
+
+function catChangeQty(slug, price, name, emoji, delta) {
+  const cart = getCart();
+  const existing = cart.find(i => i.slug === slug);
+  const newQty = existing ? +(existing.qty + delta).toFixed(1) : 0.5;
+  if (newQty <= 0) {
+    removeFromCart(slug);
+  } else if (!existing) {
+    addToCart(slug, name, emoji, price);
+  } else {
+    updateQty(slug, Math.min(newQty, 10));
+  }
+  // Re-render only the widget for this card (no full grid redraw = smooth UX)
+  const cart2 = getCart();
+  const item2 = cart2.find(i => i.slug === slug);
+  const qty2 = item2 ? item2.qty : 0;
+  const widget = document.getElementById(`qw-${slug}`);
+  if (widget) {
+    if (qty2 > 0) {
+      widget.outerHTML = `<div class="pc-qty-widget" id="qw-${slug}" onclick="event.stopPropagation()">
+        <button class="pc-qty-btn" onclick="catChangeQty('${slug}',${price},'${name}','${emoji}',-0.5)">−</button>
+        <span class="pc-qty-val">${qty2} kg</span>
+        <button class="pc-qty-btn pc-qty-plus" onclick="catChangeQty('${slug}',${price},'${name}','${emoji}',0.5)">+</button>
+      </div>`;
+    } else {
+      widget.outerHTML = `<button class="pc-add-btn" id="qw-${slug}" onclick="catChangeQty('${slug}',${price},'${name}','${emoji}',0.5);event.stopPropagation()">
+        <span style="font-size:1rem;line-height:1">+</span> ADD
+      </button>`;
+    }
+  }
+  updateCartFloatBar();
+}
+
+function updateCartFloatBar() {
+  const bar = document.getElementById('catCartFloatBar');
+  if (!bar) return;
+  const cart = getCart();
+  if (!cart.length) { bar.classList.remove('visible'); return; }
+  const total = getCartTotal();
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  document.getElementById('catCartFloatCount').textContent = `${cart.length} item${cart.length !== 1 ? 's' : ''} · ${count.toFixed(1)} kg`;
+  document.getElementById('catCartFloatTotal').textContent = `₹${total}`;
+  bar.classList.add('visible');
 }
 
 

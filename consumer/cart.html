@@ -17,46 +17,111 @@
     }
     .cart-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
     .cart-brand-name { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700; color: #14532d; }
-    .cart-main { max-width: 700px; margin: 0 auto; padding: 32px 20px; }
+    .cart-main { max-width: 700px; margin: 0 auto; padding: 24px 20px 100px; }
     .cart-title { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 700; color: #111827; margin-bottom: 24px; }
 
     .cart-item {
-      background: #fff; border-radius: 16px; padding: 16px 20px;
-      margin-bottom: 12px; display: flex; align-items: center; gap: 16px;
+      background: #fff; border-radius: 16px; padding: 14px 16px;
+      margin-bottom: 10px; display: flex; align-items: center; gap: 14px;
       box-shadow: 0 2px 12px rgba(20,83,45,.06);
+      border: 1.5px solid #f3f4f6;
     }
     .ci-emoji { font-size: 2rem; flex-shrink: 0; }
-    .ci-info { flex: 1; }
-    .ci-name { font-size: 1rem; font-weight: 700; color: #111827; }
-    .ci-price { font-size: .85rem; color: #6b7280; margin-top: 2px; }
+    .ci-info { flex: 1; min-width: 0; }
+    .ci-name { font-size: .95rem; font-weight: 700; color: #111827; }
+    .ci-price { font-size: .8rem; color: #9ca3af; margin-top: 1px; }
+    .ci-savings { font-size: .72rem; color: #16a34a; font-weight: 600; }
     .ci-qty {
-      display: flex; align-items: center; gap: 10px;
-      background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 10px; padding: 6px 10px;
+      display: flex; align-items: center; gap: 0;
+      background: #16a34a; border-radius: 8px; overflow: hidden;
     }
     .ci-qty button {
       background: none; border: none; font-size: 1.1rem; cursor: pointer;
-      color: #15803d; font-weight: 800; line-height: 1; padding: 0 4px;
+      color: #fff; font-weight: 800; line-height: 1; padding: 7px 10px;
+      transition: background .12s;
     }
-    .ci-qty span { font-size: .9rem; font-weight: 700; color: #14532d; min-width: 38px; text-align: center; font-family: 'Outfit', sans-serif; }
-    .ci-subtotal { font-size: 1rem; font-weight: 800; color: #15803d; min-width: 60px; text-align: right; font-family: 'Outfit', sans-serif; }
-    .ci-remove { background: none; border: none; cursor: pointer; color: #9ca3af; font-size: 1.1rem; padding: 4px; transition: color .18s; }
+    .ci-qty button:hover { background: rgba(0,0,0,.12); }
+    .ci-qty span { font-size: .82rem; font-weight: 700; color: #fff; min-width: 44px; text-align: center; font-family: 'Outfit', sans-serif; }
+    .ci-subtotal { font-size: .95rem; font-weight: 800; color: #15803d; min-width: 54px; text-align: right; font-family: 'Outfit', sans-serif; }
+    .ci-remove { background: none; border: none; cursor: pointer; color: #d1d5db; font-size: 1rem; padding: 4px; transition: color .18s; }
     .ci-remove:hover { color: #ef4444; }
 
-    .cart-summary {
-      background: #fff; border-radius: 20px; padding: 24px 24px;
-      margin-top: 20px; box-shadow: 0 4px 24px rgba(20,83,45,.08);
+    /* Savings banner */
+    .savings-banner {
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      border: 1.5px solid #86efac;
+      border-radius: 14px; padding: 12px 16px;
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 14px;
     }
-    .cs-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: .9rem; color: #374151; }
-    .cs-row.total { font-size: 1.1rem; font-weight: 800; color: #111827; border-top: 1.5px solid #e5e7eb; padding-top: 14px; margin-top: 6px; }
-    .cs-note { background: #f0fdf4; border: 1px solid #d1fae5; border-radius: 10px; padding: 10px 14px; font-size: .82rem; color: #166534; margin-bottom: 16px; }
+    .savings-banner-icon { font-size: 1.4rem; }
+    .savings-banner-text { font-size: .9rem; font-weight: 700; color: #15803d; }
+    .savings-banner-amt { font-size: 1rem; font-weight: 800; color: #16a34a; margin-left: auto; }
+
+    /* Bill details */
+    .cart-bill {
+      background: #fff; border-radius: 20px; padding: 20px 20px;
+      margin-top: 16px; box-shadow: 0 4px 24px rgba(20,83,45,.08);
+      border: 1.5px solid #f3f4f6;
+    }
+    .bill-title { font-size: .85rem; font-weight: 800; color: #374151; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 14px; }
+    .bill-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; font-size: .88rem; color: #374151; }
+    .bill-row + .bill-row { border-top: 1px solid #f9fafb; }
+    .bill-row.saving { color: #16a34a; }
+    .bill-row.total { font-size: 1.05rem; font-weight: 800; color: #111827; border-top: 2px solid #e5e7eb !important; padding-top: 14px; margin-top: 4px; }
+
+    /* Order notes */
+    .cart-notes {
+      background: #fff; border-radius: 16px; padding: 16px 20px;
+      margin-top: 14px; box-shadow: 0 2px 12px rgba(20,83,45,.06);
+      border: 1.5px solid #f3f4f6;
+    }
+    .notes-label { font-size: .82rem; font-weight: 700; color: #374151; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .notes-input {
+      width: 100%; padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px;
+      font-size: .85rem; font-family: 'Outfit', sans-serif; resize: none; outline: none;
+      color: #374151; box-sizing: border-box; transition: border-color .18s;
+    }
+    .notes-input:focus { border-color: #16a34a; }
+
+    /* Suggested items */
+    .cart-suggest { margin-top: 20px; }
+    .suggest-title { font-size: .85rem; font-weight: 800; color: #374151; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 12px; }
+    .suggest-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+    .suggest-scroll::-webkit-scrollbar { display: none; }
+    .suggest-card {
+      flex-shrink: 0; width: 130px; background: #fff; border-radius: 14px;
+      border: 1.5px solid #e5e7eb; overflow: hidden; transition: .18s; cursor: pointer;
+    }
+    .suggest-card:hover { border-color: #16a34a; box-shadow: 0 4px 16px rgba(20,83,45,.1); }
+    .suggest-emoji { height: 80px; display: flex; align-items: center; justify-content: center; font-size: 2.4rem; background: #f8fafc; }
+    .suggest-body { padding: 8px 10px; }
+    .suggest-name { font-size: .8rem; font-weight: 700; color: #111827; }
+    .suggest-price { font-size: .75rem; color: #6b7280; margin-top: 2px; }
+    .suggest-add {
+      width: 100%; background: #f0fdf4; border: 1.5px solid #16a34a; color: #16a34a;
+      border-radius: 6px; padding: 5px; font-size: .75rem; font-weight: 800;
+      cursor: pointer; font-family: 'Outfit', sans-serif; margin-top: 6px; transition: .15s;
+    }
+    .suggest-add:hover { background: #16a34a; color: #fff; }
+
+    /* Sticky checkout footer */
+    .cart-checkout-footer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #fff; border-top: 1.5px solid #e5e7eb;
+      padding: 12px 20px; z-index: 100;
+      box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+    }
+    .cart-checkout-inner { max-width: 700px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .cart-checkout-total { font-size: 1rem; font-weight: 800; color: #111827; }
+    .cart-checkout-total small { display: block; font-size: .72rem; font-weight: 500; color: #6b7280; }
     .cs-checkout {
-      display: block; width: 100%; background: #16a34a; color: #fff; border: none;
-      border-radius: 999px; padding: 14px; font-size: 1rem; font-weight: 700;
-      cursor: pointer; font-family: 'Outfit', sans-serif; text-align: center;
-      text-decoration: none; transition: background .18s;
+      background: #16a34a; color: #fff; border: none; border-radius: 999px;
+      padding: 12px 28px; font-size: .95rem; font-weight: 800; cursor: pointer;
+      font-family: 'Outfit', sans-serif; text-decoration: none; transition: background .18s;
+      white-space: nowrap;
     }
     .cs-checkout:hover { background: #15803d; }
-
     .cart-empty {
       text-align: center; padding: 80px 20px;
       background: #fff; border-radius: 20px; box-shadow: 0 4px 24px rgba(20,83,45,.06);
@@ -85,6 +150,17 @@
     <div id="cartContent"></div>
   </div>
 
+  <!-- STICKY CHECKOUT FOOTER -->
+  <div class="cart-checkout-footer" id="cartFooter" style="display:none">
+    <div class="cart-checkout-inner">
+      <div class="cart-checkout-total">
+        <span id="cartFooterTotal">₹0</span>
+        <small id="cartFooterSub"></small>
+      </div>
+      <a href="/consumer/checkout.html" class="cs-checkout">Proceed to Checkout →</a>
+    </div>
+  </div>
+
   <script src="/js/cart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/supabase-client.js"></script>
@@ -98,6 +174,27 @@
       }
     })();
 
+    // MRP lookup (same as category data) — for savings calculation
+    const ITEM_MRP = {
+      'spinach':60,'coriander':75,'fenugreek':65,'lettuce':100,'mint':90,'amaranth':60,
+      'carrot':55,'radish':40,'beetroot':65,'turnip':45,
+      'potato':35,'sweet-potato':60,'yam':70,'colocasia':75,
+      'tomato':50,'capsicum':100,'brinjal':55,'chilly':110,'peas':90,'bitter-gourd':65,
+      'banana':65,'apple':200,'orange':100,'papaya':60,'guava':80,'pomegranate':160,
+    };
+
+    // Suggested items (simple cross-sell list)
+    const SUGGESTIONS = [
+      { slug:'spinach', name:'Spinach', emoji:'🥬', price:40 },
+      { slug:'tomato', name:'Tomato', emoji:'🍅', price:35 },
+      { slug:'coriander', name:'Coriander', emoji:'🌿', price:60 },
+      { slug:'carrot', name:'Carrot', emoji:'🥕', price:40 },
+      { slug:'potato', name:'Potato', emoji:'🥔', price:25 },
+      { slug:'capsicum', name:'Capsicum', emoji:'🫑', price:80 },
+      { slug:'mint', name:'Mint', emoji:'🌿', price:70 },
+      { slug:'banana', name:'Banana', emoji:'🍌', price:50 },
+    ];
+
     function renderCart() {
       const cart = getCart();
       const container = document.getElementById('cartContent');
@@ -110,41 +207,97 @@
             <p>Add some fresh produce and come back here to checkout.</p>
             <a href="/category.html?cat=leafy">Browse Vegetables →</a>
           </div>`;
+        document.getElementById('cartFooter').style.display = 'none';
         return;
       }
 
-      let itemsHtml = cart.map((item, idx) => `
+      const itemTotal = getCartTotal();
+      const totalMrpSavings = cart.reduce((s, item) => {
+        const mrp = ITEM_MRP[item.slug] || item.price;
+        return s + Math.max(0, Math.round((mrp - item.price) * item.qty));
+      }, 0);
+
+      // Items HTML
+      let itemsHtml = cart.map(item => {
+        const sub = Math.round(item.price * item.qty);
+        const mrp = ITEM_MRP[item.slug] || item.price;
+        const saved = Math.max(0, Math.round((mrp - item.price) * item.qty));
+        return `
         <div class="cart-item" id="ci-${item.slug}">
           <div class="ci-emoji">${item.emoji}</div>
           <div class="ci-info">
             <div class="ci-name">${item.name}</div>
-            <div class="ci-price">₹${item.price}/kg</div>
+            <div class="ci-price">₹${item.price}/kg${mrp > item.price ? ` · <s style="color:#d1d5db">₹${mrp}</s>` : ''}</div>
+            ${saved > 0 ? `<div class="ci-savings">You save ₹${saved}</div>` : ''}
           </div>
           <div class="ci-qty">
             <button onclick="changeQty('${item.slug}', -0.5)">−</button>
             <span>${item.qty} kg</span>
             <button onclick="changeQty('${item.slug}', 0.5)">+</button>
           </div>
-          <div class="ci-subtotal">₹${Math.round(item.price * item.qty)}</div>
+          <div class="ci-subtotal">₹${sub}</div>
           <button class="ci-remove" onclick="removeItem('${item.slug}')" title="Remove">✕</button>
-        </div>`).join('');
+        </div>`;
+      }).join('');
 
-      const total = getCartTotal();
+      // Savings banner
+      const savingsBanner = totalMrpSavings > 0 ? `
+        <div class="savings-banner">
+          <span class="savings-banner-icon">🎉</span>
+          <span class="savings-banner-text">Great deal! You're saving</span>
+          <span class="savings-banner-amt">₹${totalMrpSavings}</span>
+        </div>` : '';
+
+      // Bill details
       const itemCount = cart.reduce((s, i) => s + i.qty, 0);
-
-      const summaryHtml = `
-        <div class="cart-summary">
-          <div class="cs-note">
-            📦 Store pickup only · Fresco Store, Delhi · Your order will be packed and ready for you by the scheduled time.
-          </div>
-          <div class="cs-row"><span>Items (${cart.length} products, ${itemCount} kg approx.)</span><span>₹${total}</span></div>
-          <div class="cs-row"><span>Packaging</span><span style="color:#16a34a">FREE</span></div>
-          <div class="cs-row total"><span>Total</span><span>₹${total}</span></div>
-          <a href="/consumer/checkout.html" class="cs-checkout" style="display:block;margin-top:16px">Proceed to Checkout →</a>
-          <a href="/category.html?cat=leafy" style="display:block;text-align:center;margin-top:12px;color:#6b7280;font-size:.85rem;font-weight:600">+ Add more items</a>
+      const billHtml = `
+        <div class="cart-bill">
+          <div class="bill-title">Bill Details</div>
+          <div class="bill-row"><span>Item Total (${cart.length} items, ${itemCount.toFixed(1)} kg)</span><span>₹${itemTotal}${totalMrpSavings > 0 ? ` <s style="font-size:.78rem;color:#d1d5db">₹${itemTotal + totalMrpSavings}</s>` : ''}</span></div>
+          ${totalMrpSavings > 0 ? `<div class="bill-row saving"><span>🏷️ Total Savings</span><span>−₹${totalMrpSavings}</span></div>` : ''}
+          <div class="bill-row"><span>Packaging</span><span style="color:#16a34a;font-weight:700">FREE</span></div>
+          <div class="bill-row"><span>Store Pickup</span><span style="color:#16a34a;font-weight:700">FREE</span></div>
+          <div class="bill-row total"><span>To Pay</span><span>₹${itemTotal}</span></div>
         </div>`;
 
-      container.innerHTML = itemsHtml + summaryHtml;
+      // Order notes
+      const notesHtml = `
+        <div class="cart-notes">
+          <div class="notes-label">📝 Add Order Notes <span style="font-size:.72rem;font-weight:500;color:#9ca3af">(optional)</span></div>
+          <textarea id="cartNotes" class="notes-input" rows="2" placeholder="E.g. Please keep coriander fresh, prefer medium-sized carrots…" oninput="localStorage.setItem('fresco_cart_notes',this.value)">${localStorage.getItem('fresco_cart_notes')||''}</textarea>
+        </div>`;
+
+      // Suggestions (exclude items already in cart)
+      const cartSlugs = new Set(cart.map(i => i.slug));
+      const suggestions = SUGGESTIONS.filter(s => !cartSlugs.has(s.slug)).slice(0, 6);
+      const suggestHtml = suggestions.length ? `
+        <div class="cart-suggest">
+          <div class="suggest-title">You Might Also Need</div>
+          <div class="suggest-scroll">
+            ${suggestions.map(s => `
+              <div class="suggest-card" onclick="window.location.href='/product.html?item=${s.slug}'">
+                <div class="suggest-emoji">${s.emoji}</div>
+                <div class="suggest-body">
+                  <div class="suggest-name">${s.name}</div>
+                  <div class="suggest-price">₹${s.price}/kg</div>
+                  <button class="suggest-add" onclick="event.stopPropagation();addToCart('${s.slug}','${s.name}','${s.emoji}',${s.price});renderCart()">+ Add</button>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>` : '';
+
+      // Pickup note
+      const pickupHtml = `<div style="background:#f0fdf4;border:1px solid #d1fae5;border-radius:12px;padding:10px 14px;font-size:.82rem;color:#166534;margin-top:14px;display:flex;align-items:center;gap:8px">
+        <span>📦</span> <span><b>Store Pickup</b> · Fresco Store, Delhi · Packaging free on all orders</span>
+      </div>`;
+
+      container.innerHTML = savingsBanner + itemsHtml + pickupHtml + billHtml + notesHtml + suggestHtml;
+
+      // Update sticky footer
+      const footer = document.getElementById('cartFooter');
+      footer.style.display = 'block';
+      document.getElementById('cartFooterTotal').textContent = `₹${itemTotal}`;
+      document.getElementById('cartFooterSub').textContent = `${cart.length} item${cart.length !== 1 ? 's' : ''} · ${itemCount.toFixed(1)} kg`;
     }
 
     function changeQty(slug, delta) {
