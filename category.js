@@ -351,10 +351,16 @@ function renderProduceGrid(key, filter) {
     return;
   }
 
-  grid.innerHTML = items.map((p, i) => `
-    <div class="produce-card" style="animation-delay:${i * 0.06}s">
+  grid.innerHTML = items.map((p, i) => {
+    // Build product page key: lowercase, spaces → hyphens
+    const itemKey = p.name.toLowerCase().replace(/\s+/g, '-');
+    return `
+    <a href="product.html?item=${itemKey}" class="produce-card" style="animation-delay:${i * 0.06}s;text-decoration:none;color:inherit;">
       <div class="produce-card-image" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9);">
         ${p.emoji}
+        <div class="produce-card-arrow-overlay">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
       </div>
       <div class="produce-card-body">
         <div class="produce-card-name">${p.name}</div>
@@ -366,12 +372,13 @@ function renderProduceGrid(key, filter) {
         </div>
         <div class="produce-card-qr">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3M17 14h3M14 17h3v3"/></svg>
-          Scan QR for full farm journey
+          View full batch info & recipes →
         </div>
       </div>
-    </div>
-  `).join('');
+    </a>
+  `}).join('');
 }
+
 
 // ==========================================
 // SCORE BARS ANIMATION
