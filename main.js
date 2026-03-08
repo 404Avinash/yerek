@@ -48,9 +48,24 @@ const revealObserver = new IntersectionObserver((entries) => {
       entry.target.classList.add('visible');
     }
   });
-}, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+}, { threshold: 0.1, rootMargin: '0px 0px -80px 0px' });
 
 revealEls.forEach(el => revealObserver.observe(el));
+
+// ---- Hero card mouse parallax (3D tilt) ----
+const heroCard = document.querySelector('.hero-card');
+const heroSection = document.getElementById('hero');
+if (heroCard && heroSection) {
+  heroSection.addEventListener('mousemove', (e) => {
+    const rect = heroSection.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    heroCard.style.transform = `translateY(${-6 + y * -8}px) rotateX(${y * -6}deg) rotateY(${x * 6}deg)`;
+  });
+  heroSection.addEventListener('mouseleave', () => {
+    heroCard.style.transform = '';
+  });
+}
 
 // ---- Journey bar animation ----
 const journeyBar = document.querySelector('.journey-bar');
@@ -259,7 +274,12 @@ window.addEventListener('scroll', () => {
   const scrollY = window.scrollY;
   const heroBadge = document.querySelector('.hero-badge');
   if (heroBadge && scrollY < 800) {
-    heroBadge.style.transform = `translateY(${scrollY * 0.04}px)`;
+    heroBadge.style.transform = `translateY(${scrollY * 0.03}px)`;
+  }
+  // Subtle hero background parallax
+  const heroBg = document.querySelector('.hero-bg');
+  if (heroBg && scrollY < 1000) {
+    heroBg.style.transform = `translateX(-50%) translateY(${scrollY * 0.15}px)`;
   }
 }, { passive: true });
 
@@ -294,6 +314,24 @@ const barObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.5 });
 barFills.forEach(bar => barObserver.observe(bar));
+
+// ---- Smooth number counting for stats ----
+const trustStrip = document.querySelector('.trust-strip');
+if (trustStrip) {
+  const trustObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        trustObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  trustStrip.style.opacity = '0';
+  trustStrip.style.transform = 'translateY(12px)';
+  trustStrip.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+  trustObserver.observe(trustStrip);
+}
 
 console.log('🌿 Fresco website loaded successfully.');
 
