@@ -1,5 +1,5 @@
 /* ==========================================
-   FRESCO — tools.js
+   FRESCO — tools.js v2
    Smart Tools: Compare, Box Builder, Stock Board
    All data-driven from product.js PRODUCTS object
    ========================================== */
@@ -8,7 +8,8 @@
 // NAV SCROLL
 // ==========================================
 window.addEventListener('scroll', () => {
-  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10);
+  const nav = document.getElementById('navbar');
+  if (nav) nav.classList.toggle('scrolled', window.scrollY > 10);
 }, { passive: true });
 
 // ==========================================
@@ -37,56 +38,44 @@ function initTabs() {
 }
 
 // ==========================================
-// HELPER: build pick grid (shared by compare + box)
-// ==========================================
-function buildVegGrid(containerId, onClickFn, selectedClass) {
-  const container = document.getElementById(containerId);
-  const allKeys = Object.keys(PRODUCTS);
-  container.innerHTML = allKeys.map(key => {
-    const p = PRODUCTS[key];
-    return `
-      <button class="veg-chip" data-key="${key}" onclick="${onClickFn}('${key}', this)">
-        <span class="chip-emoji">${p.emoji}</span>
-        <span class="chip-name">${p.name}</span>
-      </button>
-    `;
-  }).join('');
-}
-
-// ==========================================
 // TOOL 1: NUTRITION COMPARATOR
+// — Fixed: using event delegation, no inline onclick with hyphenated IDs
 // ==========================================
 let compareA = null, compareB = null;
 
 function initCompare() {
-  buildPickGrid('pick-a', selectA);
-  buildPickGrid('pick-b', selectB);
+  buildChipGrid('pick-a');
+  buildChipGrid('pick-b');
+
+  // Use event delegation — no more window.__selectFn_pick-a hack
+  document.getElementById('pick-a').addEventListener('click', e => {
+    const btn = e.target.closest('.veg-chip');
+    if (!btn) return;
+    document.querySelectorAll('#pick-a .veg-chip').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    compareA = btn.dataset.key;
+    runCompare();
+  });
+
+  document.getElementById('pick-b').addEventListener('click', e => {
+    const btn = e.target.closest('.veg-chip');
+    if (!btn) return;
+    document.querySelectorAll('#pick-b .veg-chip').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    compareB = btn.dataset.key;
+    runCompare();
+  });
 }
 
-function buildPickGrid(containerId, selectFn) {
+function buildChipGrid(containerId) {
   const container = document.getElementById(containerId);
   container.innerHTML = Object.keys(PRODUCTS).map(key => {
     const p = PRODUCTS[key];
-    return `<button class="veg-chip" data-key="${key}" onclick="window.__selectFn_${containerId}('${key}', this)">
+    return `<button class="veg-chip" data-key="${key}" type="button">
       <span class="chip-emoji">${p.emoji}</span>
       <span class="chip-name">${p.name}</span>
     </button>`;
   }).join('');
-  window[`__selectFn_${containerId}`] = selectFn;
-}
-
-function selectA(key, btn) {
-  document.querySelectorAll('#pick-a .veg-chip').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  compareA = key;
-  runCompare();
-}
-
-function selectB(key, btn) {
-  document.querySelectorAll('#pick-b .veg-chip').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  compareB = key;
-  runCompare();
 }
 
 function runCompare() {
@@ -122,7 +111,7 @@ function runCompare() {
     </div>
   `;
 
-  // Build combined nutrition table — merge all nutrition labels
+  // Nutrition table
   const allLabels = [...new Set([...a.nutrition.map(n => n.label), ...b.nutrition.map(n => n.label)])];
   const aNutr = Object.fromEntries(a.nutrition.map(n => [n.label, n.value]));
   const bNutr = Object.fromEntries(b.nutrition.map(n => [n.label, n.value]));
@@ -130,13 +119,11 @@ function runCompare() {
   const rows = allLabels.map(label => {
     const aVal = aNutr[label] || '—';
     const bVal = bNutr[label] || '—';
-    return `
-      <tr>
-        <td class="cmp-val cmp-val-a">${aVal}</td>
-        <td class="cmp-label-cell">${label}</td>
-        <td class="cmp-val cmp-val-b">${bVal}</td>
-      </tr>
-    `;
+    return `<tr>
+      <td class="cmp-val cmp-val-a">${aVal}</td>
+      <td class="cmp-label-cell">${label}</td>
+      <td class="cmp-val cmp-val-b">${bVal}</td>
+    </tr>`;
   }).join('');
 
   document.getElementById('compare-table').innerHTML = `
@@ -161,17 +148,28 @@ function initBoxBuilder() {
   grid.innerHTML = Object.keys(PRODUCTS).map(key => {
     const p = PRODUCTS[key];
     const priceKg = PRICES[key] || 50;
-    return `
-      <button class="box-chip" data-key="${key}" onclick="toggleBox('${key}', this)">
-        <div class="box-chip-top">
-          <span class="chip-emoji">${p.emoji}</span>
-          <span class="chip-freshness">⭐ ${p.freshness}</span>
-        </div>
-        <span class="chip-name">${p.name}</span>
-        <span class="chip-price">~₹${priceKg}/kg</span>
-      </button>
-    `;
+    return `<button class="box-chip" data-key="${key}" type="button">
+      <div class="box-chip-top">
+        <span class="chip-emoji">${p.emoji}</span>
+        <span class="chip-freshness">⭐ ${p.freshness}</span>
+      </div>
+      <span class="chip-name">${p.name}</span>
+      <span class="chip-price">~₹${priceKg}/kg</span>
+    </button>`;
   }).join('');
+
+  // Event delegation for box chips
+  grid.addEventListener('click', e => {
+    const btn = e.target.closest('.box-chip');
+    if (!btn) return;
+    toggleBox(btn.dataset.key, btn);
+  });
+
+  document.getElementById('box-clear-btn')?.addEventListener('click', () => {
+    boxSelected.clear();
+    document.querySelectorAll('.box-chip').forEach(b => b.classList.remove('selected'));
+    updateBoxSummary();
+  });
 }
 
 function toggleBox(key, btn) {
@@ -209,20 +207,24 @@ function updateBoxSummary() {
   const keys = [...boxSelected];
   const products = keys.map(k => PRODUCTS[k]);
 
-  // Selected list
   document.getElementById('box-selected-list').innerHTML = keys.map(key => {
     const p = PRODUCTS[key];
     const price = PRICES[key] || 50;
-    return `
-      <div class="box-item">
-        <span>${p.emoji} ${p.name}</span>
-        <span class="box-item-price">₹${price}/kg</span>
-        <button class="box-remove" onclick="removeFromBox('${key}')">×</button>
-      </div>
-    `;
+    return `<div class="box-item">
+      <span>${p.emoji} ${p.name}</span>
+      <span class="box-item-price">₹${price}/kg</span>
+      <button class="box-remove" data-remove="${key}" type="button">×</button>
+    </div>`;
   }).join('');
 
-  // Combined nutrition (count unique labels)
+  // Wire remove buttons via delegation
+  document.getElementById('box-selected-list').addEventListener('click', e => {
+    const btn = e.target.closest('.box-remove');
+    if (!btn) return;
+    removeFromBox(btn.dataset.remove);
+  });
+
+  // Combined nutrition
   const nutritionMap = {};
   products.forEach(p => {
     p.nutrition.forEach(n => {
@@ -231,20 +233,16 @@ function updateBoxSummary() {
     });
   });
 
-  // Pick top 6 labels for display
   const topLabels = Object.keys(nutritionMap).slice(0, 6);
   document.getElementById('box-nutrition-grid').innerHTML = topLabels.map(label => {
     const vals = nutritionMap[label];
-    return `
-      <div class="box-nutr-card">
-        <span class="box-nutr-label">${label}</span>
-        <span class="box-nutr-val">${vals[0]}</span>
-        <span class="box-nutr-note">${vals.length > 1 ? `+${vals.length - 1} more` : 'from 1 item'}</span>
-      </div>
-    `;
+    return `<div class="box-nutr-card">
+      <span class="box-nutr-label">${label}</span>
+      <span class="box-nutr-val">${vals[0]}</span>
+      <span class="box-nutr-note">${vals.length > 1 ? `+${vals.length - 1} more` : 'from 1 item'}</span>
+    </div>`;
   }).join('');
 
-  // Estimated weekly cost (500g per item per week)
   const weeklyKg = 0.5;
   const totalCost = keys.reduce((sum, key) => sum + (PRICES[key] || 50) * weeklyKg, 0);
   const minCost = Math.round(totalCost * 0.9);
@@ -254,7 +252,6 @@ function updateBoxSummary() {
     <div class="box-cost-basis">Based on ~500g per item per week at market rate</div>
   `;
 
-  // Recipes you can make (collect all recipes, deduplicate)
   const allRecipes = [];
   products.forEach(p => {
     p.recipes.forEach(r => {
@@ -278,20 +275,11 @@ function removeFromBox(key) {
   updateBoxSummary();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('box-clear-btn')?.addEventListener('click', () => {
-    boxSelected.clear();
-    document.querySelectorAll('.box-chip').forEach(b => b.classList.remove('selected'));
-    updateBoxSummary();
-  });
-});
-
 // ==========================================
 // TOOL 3: STOCK BOARD
 // ==========================================
 function initStockBoard() {
   renderStockBoard('all');
-
   document.querySelectorAll('.stock-filter').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.stock-filter').forEach(b => b.classList.remove('active'));
@@ -307,34 +295,30 @@ function renderStockBoard(cat) {
 
   board.innerHTML = keys.map(key => {
     const p = PRODUCTS[key];
-    const qty = p.batch.qty;
-    const qtyNum = parseInt(qty);
+    const qtyNum = parseInt(p.batch.qty);
     const stockPct = Math.min(100, Math.max(10, qtyNum * 1.5));
     const freshScore = parseFloat(p.freshness);
     const freshColor = freshScore >= 9.3 ? '#16a34a' : freshScore >= 9.0 ? '#ca8a04' : '#dc2626';
     const statusBadge = p.status === 'Fresh Today' ? 'status-green' :
                         p.status === 'Seasonal' ? 'status-amber' : 'status-blue';
-
-    return `
-      <a href="product.html?item=${key}" class="stock-row">
-        <div class="stock-emoji">${p.emoji}</div>
-        <div class="stock-info">
-          <div class="stock-name">${p.name} <span class="stock-aka">${p.aka}</span></div>
-          <div class="stock-meta">
-            <span class="stock-harvest">🌾 ${p.batch.harvested}</span>
-            <span class="stock-farm">📍 ${p.batch.farm}</span>
-          </div>
+    return `<a href="product.html?item=${key}" class="stock-row">
+      <div class="stock-emoji">${p.emoji}</div>
+      <div class="stock-info">
+        <div class="stock-name">${p.name} <span class="stock-aka">${p.aka}</span></div>
+        <div class="stock-meta">
+          <span class="stock-harvest">🌾 ${p.batch.harvested}</span>
+          <span class="stock-farm">📍 ${p.batch.farm}</span>
         </div>
-        <div class="stock-right">
-          <div class="stock-score" style="color:${freshColor}">⭐ ${p.freshness}</div>
-          <span class="stock-status-badge ${statusBadge}">${p.status}</span>
-          <div class="stock-qty">${p.batch.qty}</div>
-        </div>
-        <div class="stock-bar-wrap">
-          <div class="stock-bar-fill" style="width:${stockPct}%"></div>
-        </div>
-      </a>
-    `;
+      </div>
+      <div class="stock-right">
+        <div class="stock-score" style="color:${freshColor}">⭐ ${p.freshness}</div>
+        <span class="stock-status-badge ${statusBadge}">${p.status}</span>
+        <div class="stock-qty">${p.batch.qty}</div>
+      </div>
+      <div class="stock-bar-wrap">
+        <div class="stock-bar-fill" style="width:${stockPct}%"></div>
+      </div>
+    </a>`;
   }).join('');
 }
 
@@ -346,5 +330,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initCompare();
   initBoxBuilder();
   initStockBoard();
-  console.log('🌿 Fresco Smart Tools loaded.');
+  console.log('🌿 Fresco Smart Tools v2 loaded.');
 });
