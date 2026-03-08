@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users — Fresco Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+  <div class="admin-layout" id="app">
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;width:100%;color:var(--gray-400)">Loading…</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    let currentProfile = null;
+    let users = [];
+
+    (async () => {
+      const auth = await requireAdmin(['owner']); // owner only
+      if (!auth) return;
+      currentProfile = auth.profile;
+      const { data } = await _supabase.from('profiles').select('*').order('joined_at', { ascending: false });
+      users = data || [];
+      render();
+    })();
+
+    function render() {
+      document.getElementById('app').innerHTML = `
+        ${renderSidebar('users', currentProfile.role)}
+        <main class="admin-main">
+          <div class="admin-topbar">
+            <div>
+              <h1 class="admin-page-title">Users & Roles</h1>
+              <p class="admin-page-sub">${users.length} registered users</p>
+            </div>
+          </div>
+
+          <div class="table-card">
+            <div class="table-card-header">
+              <span class="table-card-title">All Users</span>
+              <input type="text" id="searchInput" placeholder="Search by email or name…" oninput="filterUsers(this.value)"
+                style="padding:7px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-md);font-size:.85rem;outline:none;width:240px">
+            </div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead><tr>
+                  <th>User</th><th>Role</th><th>City</th><th>Change Role</th><th>Joined</th>
+                </tr></thead>
+                <tbody id="usersBody">${renderRows(users)}</tbody>
+              </table>
+            </div>
+          </div>
+        </main>`;
+    }
+
+    function renderRows(list) {
+      if (!list.length) return `<tr><td colspan="5" class="empty-row">No users found</td></tr>`;
+      return list.map(u => `
+        <tr id="urow-${u.id}">
+          <td>
+            <div class="td-main">${u.full_name || '—'}</div>
+            <div class="td-sub">${u.email}</div>
+          </td>
+          <td><span class="role-badge role-${u.role}">${u.role}</span></td>
+          <td class="muted">${u.city || '—'}</td>
+          <td>
+            ${u.id === currentProfile.id
+              ? '<span class="muted" style="font-size:.82rem">You</span>'
+              : `<select class="role-select" data-uid="${u.id}" onchange="changeRole(this)" style="padding:5px 8px;border:1.5px solid var(--gray-200);border-radius:var(--radius-md);font-size:.82rem;font-family:var(--font-sans);outline:none;cursor:pointer">
+                  <option value="consumer" ${u.role === 'consumer' ? 'selected' : ''}>consumer</option>
+                  <option value="staff"    ${u.role === 'staff'    ? 'selected' : ''}>staff</option>
+                  <option value="owner"    ${u.role === 'owner'    ? 'selected' : ''}>owner</option>
+                </select>`
+            }
+          </td>
+          <td class="muted">${fmtDateShort(u.joined_at)}</td>
+        </tr>`).join('');
+    }
+
+    function filterUsers(q) {
+      const filtered = users.filter(u =>
+        (u.email || '').toLowerCase().includes(q.toLowerCase()) ||
+        (u.full_name || '').toLowerCase().includes(q.toLowerCase())
+      );
+      document.getElementById('usersBody').innerHTML = renderRows(filtered);
+    }
+
+    async function changeRole(select) {
+      const uid = select.dataset.uid;
+      const newRole = select.value;
+      const user = users.find(u => u.id === uid);
+      const ok = await adminConfirm(`Change ${user?.email}'s role to "${newRole}"?`);
+      if (!ok) {
+        select.value = user?.role || 'consumer';
+        return;
+      }
+      const { error } = await _supabase.from('profiles').update({ role: newRole }).eq('id', uid);
+      if (error) {
+        showToast('Failed: ' + error.message, 'error');
+        select.value = user?.role || 'consumer';
+        return;
+      }
+      users = users.map(u => u.id === uid ? { ...u, role: newRole } : u);
+      // Refresh the row badge
+      const row = document.getElementById(`urow-${uid}`);
+      if (row) {
+        row.querySelector('td:nth-child(2)').innerHTML = `<span class="role-badge role-${newRole}">${newRole}</span>`;
+      }
+      showToast(`Role updated to ${newRole}`);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products — Fresco Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+  <style>
+    .edit-panel {
+      background: var(--white); border: 1.5px solid var(--green-200);
+      border-radius: var(--radius-lg); padding: 24px 28px;
+      box-shadow: var(--shadow-md); margin-bottom: 24px;
+    }
+    .edit-panel-title { font-weight: 700; font-size: 1rem; color: var(--green-800); margin-bottom: 18px; }
+  </style>
+</head>
+<body>
+
+  <div class="admin-layout" id="app">
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;width:100%;color:var(--gray-400)">Loading…</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    let currentProfile = null;
+    let products = [];
+    let farms = [];
+    let categories = [];
+    let editingId = null;
+
+    (async () => {
+      const auth = await requireAdmin();
+      if (!auth) return;
+      currentProfile = auth.profile;
+
+      const [{ data: p }, { data: f }, { data: c }] = await Promise.all([
+        _supabase.from('products').select('*').order('name'),
+        _supabase.from('farms').select('id, name').order('name'),
+        _supabase.from('categories').select('slug, name').order('name')
+      ]);
+
+      products = p || [];
+      farms = f || [];
+      categories = c || [];
+      render();
+    })();
+
+    function render() {
+      document.getElementById('app').innerHTML = `
+        ${renderSidebar('products', currentProfile.role)}
+        <main class="admin-main">
+          <div class="admin-topbar">
+            <div>
+              <h1 class="admin-page-title">Products</h1>
+              <p class="admin-page-sub">${products.length} products in catalogue</p>
+            </div>
+            <div class="topbar-actions">
+              <button class="btn-admin-primary" onclick="openAddForm()">+ Add Product</button>
+            </div>
+          </div>
+
+          <div id="editPanelWrap"></div>
+
+          <div class="table-card">
+            <div class="table-card-header">
+              <span class="table-card-title">All Products</span>
+              <input type="text" id="searchInput" placeholder="Search…" oninput="filterTable(this.value)"
+                style="padding:7px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-md);font-size:.85rem;outline:none;width:200px">
+            </div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead><tr>
+                  <th>Product</th><th>Category</th><th>Farm</th><th>Score</th><th>Price</th><th>Available</th><th>Actions</th>
+                </tr></thead>
+                <tbody id="productsBody">
+                  ${renderProductRows(products)}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>`;
+    }
+
+    function renderProductRows(list) {
+      if (!list.length) return `<tr><td colspan="7" class="empty-row">No products yet</td></tr>`;
+      return list.map(p => `
+        <tr id="prow-${p.id}">
+          <td>
+            <div class="td-main">${p.emoji || ''} ${p.name}</div>
+            <div class="td-sub">${p.aka || ''}</div>
+          </td>
+          <td>${p.category_slug || '—'}</td>
+          <td>${farms.find(f => f.id === p.farm_id)?.name || '—'}</td>
+          <td><span class="score-badge ${scoreBadgeClass(p.freshness_score)}">${p.freshness_score ?? '—'}</span></td>
+          <td>₹${p.price_per_kg ?? '—'}/kg</td>
+          <td>
+            <label class="toggle" title="Toggle availability">
+              <input type="checkbox" ${p.is_available ? 'checked' : ''} onchange="toggleAvailable(${p.id}, this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </td>
+          <td>
+            <div class="actions">
+              <button class="btn-icon btn-icon-edit" onclick="openEditForm(${p.id})" title="Edit">✏️</button>
+              <button class="btn-icon btn-icon-del" onclick="deleteProduct(${p.id})" title="Delete">🗑</button>
+            </div>
+          </td>
+        </tr>`).join('');
+    }
+
+    function filterTable(q) {
+      const filtered = products.filter(p =>
+        p.name.toLowerCase().includes(q.toLowerCase()) ||
+        (p.aka || '').toLowerCase().includes(q.toLowerCase()) ||
+        (p.category_slug || '').toLowerCase().includes(q.toLowerCase())
+      );
+      document.getElementById('productsBody').innerHTML = renderProductRows(filtered);
+    }
+
+    function farmOptions(selectedId) {
+      return `<option value="">— None —</option>` +
+        farms.map(f => `<option value="${f.id}" ${f.id === selectedId ? 'selected' : ''}>${f.name}</option>`).join('');
+    }
+
+    function catOptions(selectedSlug) {
+      return `<option value="">— None —</option>` +
+        categories.map(c => `<option value="${c.slug}" ${c.slug === selectedSlug ? 'selected' : ''}>${c.name}</option>`).join('');
+    }
+
+    function renderForm(p = {}) {
+      return `
+        <div class="edit-panel" id="editPanel">
+          <div class="edit-panel-title">${p.id ? '✏️ Edit Product' : '➕ New Product'}</div>
+          <form class="admin-form" id="productForm">
+            <div class="admin-form-grid-3">
+              <div class="form-group">
+                <label>Name *</label>
+                <input type="text" id="p-name" value="${p.name || ''}" placeholder="Spinach" required oninput="autoSlug()">
+              </div>
+              <div class="form-group">
+                <label>Slug</label>
+                <input type="text" id="p-slug" value="${p.slug || ''}" placeholder="spinach" required>
+              </div>
+              <div class="form-group">
+                <label>Also Known As</label>
+                <input type="text" id="p-aka" value="${p.aka || ''}" placeholder="Palak">
+              </div>
+            </div>
+            <div class="admin-form-grid-3">
+              <div class="form-group">
+                <label>Emoji</label>
+                <input type="text" id="p-emoji" value="${p.emoji || ''}" placeholder="🥬" maxlength="4">
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select id="p-cat">${catOptions(p.category_slug)}</select>
+              </div>
+              <div class="form-group">
+                <label>Farm Partner</label>
+                <select id="p-farm">${farmOptions(p.farm_id)}</select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Tagline</label>
+              <input type="text" id="p-tagline" value="${p.tagline || ''}" placeholder="Morning-fresh, iron-rich superfood">
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea id="p-desc" placeholder="Short paragraph about this product…">${p.description || ''}</textarea>
+            </div>
+            <div class="admin-form-grid-3">
+              <div class="form-group">
+                <label>Freshness Score (0–10)</label>
+                <input type="number" id="p-score" value="${p.freshness_score ?? 9.0}" min="0" max="10" step="0.1">
+              </div>
+              <div class="form-group">
+                <label>Price per kg (₹)</label>
+                <input type="number" id="p-price" value="${p.price_per_kg ?? 50}" min="0">
+              </div>
+              <div class="form-group">
+                <label>Status</label>
+                <select id="p-status">
+                  <option value="Fresh" ${p.status === 'Fresh' ? 'selected' : ''}>Fresh</option>
+                  <option value="Fresh Today" ${p.status === 'Fresh Today' ? 'selected' : ''}>Fresh Today</option>
+                  <option value="Seasonal" ${p.status === 'Seasonal' ? 'selected' : ''}>Seasonal</option>
+                  <option value="Limited Stock" ${p.status === 'Limited Stock' ? 'selected' : ''}>Limited Stock</option>
+                </select>
+              </div>
+            </div>
+            <div class="admin-form-actions">
+              <button type="submit" class="btn-admin-primary">${p.id ? 'Save Changes' : 'Add Product'}</button>
+              <button type="button" class="btn-admin-secondary" onclick="closeEditForm()">Cancel</button>
+            </div>
+          </form>
+        </div>`;
+    }
+
+    function openAddForm() {
+      editingId = null;
+      document.getElementById('editPanelWrap').innerHTML = renderForm();
+      document.getElementById('productForm').addEventListener('submit', handleSaveProduct);
+      document.getElementById('editPanelWrap').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function openEditForm(id) {
+      editingId = id;
+      const p = products.find(x => x.id === id);
+      document.getElementById('editPanelWrap').innerHTML = renderForm(p);
+      document.getElementById('productForm').addEventListener('submit', handleSaveProduct);
+      document.getElementById('editPanelWrap').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeEditForm() {
+      document.getElementById('editPanelWrap').innerHTML = '';
+      editingId = null;
+    }
+
+    function autoSlug() {
+      if (!editingId) {
+        document.getElementById('p-slug').value = toSlug(document.getElementById('p-name').value);
+      }
+    }
+
+    async function handleSaveProduct(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('[type=submit]');
+      btn.disabled = true; btn.textContent = 'Saving…';
+
+      const payload = {
+        name:            document.getElementById('p-name').value.trim(),
+        slug:            document.getElementById('p-slug').value.trim(),
+        aka:             document.getElementById('p-aka').value.trim() || null,
+        emoji:           document.getElementById('p-emoji').value.trim() || null,
+        category_slug:   document.getElementById('p-cat').value || null,
+        farm_id:         parseInt(document.getElementById('p-farm').value) || null,
+        tagline:         document.getElementById('p-tagline').value.trim() || null,
+        description:     document.getElementById('p-desc').value.trim() || null,
+        freshness_score: parseFloat(document.getElementById('p-score').value) || 9.0,
+        price_per_kg:    parseInt(document.getElementById('p-price').value) || 50,
+        status:          document.getElementById('p-status').value,
+        updated_at:      new Date().toISOString()
+      };
+
+      let error, data;
+      if (editingId) {
+        ({ data, error } = await _supabase.from('products').update(payload).eq('id', editingId).select().single());
+      } else {
+        payload.is_available = true;
+        ({ data, error } = await _supabase.from('products').insert(payload).select().single());
+      }
+
+      btn.disabled = false; btn.textContent = editingId ? 'Save Changes' : 'Add Product';
+
+      if (error) { showToast('Error: ' + error.message, 'error'); return; }
+
+      if (editingId) {
+        products = products.map(p => p.id === editingId ? data : p);
+      } else {
+        products.unshift(data);
+      }
+
+      closeEditForm();
+      document.getElementById('productsBody').innerHTML = renderProductRows(products);
+      showToast(editingId ? 'Product updated!' : 'Product added!');
+    }
+
+    async function toggleAvailable(id, val) {
+      const { error } = await _supabase.from('products').update({ is_available: val }).eq('id', id);
+      if (error) { showToast('Failed to update', 'error'); return; }
+      products = products.map(p => p.id === id ? { ...p, is_available: val } : p);
+      showToast(val ? 'Product enabled' : 'Product disabled', 'info');
+    }
+
+    async function deleteProduct(id) {
+      const ok = await adminConfirm('Delete this product? This cannot be undone.');
+      if (!ok) return;
+      const { error } = await _supabase.from('products').delete().eq('id', id);
+      if (error) { showToast('Error: ' + error.message, 'error'); return; }
+      products = products.filter(p => p.id !== id);
+      document.getElementById('productsBody').innerHTML = renderProductRows(products);
+      showToast('Product deleted');
+    }
+  </script>
+</body>
+</html>

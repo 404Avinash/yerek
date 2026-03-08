@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farms — Fresco Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+  <style>
+    .edit-panel { background:var(--white);border:1.5px solid var(--green-200);border-radius:var(--radius-lg);padding:24px 28px;box-shadow:var(--shadow-md);margin-bottom:24px; }
+    .edit-panel-title { font-weight:700;font-size:1rem;color:var(--green-800);margin-bottom:18px; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout" id="app">
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;width:100%;color:var(--gray-400)">Loading…</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    let currentProfile = null;
+    let farms = [];
+    let editingId = null;
+
+    (async () => {
+      const auth = await requireAdmin();
+      if (!auth) return;
+      currentProfile = auth.profile;
+      const { data } = await _supabase.from('farms').select('*').order('name');
+      farms = data || [];
+      render();
+    })();
+
+    function render() {
+      document.getElementById('app').innerHTML = `
+        ${renderSidebar('farms', currentProfile.role)}
+        <main class="admin-main">
+          <div class="admin-topbar">
+            <div>
+              <h1 class="admin-page-title">Farm Partners</h1>
+              <p class="admin-page-sub">${farms.length} partners registered</p>
+            </div>
+            <div class="topbar-actions">
+              <button class="btn-admin-primary" onclick="openAddForm()">+ Add Farm</button>
+            </div>
+          </div>
+
+          <div id="editPanelWrap"></div>
+
+          <div class="table-card">
+            <div class="table-card-header">
+              <span class="table-card-title">All Farms</span>
+            </div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead><tr>
+                  <th>Farm</th><th>Owner</th><th>Location</th><th>Supply %</th><th>Years</th><th>Certified</th><th>Actions</th>
+                </tr></thead>
+                <tbody id="farmsBody">${renderRows()}</tbody>
+              </table>
+            </div>
+          </div>
+        </main>`;
+    }
+
+    function renderRows() {
+      if (!farms.length) return `<tr><td colspan="7" class="empty-row">No farms yet. Add one above.</td></tr>`;
+      return farms.map(f => `
+        <tr>
+          <td class="td-main">${f.emoji || ''} ${f.name}</td>
+          <td>${f.owner_name || '—'}</td>
+          <td class="muted">${f.location || '—'}</td>
+          <td>${f.supply_pct || '—'}</td>
+          <td>${f.years_partnered ?? 0} yr${f.years_partnered !== 1 ? 's' : ''}</td>
+          <td>${f.is_certified ? '<span class="status-pill status-active">✓ Yes</span>' : '<span class="status-pill status-inactive">No</span>'}</td>
+          <td>
+            <div class="actions">
+              <button class="btn-icon btn-icon-edit" onclick="openEditForm(${f.id})">✏️</button>
+              <button class="btn-icon btn-icon-del" onclick="deleteFarm(${f.id})">🗑</button>
+            </div>
+          </td>
+        </tr>`).join('');
+    }
+
+    function renderForm(f = {}) {
+      return `
+        <div class="edit-panel">
+          <div class="edit-panel-title">${f.id ? '✏️ Edit Farm' : '➕ New Farm Partner'}</div>
+          <form class="admin-form" id="farmForm">
+            <div class="admin-form-grid-3">
+              <div class="form-group">
+                <label>Farm Name *</label>
+                <input type="text" id="f-name" value="${f.name || ''}" placeholder="Sharma Greens" required>
+              </div>
+              <div class="form-group">
+                <label>Owner Name</label>
+                <input type="text" id="f-owner" value="${f.owner_name || ''}" placeholder="Rajesh Sharma">
+              </div>
+              <div class="form-group">
+                <label>Emoji</label>
+                <input type="text" id="f-emoji" value="${f.emoji || ''}" placeholder="🌿" maxlength="4">
+              </div>
+            </div>
+            <div class="admin-form-grid-3">
+              <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="f-loc" value="${f.location || ''}" placeholder="Sonipat, Haryana">
+              </div>
+              <div class="form-group">
+                <label>Supply %</label>
+                <input type="text" id="f-supply" value="${f.supply_pct || ''}" placeholder="45%">
+              </div>
+              <div class="form-group">
+                <label>Years Partnered</label>
+                <input type="number" id="f-years" value="${f.years_partnered ?? 0}" min="0">
+              </div>
+            </div>
+            <div class="admin-form-grid-2">
+              <div class="form-group">
+                <label>Phone</label>
+                <input type="text" id="f-phone" value="${f.phone || ''}" placeholder="+91 98xxx xxxxx">
+              </div>
+              <div class="form-group" style="justify-content:flex-end">
+                <label>Certified Partner?</label>
+                <label class="toggle-wrap" style="margin-top:8px">
+                  <label class="toggle">
+                    <input type="checkbox" id="f-cert" ${f.is_certified ? 'checked' : ''}>
+                    <span class="toggle-slider"></span>
+                  </label>
+                  <span style="font-size:.85rem;color:var(--gray-600)">Certified</span>
+                </label>
+              </div>
+            </div>
+            <div class="admin-form-actions">
+              <button type="submit" class="btn-admin-primary">${f.id ? 'Save Changes' : 'Add Farm'}</button>
+              <button type="button" class="btn-admin-secondary" onclick="closeForm()">Cancel</button>
+            </div>
+          </form>
+        </div>`;
+    }
+
+    function openAddForm() { editingId = null; showForm({}); }
+    function openEditForm(id) { editingId = id; showForm(farms.find(f => f.id === id)); }
+    function closeForm() { document.getElementById('editPanelWrap').innerHTML = ''; editingId = null; }
+
+    function showForm(f) {
+      document.getElementById('editPanelWrap').innerHTML = renderForm(f);
+      document.getElementById('farmForm').addEventListener('submit', handleSave);
+      document.getElementById('editPanelWrap').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function handleSave(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('[type=submit]');
+      btn.disabled = true; btn.textContent = 'Saving…';
+
+      const payload = {
+        name:            document.getElementById('f-name').value.trim(),
+        owner_name:      document.getElementById('f-owner').value.trim() || null,
+        emoji:           document.getElementById('f-emoji').value.trim() || null,
+        location:        document.getElementById('f-loc').value.trim() || null,
+        supply_pct:      document.getElementById('f-supply').value.trim() || null,
+        years_partnered: parseInt(document.getElementById('f-years').value) || 0,
+        phone:           document.getElementById('f-phone').value.trim() || null,
+        is_certified:    document.getElementById('f-cert').checked
+      };
+
+      let data, error;
+      if (editingId) {
+        ({ data, error } = await _supabase.from('farms').update(payload).eq('id', editingId).select().single());
+      } else {
+        ({ data, error } = await _supabase.from('farms').insert(payload).select().single());
+      }
+
+      btn.disabled = false; btn.textContent = editingId ? 'Save Changes' : 'Add Farm';
+
+      if (error) { showToast('Error: ' + error.message, 'error'); return; }
+      if (editingId) farms = farms.map(f => f.id === editingId ? data : f);
+      else farms.unshift(data);
+
+      closeForm();
+      document.getElementById('farmsBody').innerHTML = renderRows();
+      showToast(editingId ? 'Farm updated!' : 'Farm added!');
+    }
+
+    async function deleteFarm(id) {
+      const ok = await adminConfirm('Delete this farm? Products assigned to it will lose their farm reference.');
+      if (!ok) return;
+      const { error } = await _supabase.from('farms').delete().eq('id', id);
+      if (error) { showToast('Error: ' + error.message, 'error'); return; }
+      farms = farms.filter(f => f.id !== id);
+      document.getElementById('farmsBody').innerHTML = renderRows();
+      showToast('Farm deleted');
+    }
+  </script>
+</body>
+</html>

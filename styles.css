@@ -220,6 +220,21 @@ body {
   flex-shrink: 0;
 }
 .nav-cta:hover { background: var(--green-700); transform: translateY(-1px); }
+.nav-account-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  background: transparent;
+  color: var(--green-700);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--green-300);
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.nav-account-btn:hover { background: var(--green-50); border-color: var(--green-500); }
 .hamburger {
   display: none;
   flex-direction: column;
@@ -1458,7 +1473,7 @@ a.cat-card { text-decoration: none; display: block; }
 }
 
 @media (max-width: 768px) {
-  .nav-links, .nav-cta { display: none; }
+  .nav-links, .nav-cta, .nav-account-btn { display: none; }
   .hamburger { display: flex; }
   .mission-problem { flex-direction: column; }
   .problem-arrow { transform: rotate(90deg); }

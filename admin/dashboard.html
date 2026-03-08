@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Fresco Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body class="admin-body">
+
+  <div class="admin-layout" id="app">
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;width:100%;color:var(--gray-400)">
+      Loading…
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    (async () => {
+      const auth = await requireAdmin();
+      if (!auth) return;
+      const { profile } = auth;
+
+      const today = new Date().toISOString().split('T')[0];
+
+      const [
+        { count: productCount },
+        { count: batchCount },
+        { count: waitlistCount },
+        { count: qrCount },
+        { data: recentBatches },
+        { data: recentWaitlist }
+      ] = await Promise.all([
+        _supabase.from('products').select('*', { count: 'exact', head: true }),
+        _supabase.from('batches').select('*', { count: 'exact', head: true }).gte('created_at', today),
+        _supabase.from('waitlist').select('*', { count: 'exact', head: true }),
+        _supabase.from('qr_scans').select('*', { count: 'exact', head: true }).gte('scanned_at', today),
+        _supabase.from('batches').select('id, batch_code, qty_kg, freshness_score, is_active, created_at, products(name,emoji), farms(name)').order('created_at', { ascending: false }).limit(8),
+        _supabase.from('waitlist').select('name, email, city, joined_at').order('joined_at', { ascending: false }).limit(8)
+      ]);
+
+      document.getElementById('app').innerHTML = `
+        ${renderSidebar('dashboard', profile.role)}
+        <main class="admin-main">
+          <div class="admin-topbar">
+            <div>
+              <h1 class="admin-page-title">Dashboard</h1>
+              <p class="admin-page-sub">Good ${getGreeting()}, ${profile.full_name || profile.email.split('@')[0]} 👋</p>
+            </div>
+            <div class="topbar-actions">
+              <a href="batches.html" class="btn-admin-primary">+ Add Batch</a>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card stat-card-accent">
+              <div class="stat-icon">🥬</div>
+              <div>
+                <div class="stat-num">${productCount ?? 0}</div>
+                <div class="stat-label">Total Products</div>
+              </div>
+            </div>
+            <div class="stat-card stat-card-accent">
+              <div class="stat-icon">📦</div>
+              <div>
+                <div class="stat-num">${batchCount ?? 0}</div>
+                <div class="stat-label">Batches Today</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📋</div>
+              <div>
+                <div class="stat-num">${waitlistCount ?? 0}</div>
+                <div class="stat-label">Waitlist Signups</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📱</div>
+              <div>
+                <div class="stat-num">${qrCount ?? 0}</div>
+                <div class="stat-label">QR Scans Today</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dash-grid">
+            <div class="admin-card">
+              <div class="card-header">
+                <span class="card-title">Recent Batches</span>
+                <a href="batches.html" class="card-link">View all →</a>
+              </div>
+              <div class="table-wrap">
+                <table class="admin-table">
+                  <thead><tr>
+                    <th>Product</th><th>Farm</th><th>Qty</th><th>Score</th><th>Time</th>
+                  </tr></thead>
+                  <tbody>
+                    ${(recentBatches || []).length ? recentBatches.map(b => `
+                      <tr>
+                        <td class="td-main">${b.products?.emoji || ''} ${b.products?.name || b.batch_code}</td>
+                        <td>${b.farms?.name || '—'}</td>
+                        <td>${b.qty_kg ? b.qty_kg + ' kg' : '—'}</td>
+                        <td><span class="score-badge ${scoreBadgeClass(b.freshness_score)}">${b.freshness_score ?? '—'}</span></td>
+                        <td class="muted">${fmtDateShort(b.created_at)}</td>
+                      </tr>`).join('') : '<tr><td colspan="5" class="empty-row">No batches logged today</td></tr>'}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="admin-card">
+              <div class="card-header">
+                <span class="card-title">Recent Waitlist</span>
+                <a href="waitlist.html" class="card-link">View all →</a>
+              </div>
+              <div class="table-wrap">
+                <table class="admin-table">
+                  <thead><tr><th>Name</th><th>City</th><th>Joined</th></tr></thead>
+                  <tbody>
+                    ${(recentWaitlist || []).length ? recentWaitlist.map(w => `
+                      <tr>
+                        <td>
+                          <div class="td-main">${w.name}</div>
+                          <div class="td-sub">${w.email}</div>
+                        </td>
+                        <td>${w.city || '—'}</td>
+                        <td class="muted">${fmtDateShort(w.joined_at)}</td>
+                      </tr>`).join('') : '<tr><td colspan="3" class="empty-row">No signups yet</td></tr>'}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </main>`;
+    })();
+  </script>
+</body>
+</html>

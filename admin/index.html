@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login — Fresco</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body class="admin-auth-body">
+
+  <div class="auth-card">
+    <div class="auth-brand">
+      <span>🌿</span>
+      <span class="logo-text">Fresco</span>
+      <span class="auth-role-tag">Admin Portal</span>
+    </div>
+
+    <h1>Welcome back</h1>
+    <p class="auth-sub">Sign in to manage Fresco operations</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="signin">Sign In</button>
+      <button class="auth-tab" data-tab="signup">Create Account</button>
+    </div>
+
+    <!-- Sign In -->
+    <form id="signinForm" class="auth-form">
+      <div class="form-group">
+        <label for="si-email">Email</label>
+        <input type="email" id="si-email" placeholder="admin@fresco.in" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="si-password">Password</label>
+        <input type="password" id="si-password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary full-width" id="siBtn">Sign In</button>
+      <div class="auth-error hidden" id="si-err"></div>
+    </form>
+
+    <!-- Sign Up -->
+    <form id="signupForm" class="auth-form hidden">
+      <div class="form-group">
+        <label for="su-name">Full Name</label>
+        <input type="text" id="su-name" placeholder="Avinash Sharma" required autocomplete="name">
+      </div>
+      <div class="form-group">
+        <label for="su-email">Email</label>
+        <input type="email" id="su-email" placeholder="you@fresco.in" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="su-password">Password</label>
+        <input type="password" id="su-password" placeholder="Min 8 characters" required minlength="8" autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn btn-primary full-width" id="suBtn">Create Account</button>
+      <div class="auth-error hidden" id="su-err"></div>
+      <p class="auth-note">
+        ⚠️ New accounts start as "Consumer".<br>
+        After signing up, the owner must grant your role in the admin panel.
+      </p>
+    </form>
+
+    <div id="successMsg" class="hidden" style="text-align:center;padding:16px 0">
+      <div style="font-size:2.5rem;margin-bottom:12px">✅</div>
+      <h3 style="font-family:var(--font-serif);margin-bottom:8px">Account Created!</h3>
+      <p style="color:var(--gray-500);font-size:.9rem">Check your email to verify your account. Once verified, ask the owner to set your role.</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script>
+    // Redirect if already an admin
+    (async () => {
+      const { data: { session } } = await _supabase.auth.getSession();
+      if (!session) return;
+      const { data: p } = await _supabase.from('profiles').select('role').eq('id', session.user.id).single();
+      if (p && (p.role === 'owner' || p.role === 'staff')) {
+        window.location.href = 'dashboard.html';
+      }
+    })();
+
+    // Tab switching
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const t = tab.dataset.tab;
+        document.getElementById('signinForm').classList.toggle('hidden', t !== 'signin');
+        document.getElementById('signupForm').classList.toggle('hidden', t !== 'signup');
+        document.getElementById('si-err').classList.add('hidden');
+        document.getElementById('su-err').classList.add('hidden');
+      });
+    });
+
+    // Sign In
+    document.getElementById('signinForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = document.getElementById('siBtn');
+      btn.disabled = true; btn.textContent = 'Signing in…';
+
+      const { data, error } = await _supabase.auth.signInWithPassword({
+        email: document.getElementById('si-email').value.trim(),
+        password: document.getElementById('si-password').value
+      });
+
+      if (error) {
+        document.getElementById('si-err').textContent = error.message;
+        document.getElementById('si-err').classList.remove('hidden');
+        btn.disabled = false; btn.textContent = 'Sign In';
+        return;
+      }
+
+      const { data: profile } = await _supabase.from('profiles').select('role').eq('id', data.user.id).single();
+
+      if (!profile || !['owner', 'staff'].includes(profile.role)) {
+        await _supabase.auth.signOut();
+        document.getElementById('si-err').textContent = 'Access denied. Your account does not have admin access.';
+        document.getElementById('si-err').classList.remove('hidden');
+        btn.disabled = false; btn.textContent = 'Sign In';
+        return;
+      }
+
+      window.location.href = 'dashboard.html';
+    });
+
+    // Sign Up
+    document.getElementById('signupForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = document.getElementById('suBtn');
+      btn.disabled = true; btn.textContent = 'Creating…';
+
+      const { error } = await _supabase.auth.signUp({
+        email: document.getElementById('su-email').value.trim(),
+        password: document.getElementById('su-password').value,
+        options: { data: { full_name: document.getElementById('su-name').value.trim() } }
+      });
+
+      if (error) {
+        document.getElementById('su-err').textContent = error.message;
+        document.getElementById('su-err').classList.remove('hidden');
+        btn.disabled = false; btn.textContent = 'Create Account';
+        return;
+      }
+
+      document.getElementById('signupForm').classList.add('hidden');
+      document.getElementById('successMsg').classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>

@@ -421,6 +421,8 @@
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-client.js"></script>
   <script src="product.js?v=2"></script>
   <script>
     // Wire QR panel from product data after render
@@ -465,6 +467,18 @@
           const offset = 263.9 - (parseFloat(p.freshness) / 10) * 263.9;
           setTimeout(() => { ring.style.strokeDashoffset = offset; }, 300);
         }
+
+        // Log QR scan to Supabase (fire and forget — no await needed)
+        (async () => {
+          try {
+            const { data: { session } } = await _supabase.auth.getSession();
+            await _supabase.from('qr_scans').insert({
+              product_slug: key,
+              batch_code: p.batch?.batchId || null,
+              user_id: session?.user?.id || null
+            });
+          } catch (_) {}
+        })();
       }
     });
   </script>

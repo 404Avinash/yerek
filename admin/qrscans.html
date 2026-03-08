@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Scans — Fresco Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+  <div class="admin-layout" id="app">
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;width:100%;color:var(--gray-400)">Loading…</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    let currentProfile = null;
+    let scans = [];
+
+    (async () => {
+      const auth = await requireAdmin();
+      if (!auth) return;
+      currentProfile = auth.profile;
+
+      const today = new Date().toISOString().split('T')[0];
+
+      const [
+        { count: todayCount },
+        { count: totalCount },
+        { data }
+      ] = await Promise.all([
+        _supabase.from('qr_scans').select('*', { count: 'exact', head: true }).gte('scanned_at', today),
+        _supabase.from('qr_scans').select('*', { count: 'exact', head: true }),
+        _supabase.from('qr_scans').select('*').order('scanned_at', { ascending: false }).limit(100)
+      ]);
+
+      scans = data || [];
+      render(todayCount, totalCount);
+    })();
+
+    function render(todayCount, totalCount) {
+      // Top products by scan count
+      const freq = {};
+      scans.forEach(s => { freq[s.product_slug] = (freq[s.product_slug] || 0) + 1; });
+      const topProducts = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+      document.getElementById('app').innerHTML = `
+        ${renderSidebar('qrscans', currentProfile.role)}
+        <main class="admin-main">
+          <div class="admin-topbar">
+            <div>
+              <h1 class="admin-page-title">QR Scan Analytics</h1>
+              <p class="admin-page-sub">Track product traceability engagement</p>
+            </div>
+          </div>
+
+          <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+            <div class="stat-card stat-card-accent">
+              <div class="stat-icon">📱</div>
+              <div><div class="stat-num">${todayCount ?? 0}</div><div class="stat-label">Scans Today</div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📊</div>
+              <div><div class="stat-num">${totalCount ?? 0}</div><div class="stat-label">Total Scans</div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🥇</div>
+              <div>
+                <div class="stat-num" style="font-size:1.2rem">${topProducts[0]?.[0] || '—'}</div>
+                <div class="stat-label">Most Scanned Product</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dash-grid">
+            <div class="table-card">
+              <div class="table-card-header"><span class="table-card-title">Top Scanned Products</span></div>
+              <table class="admin-table">
+                <thead><tr><th>Product Slug</th><th>Scans</th></tr></thead>
+                <tbody>
+                  ${topProducts.length ? topProducts.map(([slug, count]) => `
+                    <tr><td class="td-main">${slug}</td><td><span class="score-badge">${count}</span></td></tr>`).join('')
+                  : '<tr><td colspan="2" class="empty-row">No scans yet</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-card">
+              <div class="table-card-header"><span class="table-card-title">Recent Scans (last 100)</span></div>
+              <div class="table-wrap">
+                <table class="admin-table">
+                  <thead><tr><th>Product</th><th>Batch</th><th>Time</th></tr></thead>
+                  <tbody>
+                    ${scans.length ? scans.slice(0, 30).map(s => `
+                      <tr>
+                        <td class="td-main">${s.product_slug || '—'}</td>
+                        <td class="muted">${s.batch_code || '—'}</td>
+                        <td class="muted">${fmtDate(s.scanned_at)}</td>
+                      </tr>`).join('')
+                    : '<tr><td colspan="3" class="empty-row">No scans recorded yet</td></tr>'}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </main>`;
+    }
+  </script>
+</body>
+</html>

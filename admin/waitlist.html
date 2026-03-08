@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waitlist — Fresco Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+  <div class="admin-layout" id="app">
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;width:100%;color:var(--gray-400)">Loading…</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    let currentProfile = null;
+    let entries = [];
+
+    (async () => {
+      const auth = await requireAdmin();
+      if (!auth) return;
+      currentProfile = auth.profile;
+      const { data } = await _supabase.from('waitlist').select('*').order('joined_at', { ascending: false });
+      entries = data || [];
+      render();
+    })();
+
+    function render() {
+      document.getElementById('app').innerHTML = `
+        ${renderSidebar('waitlist', currentProfile.role)}
+        <main class="admin-main">
+          <div class="admin-topbar">
+            <div>
+              <h1 class="admin-page-title">Waitlist</h1>
+              <p class="admin-page-sub">${entries.length} people waiting</p>
+            </div>
+            <div class="topbar-actions">
+              <button class="btn-admin-secondary" onclick="exportCSV()" style="font-size:.85rem">↓ Export CSV</button>
+            </div>
+          </div>
+
+          <div class="table-card">
+            <div class="table-card-header">
+              <span class="table-card-title">All Signups</span>
+              <input type="text" id="search" placeholder="Search…" oninput="filterEntries(this.value)"
+                style="padding:7px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-md);font-size:.85rem;outline:none;width:220px">
+            </div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead><tr>
+                  <th>#</th><th>Name</th><th>Email</th><th>City</th><th>Source</th><th>Notified</th><th>Joined</th>
+                </tr></thead>
+                <tbody id="body">${renderRows(entries)}</tbody>
+              </table>
+            </div>
+          </div>
+        </main>`;
+    }
+
+    function renderRows(list) {
+      if (!list.length) return `<tr><td colspan="7" class="empty-row">No entries yet</td></tr>`;
+      return list.map((e, i) => `
+        <tr>
+          <td class="muted">${i + 1}</td>
+          <td class="td-main">${e.name}</td>
+          <td class="muted">${e.email}</td>
+          <td>${e.city || '—'}</td>
+          <td><span class="status-pill status-active">${e.source || 'web'}</span></td>
+          <td>
+            <label class="toggle">
+              <input type="checkbox" ${e.is_notified ? 'checked' : ''} onchange="toggleNotified(${e.id}, this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </td>
+          <td class="muted">${fmtDate(e.joined_at)}</td>
+        </tr>`).join('');
+    }
+
+    function filterEntries(q) {
+      const filtered = entries.filter(e =>
+        e.name.toLowerCase().includes(q.toLowerCase()) ||
+        e.email.toLowerCase().includes(q.toLowerCase()) ||
+        (e.city || '').toLowerCase().includes(q.toLowerCase())
+      );
+      document.getElementById('body').innerHTML = renderRows(filtered);
+    }
+
+    async function toggleNotified(id, val) {
+      const { error } = await _supabase.from('waitlist').update({ is_notified: val }).eq('id', id);
+      if (error) { showToast('Failed to update', 'error'); return; }
+      entries = entries.map(e => e.id === id ? { ...e, is_notified: val } : e);
+      showToast(val ? 'Marked as notified' : 'Marked as not notified', 'info');
+    }
+
+    function exportCSV() {
+      const header = ['Name', 'Email', 'City', 'Source', 'Notified', 'Joined'];
+      const rows = entries.map(e => [
+        `"${e.name}"`, `"${e.email}"`, `"${e.city || ''}"`,
+        `"${e.source || 'web'}"`, e.is_notified ? 'Yes' : 'No',
+        new Date(e.joined_at).toLocaleDateString('en-IN')
+      ]);
+      const csv = [header.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+      a.download = `fresco-waitlist-${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+    }
+  </script>
+</body>
+</html>

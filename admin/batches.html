@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Batches — Fresco Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+
+  <div class="admin-layout" id="app">
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;width:100%;color:var(--gray-400)">Loading…</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    let currentProfile = null;
+    let products = [];
+    let farms = [];
+    let batches = [];
+
+    (async () => {
+      const auth = await requireAdmin();
+      if (!auth) return;
+      currentProfile = auth.profile;
+
+      const [{ data: p }, { data: f }, { data: b }] = await Promise.all([
+        _supabase.from('products').select('id, name, emoji, slug').order('name'),
+        _supabase.from('farms').select('id, name').order('name'),
+        _supabase.from('batches').select('*, products(name,emoji), farms(name)').order('created_at', { ascending: false }).limit(60)
+      ]);
+
+      products = p || [];
+      farms = f || [];
+      batches = b || [];
+
+      render();
+    })();
+
+    function render() {
+      document.getElementById('app').innerHTML = `
+        ${renderSidebar('batches', currentProfile.role)}
+        <main class="admin-main">
+          <div class="admin-topbar">
+            <div>
+              <h1 class="admin-page-title">Today's Batches</h1>
+              <p class="admin-page-sub">Log each morning's fresh intake</p>
+            </div>
+          </div>
+
+          <!-- Add Batch Form -->
+          <div class="form-card">
+            <div class="form-card-title">➕ Log New Batch</div>
+            <form id="batchForm" class="admin-form">
+              <div class="admin-form-grid-3">
+                <div class="form-group">
+                  <label>Product *</label>
+                  <select id="b-product" required>
+                    <option value="">— Select product —</option>
+                    ${products.map(p => `<option value="${p.id}">${p.emoji || ''} ${p.name}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Farm *</label>
+                  <select id="b-farm" required>
+                    <option value="">— Select farm —</option>
+                    ${farms.map(f => `<option value="${f.id}">${f.name}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Quantity (kg)</label>
+                  <input type="number" id="b-qty" placeholder="e.g. 50" min="0" step="0.5">
+                </div>
+              </div>
+              <div class="admin-form-grid-3">
+                <div class="form-group">
+                  <label>Harvested At</label>
+                  <input type="text" id="b-harvested" placeholder="e.g. Yesterday 6 AM">
+                </div>
+                <div class="form-group">
+                  <label>Arrived At</label>
+                  <input type="text" id="b-arrived" placeholder="e.g. Today 4 AM">
+                </div>
+                <div class="form-group">
+                  <label>Freshness Score (0–10)</label>
+                  <input type="number" id="b-score" placeholder="9.2" min="0" max="10" step="0.1" value="9.0">
+                </div>
+              </div>
+              <div class="admin-form-grid-2">
+                <div class="form-group">
+                  <label>Transit / Supply Chain</label>
+                  <input type="text" id="b-transit" placeholder="e.g. 120 km, refrigerated truck">
+                </div>
+                <div class="form-group">
+                  <label>Storage Conditions</label>
+                  <input type="text" id="b-storage" placeholder="e.g. 4°C, 60% humidity">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Notes</label>
+                <textarea id="b-notes" placeholder="Any additional notes about this batch…"></textarea>
+              </div>
+              <div class="admin-form-actions">
+                <button type="submit" class="btn-admin-primary" id="batchSubmitBtn">Log Batch</button>
+                <button type="button" class="btn-admin-secondary" onclick="document.getElementById('batchForm').reset()">Clear</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Batches Table -->
+          <div class="table-card">
+            <div class="table-card-header">
+              <span class="table-card-title">All Batches <span style="color:var(--gray-400);font-weight:400">(last 60)</span></span>
+              <button class="btn-admin-secondary" onclick="refreshBatches()" style="font-size:.8rem;padding:6px 14px">↻ Refresh</button>
+            </div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead><tr>
+                  <th>Batch Code</th><th>Product</th><th>Farm</th><th>Qty</th><th>Score</th><th>Status</th><th>Logged</th><th>Actions</th>
+                </tr></thead>
+                <tbody id="batchesBody">
+                  ${renderBatchRows()}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>`;
+
+      document.getElementById('batchForm').addEventListener('submit', handleAddBatch);
+    }
+
+    function renderBatchRows() {
+      if (!batches.length) return `<tr><td colspan="8" class="empty-row">No batches yet. Add one above.</td></tr>`;
+      return batches.map(b => `
+        <tr id="row-${b.id}">
+          <td><code style="font-size:.82rem;background:var(--gray-100);padding:2px 6px;border-radius:4px">${b.batch_code}</code></td>
+          <td class="td-main">${b.products?.emoji || ''} ${b.products?.name || '—'}</td>
+          <td>${b.farms?.name || '—'}</td>
+          <td>${b.qty_kg ? b.qty_kg + ' kg' : '—'}</td>
+          <td><span class="score-badge ${scoreBadgeClass(b.freshness_score)}">${b.freshness_score ?? '—'}</span></td>
+          <td>
+            <span class="status-pill ${b.is_active ? 'status-active' : 'status-inactive'}">
+              ${b.is_active ? '● Active' : '○ Inactive'}
+            </span>
+          </td>
+          <td class="muted">${fmtDate(b.created_at)}</td>
+          <td>
+            <div class="actions">
+              <button class="btn-icon btn-icon-edit" onclick="toggleActive(${b.id}, ${b.is_active})" title="${b.is_active ? 'Deactivate' : 'Activate'}">
+                ${b.is_active ? '⏸' : '▶'}
+              </button>
+              <button class="btn-icon btn-icon-del" onclick="deleteBatch(${b.id})" title="Delete">🗑</button>
+            </div>
+          </td>
+        </tr>`).join('');
+    }
+
+    async function handleAddBatch(e) {
+      e.preventDefault();
+      const btn = document.getElementById('batchSubmitBtn');
+      btn.disabled = true; btn.textContent = 'Logging…';
+
+      const productId = parseInt(document.getElementById('b-product').value);
+      const product = products.find(p => p.id === productId);
+      const farmId = parseInt(document.getElementById('b-farm').value) || null;
+
+      // Auto-generate batch code: FRS-{SLUG}-{MMDD}
+      const now = new Date();
+      const mmdd = String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
+      const slugPart = product ? product.slug.toUpperCase().slice(0, 4) : 'GEN';
+      const batchCode = `FRS-${slugPart}-${mmdd}`;
+
+      const { data, error } = await _supabase.from('batches').insert({
+        product_id: productId,
+        batch_code: batchCode,
+        farm_id: farmId || null,
+        qty_kg: parseFloat(document.getElementById('b-qty').value) || 0,
+        harvested_at: document.getElementById('b-harvested').value.trim() || null,
+        arrived_at: document.getElementById('b-arrived').value.trim() || null,
+        freshness_score: parseFloat(document.getElementById('b-score').value) || 9.0,
+        transit_text: document.getElementById('b-transit').value.trim() || null,
+        storage_conditions: document.getElementById('b-storage').value.trim() || null,
+        notes: document.getElementById('b-notes').value.trim() || null,
+        is_active: true,
+        created_by: currentProfile.id
+      }).select('*, products(name,emoji), farms(name)').single();
+
+      btn.disabled = false; btn.textContent = 'Log Batch';
+
+      if (error) {
+        showToast('Error: ' + error.message, 'error');
+        return;
+      }
+
+      batches.unshift(data);
+      document.getElementById('batchesBody').innerHTML = renderBatchRows();
+      document.getElementById('batchForm').reset();
+      document.getElementById('b-score').value = '9.0';
+      showToast(`Batch ${batchCode} logged successfully!`);
+    }
+
+    async function toggleActive(id, current) {
+      const { error } = await _supabase.from('batches').update({ is_active: !current }).eq('id', id);
+      if (error) { showToast('Failed to update', 'error'); return; }
+      const idx = batches.findIndex(b => b.id === id);
+      if (idx >= 0) batches[idx].is_active = !current;
+      document.getElementById('batchesBody').innerHTML = renderBatchRows();
+      showToast(current ? 'Batch deactivated' : 'Batch activated', 'info');
+    }
+
+    async function deleteBatch(id) {
+      const ok = await adminConfirm('Delete this batch? This cannot be undone.');
+      if (!ok) return;
+      const { error } = await _supabase.from('batches').delete().eq('id', id);
+      if (error) { showToast('Delete failed: ' + error.message, 'error'); return; }
+      batches = batches.filter(b => b.id !== id);
+      document.getElementById('batchesBody').innerHTML = renderBatchRows();
+      showToast('Batch deleted');
+    }
+
+    async function refreshBatches() {
+      const { data } = await _supabase.from('batches')
+        .select('*, products(name,emoji), farms(name)')
+        .order('created_at', { ascending: false }).limit(60);
+      batches = data || [];
+      document.getElementById('batchesBody').innerHTML = renderBatchRows();
+      showToast('Refreshed', 'info');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile — Fresco</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    :root {
+      --card-radius: 20px;
+      --card-shadow: 0 4px 24px rgba(20,83,45,.08);
+    }
+    body { background: var(--green-50, #f0fdf4); min-height: 100vh; }
+    .pf-header {
+      background: #fff; border-bottom: 1px solid #e5e7eb;
+      padding: 14px 32px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .pf-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .pf-brand-name { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700; color: #14532d; }
+    .pf-signout {
+      background: none; border: 1.5px solid #e5e7eb; border-radius: 999px;
+      padding: 7px 18px; font-size: .85rem; font-weight: 600; cursor: pointer;
+      color: #6b7280; font-family: 'Outfit', sans-serif; transition: .18s;
+    }
+    .pf-signout:hover { border-color: #9ca3af; color: #374151; }
+
+    .pf-main { max-width: 860px; margin: 0 auto; padding: 40px 24px; display: flex; flex-direction: column; gap: 24px; }
+
+    .pf-card {
+      background: #fff; border-radius: var(--card-radius);
+      padding: 28px 32px; box-shadow: var(--card-shadow);
+    }
+    .pf-card-title {
+      font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700;
+      color: #111827; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+    }
+
+    /* Profile overview */
+    .pf-avatar {
+      width: 60px; height: 60px; border-radius: 50%;
+      background: #dcfce7; display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; font-weight: 800; color: #15803d; flex-shrink: 0;
+    }
+    .pf-info-row { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+    .pf-info-name { font-size: 1.1rem; font-weight: 700; color: #111827; }
+    .pf-info-role {
+      display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; background: #dcfce7; color: #15803d;
+      padding: 3px 10px; border-radius: 999px; border: 1px solid #bbf7d0;
+    }
+    .pf-info-email { font-size: .87rem; color: #6b7280; margin-top: 2px; }
+
+    /* Edit form */
+    .pf-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .pf-fg { display: flex; flex-direction: column; gap: 5px; }
+    .pf-fg label { font-size: .82rem; font-weight: 600; color: #374151; }
+    .pf-fg input {
+      padding: 9px 13px; border: 1.5px solid #e5e7eb; border-radius: 10px;
+      font-size: .88rem; font-family: 'Outfit', sans-serif; color: #1f2937;
+      outline: none; transition: .18s;
+    }
+    .pf-fg input:focus { border-color: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.1); }
+    .pf-save {
+      margin-top: 4px; background: #16a34a; color: #fff; border: none;
+      border-radius: 999px; padding: 10px 24px; font-size: .87rem; font-weight: 700;
+      cursor: pointer; transition: .18s; font-family: 'Outfit', sans-serif;
+    }
+    .pf-save:hover { background: #15803d; }
+
+    /* Scan history */
+    .pf-scan-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: .88rem;
+    }
+    .pf-scan-row:last-child { border-bottom: none; }
+    .pf-scan-slug { font-weight: 600; color: #111827; }
+    .pf-scan-time { color: #9ca3af; font-size: .8rem; }
+
+    .pf-empty { color: #9ca3af; font-size: .88rem; padding: 8px 0; }
+
+    @media (max-width: 600px) {
+      .pf-form { grid-template-columns: 1fr; }
+      .pf-header { padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="pf-header">
+    <a href="/" class="pf-brand">
+      <span>🌿</span>
+      <span class="pf-brand-name">Fresco</span>
+    </a>
+    <button class="pf-signout" id="signoutBtn">Sign Out</button>
+  </header>
+
+  <div class="pf-main" id="main">
+    <div style="color:#9ca3af;text-align:center;padding:60px 0">Loading…</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-client.js"></script>
+  <script>
+    let profile = null;
+    let scans = [];
+
+    (async () => {
+      const { data: { session } } = await _supabase.auth.getSession();
+      if (!session) { window.location.href = '/consumer/login.html'; return; }
+
+      const [{ data: p }, { data: s }] = await Promise.all([
+        _supabase.from('profiles').select('*').eq('id', session.user.id).single(),
+        _supabase.from('qr_scans').select('*').eq('user_id', session.user.id).order('scanned_at', { ascending: false }).limit(20)
+      ]);
+
+      profile = p || { email: session.user.email, full_name: '', role: 'consumer' };
+      scans = s || [];
+      render();
+    })();
+
+    document.getElementById('signoutBtn').addEventListener('click', async () => {
+      await _supabase.auth.signOut();
+      window.location.href = '/';
+    });
+
+    function fmtDt(d) {
+      if (!d) return '';
+      return new Date(d).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function initials(name) {
+      return (name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    }
+
+    function render() {
+      document.getElementById('main').innerHTML = `
+        <!-- Profile Card -->
+        <div class="pf-card">
+          <div class="pf-info-row">
+            <div class="pf-avatar">${initials(profile.full_name)}</div>
+            <div>
+              <div class="pf-info-name">${profile.full_name || 'Fresco Member'}</div>
+              <div class="pf-info-email">${profile.email}</div>
+              <span class="pf-info-role" style="margin-top:4px;display:inline-block">${profile.role}</span>
+            </div>
+          </div>
+
+          <div class="pf-card-title">✏️ Edit Profile</div>
+          <form id="profileForm">
+            <div class="pf-form">
+              <div class="pf-fg">
+                <label>Full Name</label>
+                <input type="text" id="pf-name" value="${profile.full_name || ''}" placeholder="Your name">
+              </div>
+              <div class="pf-fg">
+                <label>City</label>
+                <input type="text" id="pf-city" value="${profile.city || ''}" placeholder="Delhi">
+              </div>
+              <div class="pf-fg">
+                <label>Phone</label>
+                <input type="tel" id="pf-phone" value="${profile.phone || ''}" placeholder="+91 98xxx xxxxx">
+              </div>
+              <div class="pf-fg">
+                <label>Email <span style="color:#9ca3af;font-weight:400">(read-only)</span></label>
+                <input type="email" value="${profile.email}" readonly style="background:#f9fafb;color:#9ca3af;cursor:not-allowed">
+              </div>
+            </div>
+            <div style="margin-top:16px">
+              <button type="submit" class="pf-save" id="saveBtn">Save Changes</button>
+              <span id="saveMsg" style="margin-left:12px;color:#16a34a;font-size:.87rem;font-weight:600;display:none">Saved ✓</span>
+            </div>
+          </form>
+        </div>
+
+        <!-- QR Scan History -->
+        <div class="pf-card">
+          <div class="pf-card-title">📱 QR Scan History</div>
+          ${scans.length ? scans.map(s => `
+            <div class="pf-scan-row">
+              <div>
+                <div class="pf-scan-slug">${s.product_slug || 'Unknown product'}</div>
+                ${s.batch_code ? `<div style="font-size:.78rem;color:#9ca3af">Batch: ${s.batch_code}</div>` : ''}
+              </div>
+              <div class="pf-scan-time">${fmtDt(s.scanned_at)}</div>
+            </div>`).join('')
+          : '<p class="pf-empty">No QR scans recorded yet. Scan a product QR to see history here.</p>'}
+        </div>
+
+        <!-- Quick links -->
+        <div class="pf-card" style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="/" style="color:#16a34a;font-weight:600;text-decoration:none;font-size:.9rem">🏠 Home</a>
+          <a href="/category.html" style="color:#16a34a;font-weight:600;text-decoration:none;font-size:.9rem">🥬 Shop</a>
+          <a href="/#walking-mandi" style="color:#16a34a;font-weight:600;text-decoration:none;font-size:.9rem">📍 Walking Mandi</a>
+        </div>`;
+
+      document.getElementById('profileForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn = document.getElementById('saveBtn');
+        btn.disabled = true; btn.textContent = 'Saving…';
+        const { error } = await _supabase.from('profiles').update({
+          full_name: document.getElementById('pf-name').value.trim(),
+          city:      document.getElementById('pf-city').value.trim() || null,
+          phone:     document.getElementById('pf-phone').value.trim() || null,
+          updated_at: new Date().toISOString()
+        }).eq('id', profile.id);
+        btn.disabled = false; btn.textContent = 'Save Changes';
+        if (!error) {
+          const msg = document.getElementById('saveMsg');
+          msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2500);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Fresco</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    body { background: var(--green-50); min-height: 100vh; display: flex; flex-direction: column; }
+    .consumer-auth-wrap {
+      flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px;
+    }
+    .consumer-auth-card {
+      background: #fff; border-radius: 24px; padding: 40px;
+      width: 100%; max-width: 420px; box-shadow: 0 8px 40px rgba(20,83,45,.12);
+    }
+    .ca-brand {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 28px;
+      text-decoration: none;
+    }
+    .ca-brand-text { font-family: var(--font-serif, 'Fraunces', serif); font-size: 1.3rem; font-weight: 700; color: var(--green-900, #14532d); }
+    .ca-title { font-family: var(--font-serif, 'Fraunces', serif); font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 6px; }
+    .ca-sub { color: #6b7280; font-size: .9rem; margin-bottom: 22px; }
+    .ca-tabs { display: flex; gap: 4px; background: #f3f4f6; border-radius: 10px; padding: 4px; margin-bottom: 22px; }
+    .ca-tab {
+      flex: 1; padding: 8px; border: none; border-radius: 7px;
+      font-size: .86rem; font-weight: 600; cursor: pointer;
+      background: none; color: #6b7280; transition: .18s; font-family: 'Outfit', sans-serif;
+    }
+    .ca-tab.active { background: #fff; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+    .ca-form { display: flex; flex-direction: column; gap: 14px; }
+    .ca-form .fg { display: flex; flex-direction: column; gap: 5px; }
+    .ca-form .fg label { font-size: .82rem; font-weight: 600; color: #374151; }
+    .ca-form .fg input {
+      padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px;
+      font-size: .9rem; font-family: 'Outfit', sans-serif; color: #1f2937;
+      outline: none; transition: .18s;
+    }
+    .ca-form .fg input:focus { border-color: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.1); }
+    .ca-submit {
+      background: #16a34a; color: #fff; border: none; border-radius: 999px;
+      padding: 12px; font-size: .9rem; font-weight: 700; cursor: pointer;
+      transition: .18s; font-family: 'Outfit', sans-serif;
+    }
+    .ca-submit:hover { background: #15803d; }
+    .ca-submit:disabled { opacity: .55; cursor: not-allowed; }
+    .ca-err {
+      background: #fee2e2; color: #dc2626;
+      padding: 10px 14px; border-radius: 10px; font-size: .84rem;
+    }
+    .ca-success { text-align: center; padding: 12px 0; }
+    .ca-success .big { font-size: 2.5rem; margin-bottom: 10px; }
+    .ca-back { display: block; text-align: center; margin-top: 20px; color: #16a34a; font-weight: 600; font-size: .88rem; text-decoration: none; }
+    .ca-back:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header style="padding:16px 24px;border-bottom:1px solid #e5e7eb;background:#fff">
+    <a href="/" style="display:flex;align-items:center;gap:8px;text-decoration:none">
+      <span style="font-size:1.3rem">🌿</span>
+      <span style="font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:#14532d">Fresco</span>
+    </a>
+  </header>
+
+  <div class="consumer-auth-wrap">
+    <div class="consumer-auth-card">
+      <p class="ca-title">My Account</p>
+      <p class="ca-sub">Sign in or create a Fresco account</p>
+
+      <div class="ca-tabs">
+        <button class="ca-tab active" data-tab="signin">Sign In</button>
+        <button class="ca-tab" data-tab="signup">Sign Up</button>
+      </div>
+
+      <!-- Sign In -->
+      <form id="siForm" class="ca-form">
+        <div class="fg">
+          <label for="si-em">Email</label>
+          <input type="email" id="si-em" placeholder="you@email.com" required autocomplete="email">
+        </div>
+        <div class="fg">
+          <label for="si-pw">Password</label>
+          <input type="password" id="si-pw" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="ca-submit" id="siBtn">Sign In</button>
+        <div class="ca-err hidden" id="si-err"></div>
+      </form>
+
+      <!-- Sign Up -->
+      <form id="suForm" class="ca-form hidden">
+        <div class="fg">
+          <label for="su-nm">Full Name</label>
+          <input type="text" id="su-nm" placeholder="Avinash Sharma" required autocomplete="name">
+        </div>
+        <div class="fg">
+          <label for="su-em">Email</label>
+          <input type="email" id="su-em" placeholder="you@email.com" required autocomplete="email">
+        </div>
+        <div class="fg">
+          <label for="su-pw">Password</label>
+          <input type="password" id="su-pw" placeholder="Min 8 characters" required minlength="8" autocomplete="new-password">
+        </div>
+        <button type="submit" class="ca-submit" id="suBtn">Create Account</button>
+        <div class="ca-err hidden" id="su-err"></div>
+      </form>
+
+      <div id="successMsg" class="ca-success hidden">
+        <div class="big">✅</div>
+        <strong>Account created!</strong>
+        <p style="color:#6b7280;margin-top:6px;font-size:.88rem">Check your email to verify your account.</p>
+      </div>
+
+      <a href="/" class="ca-back">← Back to Fresco</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-client.js"></script>
+  <script>
+    // Redirect if already signed in
+    (async () => {
+      const { data: { session } } = await _supabase.auth.getSession();
+      if (session) window.location.href = '/consumer/profile.html';
+    })();
+
+    // Tab toggle
+    document.querySelectorAll('.ca-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.ca-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const t = tab.dataset.tab;
+        document.getElementById('siForm').classList.toggle('hidden', t !== 'signin');
+        document.getElementById('suForm').classList.toggle('hidden', t !== 'signup');
+      });
+    });
+
+    // Sign in
+    document.getElementById('siForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = document.getElementById('siBtn');
+      btn.disabled = true; btn.textContent = 'Signing in…';
+      const { error } = await _supabase.auth.signInWithPassword({
+        email: document.getElementById('si-em').value.trim(),
+        password: document.getElementById('si-pw').value
+      });
+      if (error) {
+        document.getElementById('si-err').textContent = error.message;
+        document.getElementById('si-err').classList.remove('hidden');
+        btn.disabled = false; btn.textContent = 'Sign In';
+        return;
+      }
+      window.location.href = '/consumer/profile.html';
+    });
+
+    // Sign up
+    document.getElementById('suForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = document.getElementById('suBtn');
+      btn.disabled = true; btn.textContent = 'Creating…';
+      const { error } = await _supabase.auth.signUp({
+        email: document.getElementById('su-em').value.trim(),
+        password: document.getElementById('su-pw').value,
+        options: { data: { full_name: document.getElementById('su-nm').value.trim() } }
+      });
+      if (error) {
+        document.getElementById('su-err').textContent = error.message;
+        document.getElementById('su-err').classList.remove('hidden');
+        btn.disabled = false; btn.textContent = 'Create Account';
+        return;
+      }
+      document.getElementById('suForm').classList.add('hidden');
+      document.getElementById('successMsg').classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>
