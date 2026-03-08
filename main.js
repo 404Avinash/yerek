@@ -297,3 +297,119 @@ const barObserver = new IntersectionObserver((entries) => {
 barFills.forEach(bar => barObserver.observe(bar));
 
 console.log('🌿 Fresco website loaded successfully.');
+
+// ==========================================
+// LIVE VEGGIE SEARCH
+// ==========================================
+(function initVegSearch() {
+  const input = document.getElementById('vegSearchInput');
+  const resultsBox = document.getElementById('searchResults');
+  if (!input || !resultsBox) return;
+
+  // Products may not yet be loaded (product.js is not on index.html)
+  // So we embed a compact search map inline
+  const SEARCH_DATA = [
+    { key:'spinach', name:'Spinach', aka:'Palak', emoji:'🥬', cat:'Leafy' },
+    { key:'coriander', name:'Coriander', aka:'Dhaniya', emoji:'🌿', cat:'Leafy' },
+    { key:'fenugreek', name:'Fenugreek', aka:'Methi', emoji:'🌱', cat:'Leafy' },
+    { key:'mint', name:'Mint', aka:'Pudina', emoji:'🍃', cat:'Leafy' },
+    { key:'lettuce', name:'Lettuce', aka:'Salad Patta', emoji:'🥬', cat:'Leafy' },
+    { key:'amaranth', name:'Amaranth', aka:'Chaulai', emoji:'🌾', cat:'Leafy' },
+    { key:'carrot', name:'Carrot', aka:'Gajar', emoji:'🥕', cat:'Root' },
+    { key:'radish', name:'Radish', aka:'Mooli', emoji:'🫚', cat:'Root' },
+    { key:'beetroot', name:'Beetroot', aka:'Chukandar', emoji:'🫀', cat:'Root' },
+    { key:'turnip', name:'Turnip', aka:'Shalgam', emoji:'🟣', cat:'Root' },
+    { key:'potato', name:'Potato', aka:'Aloo', emoji:'🥔', cat:'Tuber' },
+    { key:'sweet-potato', name:'Sweet Potato', aka:'Shakarkandi', emoji:'🍠', cat:'Tuber' },
+    { key:'yam', name:'Yam', aka:'Suran / Jimikand', emoji:'🫚', cat:'Tuber' },
+    { key:'colocasia', name:'Colocasia', aka:'Arbi', emoji:'🌿', cat:'Tuber' },
+    { key:'tomato', name:'Tomato', aka:'Tamatar', emoji:'🍅', cat:'Fruiting' },
+    { key:'capsicum', name:'Capsicum', aka:'Shimla Mirch', emoji:'🫑', cat:'Fruiting' },
+    { key:'chilly', name:'Green Chilly', aka:'Hari Mirch', emoji:'🌶️', cat:'Fruiting' },
+    { key:'brinjal', name:'Brinjal', aka:'Baingan', emoji:'🍆', cat:'Fruiting' },
+    { key:'peas', name:'Peas', aka:'Matar', emoji:'🫛', cat:'Fruiting' },
+    { key:'bitter-gourd', name:'Bitter Gourd', aka:'Karela', emoji:'🥒', cat:'Fruiting' },
+    { key:'banana', name:'Banana', aka:'Kela', emoji:'🍌', cat:'Fruits' },
+    { key:'apple', name:'Apple', aka:'Seb', emoji:'🍎', cat:'Fruits' },
+    { key:'orange', name:'Orange', aka:'Santra / Narangi', emoji:'🍊', cat:'Fruits' },
+    { key:'papaya', name:'Papaya', aka:'Papita', emoji:'🟡', cat:'Fruits' },
+    { key:'guava', name:'Guava', aka:'Amrood', emoji:'🍐', cat:'Fruits' },
+    { key:'pomegranate', name:'Pomegranate', aka:'Anar', emoji:'🔴', cat:'Fruits' },
+  ];
+
+  let activeIndex = -1;
+
+  function search(q) {
+    if (!q || q.length < 1) return [];
+    const ql = q.toLowerCase();
+    return SEARCH_DATA.filter(v =>
+      v.name.toLowerCase().includes(ql) ||
+      v.aka.toLowerCase().includes(ql) ||
+      v.key.includes(ql)
+    ).slice(0, 6);
+  }
+
+  function renderResults(results) {
+    if (results.length === 0) {
+      resultsBox.innerHTML = '<div class="search-no-result">No vegetables found. Try "Spinach" or "Aloo".</div>';
+      resultsBox.classList.add('open');
+      return;
+    }
+    resultsBox.innerHTML = results.map((v, i) => `
+      <a href="product.html?item=${v.key}" class="search-result-item" data-index="${i}">
+        <span class="search-emoji">${v.emoji}</span>
+        <div class="search-result-text">
+          <div class="search-result-name">${v.name}</div>
+          <div class="search-result-aka">${v.aka} · ${v.cat}</div>
+        </div>
+        <span class="search-result-score">View →</span>
+      </a>
+    `).join('');
+    resultsBox.classList.add('open');
+    activeIndex = -1;
+  }
+
+  function close() {
+    resultsBox.classList.remove('open');
+    resultsBox.innerHTML = '';
+    activeIndex = -1;
+  }
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim();
+    if (!q) { close(); return; }
+    renderResults(search(q));
+  });
+
+  input.addEventListener('keydown', (e) => {
+    const items = resultsBox.querySelectorAll('.search-result-item');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIndex = Math.min(activeIndex + 1, items.length - 1);
+      items.forEach((el, i) => el.classList.toggle('active', i === activeIndex));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIndex = Math.max(activeIndex - 1, 0);
+      items.forEach((el, i) => el.classList.toggle('active', i === activeIndex));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (activeIndex >= 0 && items[activeIndex]) {
+        window.location.href = items[activeIndex].href;
+      } else if (items.length > 0) {
+        window.location.href = items[0].href;
+      }
+    } else if (e.key === 'Escape') {
+      close();
+    }
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.hero-search-wrap')) close();
+  });
+
+  // Add active item highlight style
+  const s = document.createElement('style');
+  s.textContent = '.search-result-item.active { background: #f0fdf4; }';
+  document.head.appendChild(s);
+})();

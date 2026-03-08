@@ -1352,3 +1352,264 @@ a.cat-card { text-decoration: none; display: block; }
   .hero-cta-group { flex-direction: column; align-items: stretch; }
   .hero-cta-group .btn { justify-content: center; }
 }
+
+/* ==========================================
+   NEW FEATURES: Search, Farmer Cards, WhatsApp Float
+   ========================================== */
+
+/* ---- Live Search Bar ---- */
+.hero-search-wrap {
+  position: relative;
+  margin-bottom: 28px;
+  max-width: 520px;
+}
+
+.hero-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: 14px;
+  padding: 14px 18px;
+  transition: all 0.2s ease;
+}
+
+.hero-search-box:focus-within {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.5);
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.08);
+}
+
+.search-icon { color: rgba(255,255,255,0.7); flex-shrink:0; }
+
+.hero-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+
+.hero-search-input::placeholder { color: rgba(255,255,255,0.5); }
+
+.search-shortcut {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 2px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  font-family: monospace;
+}
+
+.hero-search-results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0; right: 0;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  overflow: hidden;
+  z-index: 200;
+  display: none;
+}
+
+.hero-search-results.open { display: block; }
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: #f0fdf4; }
+
+.search-emoji { font-size: 1.5rem; width: 32px; text-align: center; }
+
+.search-result-text { flex: 1; }
+.search-result-name { font-weight: 700; font-size: 0.9rem; color: #111827; }
+.search-result-aka { font-size: 0.75rem; color: #6b7280; }
+.search-result-score { font-size: 0.75rem; color: #16a34a; font-weight: 600; }
+
+.search-no-result {
+  padding: 20px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+/* ---- Farmer Cards ---- */
+#farmers {
+  background: #fafafa;
+  padding: 100px 40px;
+}
+
+.farmers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.farmer-card {
+  background: #fff;
+  border-radius: 24px;
+  border: 1.5px solid #e5e7eb;
+  padding: 28px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.farmer-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.10);
+  border-color: #bbf7d0;
+}
+
+.farmer-avatar {
+  font-size: 3rem;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #d1fae5, #bbf7d0);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 12px rgba(22,163,74,0.15);
+}
+
+.farmer-body { flex: 1; min-width: 0; }
+.farmer-name { font-size: 1rem; font-weight: 800; color: #111827; margin-bottom: 2px; }
+.farmer-loc { font-size: 0.78rem; color: #6b7280; margin-bottom: 10px; }
+
+.farmer-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+
+.farmer-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+
+.farmer-quote {
+  font-size: 0.85rem;
+  color: #374151;
+  line-height: 1.65;
+  font-style: italic;
+  border-left: 3px solid #22c55e;
+  padding-left: 12px;
+  margin: 0 0 14px;
+}
+
+.farmer-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.farmer-stats span {
+  font-size: 0.75rem;
+  color: #6b7280;
+  background: #f9fafb;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.farmer-stats strong { color: #111827; }
+
+/* Farmer CTA card */
+.farmer-cta-card {
+  background: linear-gradient(135deg, #052e16 0%, #14532d 100%);
+  border-color: transparent;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+.farmer-cta-card:hover { border-color: transparent; }
+
+.farmer-cta-inner { width: 100%; }
+
+.farmer-cta-icon { font-size: 2.5rem; margin-bottom: 16px; }
+
+.farmer-cta-card h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.farmer-cta-card p {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.65;
+  margin-bottom: 0;
+}
+
+/* ---- WhatsApp Float Button ---- */
+#whatsapp-float {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 999;
+  background: #25D366;
+  color: #fff;
+  border-radius: 50px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  box-shadow: 0 6px 24px rgba(37,211,102,0.4);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: all 0.25s ease;
+  animation: waPulse 3s ease infinite;
+}
+
+#whatsapp-float:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 12px 32px rgba(37,211,102,0.5);
+  animation: none;
+}
+
+.wa-label { letter-spacing: 0.01em; }
+
+@keyframes waPulse {
+  0%, 100% { box-shadow: 0 6px 24px rgba(37,211,102,0.4); }
+  50% { box-shadow: 0 6px 32px rgba(37,211,102,0.65), 0 0 0 8px rgba(37,211,102,0.12); }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .hero-search-wrap { max-width: 100%; }
+  .search-shortcut { display: none; }
+  .farmers-grid { grid-template-columns: 1fr; }
+  .farmer-card { flex-direction: column; align-items: flex-start; }
+  #whatsapp-float .wa-label { display: none; }
+  #whatsapp-float { padding: 14px; border-radius: 50%; }
+}
