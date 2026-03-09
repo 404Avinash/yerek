@@ -546,3 +546,152 @@ nav#navbar { /* inherited from yakuzaz.css via yk-dark body */ }
   .stock-right { grid-column: 2; }
   .nav-inner { padding: 0 16px; }
 }
+
+/* ============================================================
+   RADAR + BAR RACE — Nutrition Comparator upgrade
+   ============================================================ */
+
+/* Two-col layout: radar left, bars right */
+.compare-viz {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 28px;
+  align-items: start;
+  margin-top: 24px;
+}
+
+/* Radar col */
+.compare-radar-col {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 20px 16px 16px;
+}
+.compare-radar-label {
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  color: #5A5A5A;
+  text-align: center;
+  margin-bottom: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.compare-radar-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+}
+.compare-radar-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Bar race col */
+.compare-bars-col {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Bar race header */
+.race-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid #1a1a1a;
+  background: #161616;
+}
+.race-header-a {
+  font-size: .82rem; font-weight: 700;
+  color: #DC143C; font-family: 'Space Grotesk', sans-serif;
+}
+.race-header-b {
+  font-size: .82rem; font-weight: 700;
+  color: #4ade80; font-family: 'Space Grotesk', sans-serif;
+  text-align: right;
+}
+.race-header-mid {
+  font-size: .6rem; font-weight: 700; letter-spacing: .16em;
+  color: #3A3A3A; text-align: center; padding: 0 12px;
+}
+
+/* Individual nutrient rows */
+.nutr-race-list { padding: 4px 0; }
+.nutr-race-row {
+  padding: 10px 20px;
+  border-bottom: 1px solid #161616;
+}
+.nutr-race-row:last-child { border-bottom: none; }
+.race-label {
+  font-size: .68rem; font-weight: 700; letter-spacing: .08em;
+  color: #5A5A5A; text-align: center; margin-bottom: 6px;
+  text-transform: uppercase; font-family: 'Space Grotesk', sans-serif;
+}
+.race-bars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  align-items: center;
+}
+/* Left bar — value on left, track extends right */
+.race-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.race-a { flex-direction: row-reverse; } /* mirror: val on right, bar goes left */
+.race-a .race-track { transform: scaleX(-1); transform-origin: right; }
+
+.race-track {
+  flex: 1;
+  height: 5px;
+  background: #1a1a1a;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.race-fill {
+  height: 100%;
+  border-radius: 99px;
+  will-change: width;
+}
+.race-fill-a { background: linear-gradient(90deg, rgba(220,20,60,0.3), #DC143C); }
+.race-fill-b { background: linear-gradient(90deg, rgba(74,222,128,0.3), #4ade80); }
+
+.race-val {
+  font-size: .75rem; font-weight: 600;
+  color: #7A7A7A; white-space: nowrap;
+  font-family: 'Space Grotesk', sans-serif;
+  min-width: 40px;
+}
+.race-a .race-val { text-align: right; }
+.race-b .race-val { text-align: left; }
+.race-win {
+  color: #F2EDE4;
+  font-weight: 800;
+}
+
+/* Winner badge */
+.winner-summary {
+  padding: 14px 20px;
+  border-top: 1px solid #1a1a1a;
+  display: flex;
+  justify-content: center;
+  background: #0f0f0f;
+}
+.winner-badge {
+  font-size: .8rem; font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif;
+  padding: 8px 20px; border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+.winner-a { background: rgba(220,20,60,0.1); color: #DC143C; border: 1px solid rgba(220,20,60,0.25); }
+.winner-b { background: rgba(74,222,128,0.08); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+.winner-tie { background: rgba(251,191,36,0.08); color: #FBBF24; border: 1px solid rgba(251,191,36,0.2); }
+
+/* Responsive: stack on mobile */
+@media (max-width: 860px) {
+  .compare-viz { grid-template-columns: 1fr; }
+  .compare-radar-wrap { max-width: 280px; margin: 0 auto; }
+}

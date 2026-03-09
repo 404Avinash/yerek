@@ -1,4 +1,4 @@
-﻿/* ==========================================
+/* ==========================================
    YAKUZAZ — tools.js v2
    Smart Tools: Compare, Box Builder, Stock Board
    All data-driven from product.js PRODUCTS object
@@ -78,9 +78,13 @@ function buildChipGrid(containerId) {
   }).join('');
 }
 
+
+// Active chart instance — destroy before redraw
+let _radarChart = null;
+
 function runCompare() {
   const placeholder = document.getElementById('compare-placeholder');
-  const result = document.getElementById('compare-result');
+  const result      = document.getElementById('compare-result');
 
   if (!compareA || !compareB) {
     placeholder.classList.remove('hidden');
@@ -94,7 +98,7 @@ function runCompare() {
   placeholder.classList.add('hidden');
   result.classList.remove('hidden');
 
-  // Header cards
+  /* ── Header cards ──────────────────────────────── */
   document.getElementById('compare-cards').innerHTML = `
     <div class="cmp-card cmp-card-a">
       <div class="cmp-emoji">${a.emoji}</div>
@@ -108,35 +112,164 @@ function runCompare() {
       <div class="cmp-name">${b.name}</div>
       <div class="cmp-aka">${b.aka}</div>
       <div class="cmp-score">⭐ ${b.freshness}/10</div>
-    </div>
-  `;
+    </div>`;
 
-  // Nutrition table
+  /* ── Build unified nutrient list ───────────────── */
+  const aNutr = Object.fromEntries(a.nutrition.map(n => [n.label, parseFloat(n.value)]));
+  const bNutr = Object.fromEntries(b.nutrition.map(n => [n.label, parseFloat(n.value)]));
   const allLabels = [...new Set([...a.nutrition.map(n => n.label), ...b.nutrition.map(n => n.label)])];
-  const aNutr = Object.fromEntries(a.nutrition.map(n => [n.label, n.value]));
-  const bNutr = Object.fromEntries(b.nutrition.map(n => [n.label, n.value]));
 
-  const rows = allLabels.map(label => {
-    const aVal = aNutr[label] || '—';
-    const bVal = bNutr[label] || '—';
-    return `<tr>
-      <td class="cmp-val cmp-val-a">${aVal}</td>
-      <td class="cmp-label-cell">${label}</td>
-      <td class="cmp-val cmp-val-b">${bVal}</td>
-    </tr>`;
-  }).join('');
+  // Pick top 6 by max value for radar (radar gets crowded beyond 6)
+  const radarLabels = allLabels
+    .filter(l => !isNaN(aNutr[l] || bNutr[l]))
+    .slice(0, 6);
 
-  document.getElementById('compare-table').innerHTML = `
-    <thead>
-      <tr>
-        <th class="cmp-th-a">${a.emoji} ${a.name}</th>
-        <th class="cmp-th-mid">Nutrient</th>
-        <th class="cmp-th-b">${b.emoji} ${b.name}</th>
-      </tr>
-    </thead>
-    <tbody>${rows}</tbody>
-  `;
+  /* ── RADAR CHART ───────────────────────────────── */
+  const radarWrap = document.getElementById('compare-radar-wrap');
+  if (radarWrap) {
+    radarWrap.innerHTML = '<canvas id="radarCanvas"></canvas>';
+    const ctx = document.getElementById('radarCanvas').getContext('2d');
+
+    if (_radarChart) { _radarChart.destroy(); _radarChart = null; }
+
+    const aVals = radarLabels.map(l => aNutr[l] || 0);
+    const bVals = radarLabels.map(l => bNutr[l] || 0);
+    const maxVal = Math.max(...aVals, ...bVals, 1);
+
+    _radarChart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: radarLabels,
+        datasets: [
+          {
+            label: a.name,
+            data: aVals.map(v => (v / maxVal) * 100),
+            backgroundColor: 'rgba(220,20,60,0.12)',
+            borderColor: '#DC143C',
+            borderWidth: 2,
+            pointBackgroundColor: '#DC143C',
+            pointRadius: 4,
+            pointHoverRadius: 6,
+          },
+          {
+            label: b.name,
+            data: bVals.map(v => (v / maxVal) * 100),
+            backgroundColor: 'rgba(74,222,128,0.1)',
+            borderColor: '#4ade80',
+            borderWidth: 2,
+            pointBackgroundColor: '#4ade80',
+            pointRadius: 4,
+            pointHoverRadius: 6,
+          }
+        ]
+      },
+      options: {
+        animation: { duration: 900, easing: 'easeOutQuart' },
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#AAAAAA',
+              font: { family: 'Space Grotesk, sans-serif', size: 12, weight: '600' },
+              boxWidth: 12, boxHeight: 12, padding: 20,
+            }
+          },
+          tooltip: {
+            backgroundColor: '#141414',
+            borderColor: '#252525',
+            borderWidth: 1,
+            titleColor: '#F2EDE4',
+            bodyColor: '#AAAAAA',
+            titleFont: { family: 'Space Grotesk, sans-serif', size: 12, weight: '700' },
+            bodyFont:  { family: 'Space Grotesk, sans-serif', size: 11 },
+            callbacks: {
+              label: ctx => ` ${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%`,
+            }
+          }
+        },
+        scales: {
+          r: {
+            min: 0, max: 100,
+            backgroundColor: 'transparent',
+            grid:        { color: 'rgba(255,255,255,0.06)', lineWidth: 1 },
+            angleLines:  { color: 'rgba(255,255,255,0.08)', lineWidth: 1 },
+            pointLabels: { color: '#7A7A7A', font: { family: 'Space Grotesk, sans-serif', size: 11, weight: '600' } },
+            ticks:       { display: false, stepSize: 25 },
+          }
+        }
+      }
+    });
+  }
+
+  /* ── BAR RACE TABLE ────────────────────────────── */
+  const tableWrap = document.getElementById('compare-table-wrap');
+  if (tableWrap) {
+    let aWins = 0, bWins = 0;
+
+    const rows = allLabels.map(label => {
+      const aRaw = a.nutrition.find(n => n.label === label);
+      const bRaw = b.nutrition.find(n => n.label === label);
+      const aStr = aRaw ? aRaw.value : '—';
+      const bStr = bRaw ? bRaw.value : '—';
+      const aNum = parseFloat(aStr) || 0;
+      const bNum = parseFloat(bStr) || 0;
+      const maxNum = Math.max(aNum, bNum, 0.1);
+      const aPct = ((aNum / maxNum) * 100).toFixed(1);
+      const bPct = ((bNum / maxNum) * 100).toFixed(1);
+      const aWin = aNum > bNum;
+      const bWin = bNum > aNum;
+      if (aWin) aWins++;
+      if (bWin) bWins++;
+
+      return `
+      <div class="nutr-race-row">
+        <div class="race-label">${label}</div>
+        <div class="race-bars">
+          <div class="race-bar-wrap race-a">
+            <span class="race-val ${aWin ? 'race-win' : ''}">${aStr}</span>
+            <div class="race-track">
+              <div class="race-fill race-fill-a" data-pct="${aPct}" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="race-bar-wrap race-b">
+            <div class="race-track">
+              <div class="race-fill race-fill-b" data-pct="${bPct}" style="width:0%"></div>
+            </div>
+            <span class="race-val ${bWin ? 'race-win' : ''}">${bStr}</span>
+          </div>
+        </div>
+      </div>`;
+    });
+
+    tableWrap.innerHTML = `
+      <div class="race-header">
+        <span class="race-header-a">${a.emoji} ${a.name}</span>
+        <span class="race-header-mid">NUTRITION</span>
+        <span class="race-header-b">${b.emoji} ${b.name}</span>
+      </div>
+      <div class="nutr-race-list">${rows.join('')}</div>
+      <div class="winner-summary">
+        ${aWins > bWins
+          ? `<span class="winner-badge winner-a">🏆 ${a.name} wins ${aWins}–${bWins} nutrients</span>`
+          : bWins > aWins
+          ? `<span class="winner-badge winner-b">🏆 ${b.name} wins ${bWins}–${aWins} nutrients</span>`
+          : `<span class="winner-badge winner-tie">🤝 Tied — ${aWins} nutrients each</span>`
+        }
+      </div>`;
+
+    // Animate bars after a frame
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        document.querySelectorAll('.race-fill').forEach(el => {
+          el.style.transition = 'width 0.7s cubic-bezier(0.16,1,0.3,1)';
+          el.style.width = el.dataset.pct + '%';
+        });
+      }, 60);
+    });
+  }
 }
+
 
 // ==========================================
 // TOOL 2: BOX BUILDER
