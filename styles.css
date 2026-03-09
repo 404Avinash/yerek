@@ -85,15 +85,13 @@ button { font-family: var(--font-sans); cursor: pointer; border: none; backgroun
 /* ---- Reveal Animations ---- */
 .reveal {
   opacity: 0;
-  transform: translateY(32px);
-  filter: blur(4px);
-  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out), filter 0.8s var(--ease-out);
-  will-change: opacity, transform, filter;
+  transform: translateY(28px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+  will-change: opacity, transform;
 }
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
-  filter: blur(0);
 }
 .reveal:nth-child(2) { transition-delay: 0.08s; }
 .reveal:nth-child(3) { transition-delay: 0.16s; }
@@ -2290,13 +2288,6 @@ body.cursor-clicking #cursor-dot { transform: translate(-50%, -50%) scale(0.5); 
 @keyframes trustMarquee {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
-}
-
-/* ── Page entrance fade ── */
-body { animation: pageFadeIn 0.45s var(--ease-out) both; }
-@keyframes pageFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Reduced motion — safety net ── */

@@ -458,22 +458,9 @@ console.log('🌿 Fresco website loaded successfully.');
    ========================================== */
 (function initAdvancedInteractions() {
 
-  /* ── 1. LENIS SMOOTH SCROLL ───────────── */
-  let lenis;
-  if (typeof Lenis !== 'undefined') {
-    lenis = new Lenis({ lerp: 0.075, smoothWheel: true });
-  }
-
-  /* ── 2. GSAP + SCROLL TRIGGER ─────────── */
+  /* ── 1. GSAP + SCROLL TRIGGER ─────────── */
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
-
-    /* Sync Lenis with GSAP ticker so ScrollTrigger tracks Lenis scroll */
-    if (lenis) {
-      lenis.on('scroll', ScrollTrigger.update);
-      gsap.ticker.add((time) => lenis.raf(time * 1000));
-      gsap.ticker.lagSmoothing(0);
-    }
 
     /* ─ Hero entrance animation ─
        Unobserve hero elements from IntersectionObserver first so
@@ -558,31 +545,28 @@ console.log('🌿 Fresco website loaded successfully.');
       });
     }
 
-  } else if (lenis) {
-    /* GSAP not available — run Lenis on its own RAF loop */
-    function lenisRaf(t) { lenis.raf(t); requestAnimationFrame(lenisRaf); }
-    requestAnimationFrame(lenisRaf);
   }
 
-  /* ── 3. MAGNETIC BUTTONS ──────────────── */
-  document.querySelectorAll(
-    '.btn-primary, .btn-outline, .btn-smart-tools, .nav-cta'
-  ).forEach(btn => {
-    btn.addEventListener('mousemove', function(e) {
-      const r = this.getBoundingClientRect();
-      const x = e.clientX - r.left  - r.width  / 2;
-      const y = e.clientY - r.top   - r.height / 2;
-      this.style.transform = `translate(${x * 0.2}px, ${y * 0.26}px)`;
+  /* ── 2. MAGNETIC BUTTONS (pointer:fine / hover devices only) ── */
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll(
+      '.btn-primary, .btn-outline, .btn-smart-tools, .nav-cta'
+    ).forEach(btn => {
+      btn.addEventListener('mousemove', function(e) {
+        const r = this.getBoundingClientRect();
+        const x = e.clientX - r.left  - r.width  / 2;
+        const y = e.clientY - r.top   - r.height / 2;
+        this.style.transform = `translate(${x * 0.2}px, ${y * 0.26}px)`;
+      });
+      btn.addEventListener('mouseleave', function() {
+        this.style.transform = '';
+      });
+      btn.addEventListener('click', function() {
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => { this.style.transform = ''; }, 150);
+      });
     });
-    btn.addEventListener('mouseleave', function() {
-      this.style.transform = '';
-    });
-    btn.addEventListener('click', function() {
-      // Micro press feedback
-      this.style.transform = 'scale(0.95)';
-      setTimeout(() => { this.style.transform = ''; }, 150);
-    });
-  });
+  }
 
   /* ── 4. CUSTOM CURSOR ─────────────────── */
   const dot  = document.getElementById('cursor-dot');
