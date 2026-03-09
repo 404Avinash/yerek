@@ -9,49 +9,8 @@
   if (window.__YAKUZAZ_LOADED__) return;
   window.__YAKUZAZ_LOADED__ = true;
 
-  const lerp   = (a, b, t) => a + (b - a) * t;
-  const clamp  = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-  const mobile = () => window.innerWidth < 768 || ('ontouchstart' in window);
+  function initCursor() { /* cursor removed — native cursor restored */ }
 
-  /* ─────────────────────────────────────────────────────────────
-     1. CUSTOM CURSOR — desktop only, never hides native cursor
-        until DOM is ready; scoped cursor:none to just the html element
-  ───────────────────────────────────────────────────────────── */
-  function initCursor() {
-    if (mobile()) return;
-
-    // Only hide cursor on the html element — avoids breaking input fields
-    document.documentElement.style.cursor = 'none';
-
-    const dot  = document.createElement('div');
-    const ring = document.createElement('div');
-    dot.id = 'yk-cursor-dot'; ring.id = 'yk-cursor-ring';
-    document.body.appendChild(dot);
-    document.body.appendChild(ring);
-
-    let mx = window.innerWidth / 2, my = -100;
-    let rx = mx, ry = my;
-
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    document.addEventListener('mousedown', () => { dot.classList.add('pressed'); ring.classList.add('pressed'); });
-    document.addEventListener('mouseup',   () => { dot.classList.remove('pressed'); ring.classList.remove('pressed'); });
-
-    function wireHover(selector) {
-      document.querySelectorAll(selector).forEach(el => {
-        el.addEventListener('mouseenter', () => ring.classList.add('hover'));
-        el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
-      });
-    }
-    wireHover('a, button, .cat-card, .farmer-card, .veg-chip, .box-chip, .nav-cta, label, input');
-
-    const tick = () => {
-      dot.style.transform  = `translate(${mx - 4}px,${my - 4}px)`;
-      rx = lerp(rx, mx, 0.13); ry = lerp(ry, my, 0.13);
-      ring.style.transform = `translate(${rx - 20}px,${ry - 20}px)`;
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }
 
   /* ─────────────────────────────────────────────────────────────
      2. HERO CANVAS PARTICLE SYSTEM – never blocks hero content
