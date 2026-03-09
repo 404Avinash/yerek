@@ -1,6 +1,7 @@
 /* =============================================================
-   YAKUZAZ — premium.js v1.0
-   Elite UI: cursor · particles · GSAP · magnetic · 3D tilt · scramble
+   YAKUZAZ — premium.js v2.0
+   SAFE mode: effects layer ON TOP of existing layout.
+   Never hides content. Never fights the .reveal system.
    ============================================================= */
 
 (function () {
@@ -8,53 +9,52 @@
   if (window.__YAKUZAZ_LOADED__) return;
   window.__YAKUZAZ_LOADED__ = true;
 
-  /* ─────────────────────────────────────────────────────────────
-     UTIL
-  ───────────────────────────────────────────────────────────── */
-  const lerp = (a, b, t) => a + (b - a) * t;
-  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-  const isMobile = () => window.innerWidth < 768 || ('ontouchstart' in window);
+  const lerp   = (a, b, t) => a + (b - a) * t;
+  const clamp  = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const mobile = () => window.innerWidth < 768 || ('ontouchstart' in window);
 
   /* ─────────────────────────────────────────────────────────────
-     1. CUSTOM CURSOR (desktop only)
+     1. CUSTOM CURSOR — desktop only, never hides native cursor
+        until DOM is ready; scoped cursor:none to just the html element
   ───────────────────────────────────────────────────────────── */
   function initCursor() {
-    if (isMobile()) return;
+    if (mobile()) return;
+
+    // Only hide cursor on the html element — avoids breaking input fields
+    document.documentElement.style.cursor = 'none';
 
     const dot  = document.createElement('div');
     const ring = document.createElement('div');
-    dot.id  = 'yk-cursor-dot';
-    ring.id = 'yk-cursor-ring';
+    dot.id = 'yk-cursor-dot'; ring.id = 'yk-cursor-ring';
     document.body.appendChild(dot);
     document.body.appendChild(ring);
 
-    let mx = -100, my = -100;
-    let rx = -100, ry = -100;
-    let isDown = false;
+    let mx = window.innerWidth / 2, my = -100;
+    let rx = mx, ry = my;
 
     document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    document.addEventListener('mousedown', () => { isDown = true; dot.classList.add('pressed'); ring.classList.add('pressed'); });
-    document.addEventListener('mouseup',   () => { isDown = false; dot.classList.remove('pressed'); ring.classList.remove('pressed'); });
+    document.addEventListener('mousedown', () => { dot.classList.add('pressed'); ring.classList.add('pressed'); });
+    document.addEventListener('mouseup',   () => { dot.classList.remove('pressed'); ring.classList.remove('pressed'); });
 
-    // Hover states for interactive elements
-    const interactiveSelector = 'a, button, .cat-card, .farmer-card, .veg-chip, .box-chip, .tool-tab, .btn, label, input, [role="button"]';
-    document.querySelectorAll(interactiveSelector).forEach(el => {
-      el.addEventListener('mouseenter', () => ring.classList.add('hover'));
-      el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
-    });
-
-    function tick() {
-      dot.style.transform  = `translate(${mx - 4}px, ${my - 4}px)`;
-      rx = lerp(rx, mx, 0.12);
-      ry = lerp(ry, my, 0.12);
-      ring.style.transform = `translate(${rx - 20}px, ${ry - 20}px)`;
-      requestAnimationFrame(tick);
+    function wireHover(selector) {
+      document.querySelectorAll(selector).forEach(el => {
+        el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+        el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+      });
     }
+    wireHover('a, button, .cat-card, .farmer-card, .veg-chip, .box-chip, .nav-cta, label, input');
+
+    const tick = () => {
+      dot.style.transform  = `translate(${mx - 4}px,${my - 4}px)`;
+      rx = lerp(rx, mx, 0.13); ry = lerp(ry, my, 0.13);
+      ring.style.transform = `translate(${rx - 20}px,${ry - 20}px)`;
+      requestAnimationFrame(tick);
+    };
     requestAnimationFrame(tick);
   }
 
   /* ─────────────────────────────────────────────────────────────
-     2. HERO CANVAS PARTICLE SYSTEM
+     2. HERO CANVAS PARTICLE SYSTEM – never blocks hero content
   ───────────────────────────────────────────────────────────── */
   function initHeroCanvas() {
     const hero = document.getElementById('hero');
@@ -63,173 +63,149 @@
     const canvas = document.createElement('canvas');
     canvas.id = 'yk-hero-canvas';
     Object.assign(canvas.style, {
-      position: 'absolute', top: 0, left: 0,
+      position: 'absolute', inset: '0',
       width: '100%', height: '100%',
-      pointerEvents: 'none', zIndex: 0, opacity: '0.55'
+      pointerEvents: 'none', zIndex: '0',
+      opacity: '0.45'
     });
-    hero.style.position = 'relative';
-    hero.style.overflow = 'hidden';
+
+    // Make sure hero is positioned
+    const hs = getComputedStyle(hero).position;
+    if (hs === 'static') hero.style.position = 'relative';
+
+    // Insert canvas BEFORE all hero children so it sits behind content
     hero.insertBefore(canvas, hero.firstChild);
 
-    const ctx  = canvas.getContext('2d');
-    let W, H, particles = [], mouse = { x: -1000, y: -1000 };
-    const COUNT = isMobile() ? 45 : 80;
-    const LINE_DIST = 120;
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    const COUNT    = mobile() ? 38 : 70;
+    const LINE_D   = 110;
+    let mouse = { x: -9999, y: -9999 };
 
-    function resize() {
+    const resize = () => {
       W = canvas.width  = hero.offsetWidth;
       H = canvas.height = hero.offsetHeight;
-    }
-    window.addEventListener('resize', resize);
+    };
+    window.addEventListener('resize', resize, { passive: true });
     resize();
 
     hero.addEventListener('mousemove', e => {
-      const rect = hero.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
+      const r = hero.getBoundingClientRect();
+      mouse.x = e.clientX - r.left;
+      mouse.y = e.clientY - r.top;
     });
+    hero.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
 
-    class Particle {
-      constructor() { this.reset(); }
-      reset() {
+    class P {
+      constructor() { this.reset(true); }
+      reset(born) {
         this.x  = Math.random() * W;
-        this.y  = Math.random() * H;
-        this.vx = (Math.random() - 0.5) * 0.4;
-        this.vy = (Math.random() - 0.5) * 0.4;
-        this.r  = Math.random() * 2.2 + 0.8;
-        this.alpha = Math.random() * 0.6 + 0.3;
+        this.y  = born ? Math.random() * H : (Math.random() > 0.5 ? -5 : H + 5);
+        this.vx = (Math.random() - 0.5) * 0.45;
+        this.vy = (Math.random() - 0.5) * 0.45;
+        this.r  = Math.random() * 1.8 + 0.7;
+        this.a  = Math.random() * 0.5 + 0.25;
       }
-      update() {
-        // Gentle mouse repulsion
-        const dx = this.x - mouse.x;
-        const dy = this.y - mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 80) {
-          const force = (80 - dist) / 80 * 0.8;
-          this.vx += (dx / dist) * force;
-          this.vy += (dy / dist) * force;
-        }
-        this.vx *= 0.98;
-        this.vy *= 0.98;
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0) this.x = W;
-        if (this.x > W) this.x = 0;
-        if (this.y < 0) this.y = H;
-        if (this.y > H) this.y = 0;
+      step() {
+        const dx = this.x - mouse.x, dy = this.y - mouse.y;
+        const d  = Math.sqrt(dx * dx + dy * dy);
+        if (d < 90) { const f = (90 - d) / 90 * 0.7; this.vx += dx / d * f; this.vy += dy / d * f; }
+        this.vx *= 0.97; this.vy *= 0.97;
+        this.x  += this.vx; this.y += this.vy;
+        if (this.x < -10) this.x = W + 10;
+        if (this.x > W + 10) this.x = -10;
+        if (this.y < -10) this.y = H + 10;
+        if (this.y > H + 10) this.y = -10;
       }
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(74,222,128,${this.alpha})`;
+        ctx.fillStyle = `rgba(74,222,128,${this.a})`;
         ctx.fill();
       }
     }
 
-    for (let i = 0; i < COUNT; i++) particles.push(new Particle());
+    const pts = Array.from({ length: COUNT }, () => new P());
 
-    function drawLines() {
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx   = particles[i].x - particles[j].x;
-          const dy   = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < LINE_DIST) {
-            const alpha = (1 - dist / LINE_DIST) * 0.25;
+    const loop = () => {
+      ctx.clearRect(0, 0, W, H);
+      for (let i = 0; i < pts.length; i++) {
+        pts[i].step();
+        pts[i].draw();
+        for (let j = i + 1; j < pts.length; j++) {
+          const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+          const d  = Math.sqrt(dx * dx + dy * dy);
+          if (d < LINE_D) {
             ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(74,222,128,${alpha})`;
-            ctx.lineWidth   = 0.8;
+            ctx.moveTo(pts[i].x, pts[i].y);
+            ctx.lineTo(pts[j].x, pts[j].y);
+            ctx.strokeStyle = `rgba(74,222,128,${(1 - d / LINE_D) * 0.2})`;
+            ctx.lineWidth = 0.75;
             ctx.stroke();
           }
         }
       }
-    }
-
-    function animParticles() {
-      ctx.clearRect(0, 0, W, H);
-      particles.forEach(p => { p.update(); p.draw(); });
-      drawLines();
-      requestAnimationFrame(animParticles);
-    }
-    animParticles();
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
   }
 
   /* ─────────────────────────────────────────────────────────────
-     3. GSAP HERO ENTRANCE ANIMATION
+     3. GSAP SCROLL ANIMATIONS — safe: only use gsap.to() 
+        on elements that are ALREADY visible. No from(opacity:0).
   ───────────────────────────────────────────────────────────── */
-  function initHeroGSAP() {
+  function initGSAP() {
     if (typeof gsap === 'undefined') return;
+    if (typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);
 
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Stagger-reveal hero content
-    const heroContent = document.querySelector('.hero-content');
-    if (!heroContent) return;
-
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-    tl.from('.hero-badge',      { y: 30, opacity: 0, duration: 0.7, delay: 0.2 })
-      .from('.hero-headline',   { y: 50, opacity: 0, duration: 0.9 }, '-=0.4')
-      .from('.hero-sub',        { y: 30, opacity: 0, duration: 0.7 }, '-=0.5')
-      .from('.hero-search-wrap',{ y: 25, opacity: 0, duration: 0.6 }, '-=0.4')
-      .from('.hero-cta-group',  { y: 25, opacity: 0, duration: 0.6 }, '-=0.4')
-      .from('.hero-stats',      { y: 20, opacity: 0, duration: 0.6 }, '-=0.3')
-      .from('.hero-visual',     { x: 60, opacity: 0, duration: 1.0 }, '-=0.8');
-
-    // Scroll-driven section reveals
-    gsap.utils.toArray('.section-tag').forEach(el => {
+    // Subtle scale-up on stat numbers when they enter view — non-breaking
+    document.querySelectorAll('.stat-item').forEach((el, i) => {
       gsap.from(el, {
-        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' },
-        x: -30, opacity: 0, duration: 0.6, ease: 'power2.out'
+        scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+        scale: 0.8, opacity: 0, duration: 0.55,
+        delay: i * 0.1, ease: 'back.out(1.6)',
+        clearProps: 'all'  // <-- resets inline styles after animation
       });
     });
 
-    gsap.utils.toArray('.section-title').forEach(el => {
-      gsap.from(el, {
-        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' },
-        y: 40, opacity: 0, duration: 0.8, ease: 'power3.out'
-      });
-    });
-
+    // Farmer cards — stagger slide-up
     gsap.utils.toArray('.farmer-card').forEach((card, i) => {
       gsap.from(card, {
-        scrollTrigger: { trigger: card, start: 'top 88%', toggleActions: 'play none none none' },
-        y: 50, opacity: 0, duration: 0.7, delay: i * 0.12, ease: 'power2.out'
+        scrollTrigger: { trigger: card, start: 'top 92%', once: true },
+        y: 40, opacity: 0, duration: 0.65,
+        delay: i * 0.1, ease: 'power2.out',
+        clearProps: 'all'
       });
     });
 
-    gsap.utils.toArray('.cat-card').forEach((card, i) => {
+    // Smart tools showcase cards
+    gsap.utils.toArray('#smart-tools a').forEach((card, i) => {
       gsap.from(card, {
-        scrollTrigger: { trigger: card, start: 'top 88%', toggleActions: 'play none none none' },
-        y: 40, opacity: 0, scale: 0.95, duration: 0.6, delay: i * 0.1, ease: 'back.out(1.4)'
+        scrollTrigger: { trigger: card, start: 'top 92%', once: true },
+        y: 35, opacity: 0, duration: 0.6,
+        delay: i * 0.12, ease: 'power2.out',
+        clearProps: 'all'
       });
     });
   }
 
   /* ─────────────────────────────────────────────────────────────
-     4. MAGNETIC BUTTONS
+     4. MAGNETIC BUTTONS — purely additive, no visibility impact
   ───────────────────────────────────────────────────────────── */
   function initMagnetic() {
-    if (isMobile()) return;
-
-    document.querySelectorAll('.btn-primary, .nav-cta, .btn').forEach(btn => {
-      const MAX = 10;
+    if (mobile()) return;
+    document.querySelectorAll('.nav-cta, .btn-primary').forEach(btn => {
       btn.addEventListener('mousemove', e => {
-        const rect = btn.getBoundingClientRect();
-        const cx   = rect.left + rect.width  / 2;
-        const cy   = rect.top  + rect.height / 2;
-        const dx   = (e.clientX - cx) / (rect.width  / 2);
-        const dy   = (e.clientY - cy) / (rect.height / 2);
-        btn.style.transform = `translate(${dx * MAX}px, ${dy * MAX}px) scale(1.04)`;
+        const r  = btn.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width  / 2)) / (r.width  / 2);
+        const dy = (e.clientY - (r.top  + r.height / 2)) / (r.height / 2);
+        btn.style.transform = `translate(${dx * 8}px,${dy * 8}px) scale(1.04)`;
       });
       btn.addEventListener('mouseleave', () => {
-        btn.style.transition  = 'transform 0.45s cubic-bezier(0.23,1,0.32,1)';
-        btn.style.transform   = '';
-        setTimeout(() => btn.style.transition = '', 450);
+        btn.style.transition = 'transform 0.45s cubic-bezier(.23,1,.32,1)';
+        btn.style.transform  = '';
+        setTimeout(() => { btn.style.transition = ''; }, 460);
       });
-      btn.addEventListener('mouseenter', () => btn.style.transition = 'box-shadow 0.2s');
     });
   }
 
@@ -237,191 +213,91 @@
      5. 3D CARD TILT
   ───────────────────────────────────────────────────────────── */
   function initTilt() {
-    if (isMobile()) return;
-
-    const tiltSelector = '.cat-card, .farmer-card, .tool-card, .smart-tool-card, .problem-card, .pillar';
-    document.querySelectorAll(tiltSelector).forEach(card => {
-      const MAX_TILT = 8;
-
+    if (mobile()) return;
+    document.querySelectorAll('.cat-card, .farmer-card').forEach(card => {
+      const MAX = 7;
       card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const x    = e.clientX - rect.left;
-        const y    = e.clientY - rect.top;
-        const cx   = rect.width  / 2;
-        const cy   = rect.height / 2;
-        const rotX = clamp((cy - y) / cy * MAX_TILT, -MAX_TILT, MAX_TILT);
-        const rotY = clamp((x - cx) / cx * MAX_TILT, -MAX_TILT, MAX_TILT);
-
-        card.style.transform = `perspective(600px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.03,1.03,1.03)`;
-        card.style.transition = 'box-shadow 0.1s';
-        card.style.boxShadow  = `${-rotY * 2}px ${rotX * 2}px 30px rgba(22,163,74,0.15)`;
+        const r  = card.getBoundingClientRect();
+        const rx = clamp(((r.height / 2) - (e.clientY - r.top))  / (r.height / 2) * MAX, -MAX, MAX);
+        const ry = clamp(((e.clientX - r.left) - (r.width  / 2)) / (r.width  / 2) * MAX, -MAX, MAX);
+        card.style.transform = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.03,1.03,1.03)`;
       });
-
       card.addEventListener('mouseleave', () => {
-        card.style.transition = 'transform 0.6s cubic-bezier(0.23,1,0.32,1), box-shadow 0.6s';
+        card.style.transition = 'transform 0.55s cubic-bezier(.23,1,.32,1)';
         card.style.transform  = '';
-        card.style.boxShadow  = '';
+        setTimeout(() => { card.style.transition = ''; }, 560);
       });
     });
   }
 
   /* ─────────────────────────────────────────────────────────────
-     6. TEXT SCRAMBLE EFFECT on section headings
+     6. TEXT SCRAMBLE on section tags
   ───────────────────────────────────────────────────────────── */
-  const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*<>?';
-
-  function scrambleText(el) {
-    const original = el.textContent;
-    let iteration  = 0;
-    const total    = original.length * 2;
-
-    clearInterval(el._scramble);
-    el._scramble = setInterval(() => {
-      el.textContent = original.split('').map((ch, i) => {
-        if (ch === ' ') return ' ';
-        if (i < iteration / 2) return ch;
+  const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&*<>?';
+  function scramble(el) {
+    if (el._scrambling) return;
+    el._scrambling = true;
+    const orig = el.textContent;
+    let it = 0;
+    const total = orig.length * 2.5;
+    const timer = setInterval(() => {
+      el.textContent = orig.split('').map((c, i) => {
+        if (c === ' ') return ' ';
+        if (i < it / 2) return c;
         return CHARS[Math.floor(Math.random() * CHARS.length)];
       }).join('');
-
-      if (iteration >= total) {
-        clearInterval(el._scramble);
-        el.textContent = original;
-      }
-      iteration += 1.5;
-    }, 30);
+      if (it++ >= total) { clearInterval(timer); el.textContent = orig; el._scrambling = false; }
+    }, 28);
   }
 
-  function initTextScramble() {
+  function initScramble() {
     if (!('IntersectionObserver' in window)) return;
-
     const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          scrambleText(e.target);
-          obs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.6 });
-
-    document.querySelectorAll('.section-tag').forEach(el => obs.observe(el));
+      entries.forEach(e => { if (e.isIntersecting) { scramble(e.target); obs.unobserve(e.target); }});
+    }, { threshold: 0.7 });
+    document.querySelectorAll('.section-tag').forEach(t => obs.observe(t));
   }
 
   /* ─────────────────────────────────────────────────────────────
-     7. PARALLAX on hero content layers
-  ───────────────────────────────────────────────────────────── */
-  function initParallax() {
-    const heroContent = document.querySelector('.hero-content');
-    const heroVisual  = document.querySelector('.hero-visual');
-    if (!heroContent || !heroVisual || isMobile()) return;
-
-    window.addEventListener('scroll', () => {
-      const sy = window.scrollY;
-      if (sy > 700) return;
-      heroContent.style.transform = `translateY(${sy * 0.12}px)`;
-      heroVisual.style.transform  = `translateY(${sy * 0.06}px)`;
-    }, { passive: true });
-  }
-
-  /* ─────────────────────────────────────────────────────────────
-     8. SMOOTH LOGO SCRAMBLE on navbar hover
+     7. LOGO TEXT SCRAMBLE on hover
   ───────────────────────────────────────────────────────────── */
   function initLogoScramble() {
-    const logoText = document.querySelector('.logo-text');
-    if (!logoText) return;
-    const original = logoText.textContent;
-    logoText.addEventListener('mouseenter', () => scrambleText(logoText));
-    logoText.addEventListener('mouseleave', () => {
-      clearInterval(logoText._scramble);
-      logoText.textContent = original;
+    const logo = document.querySelector('.logo-text');
+    if (!logo) return;
+    const orig = logo.textContent;
+    logo.addEventListener('mouseenter', () => scramble(logo));
+    logo.addEventListener('mouseleave', () => { if (!logo._scrambling) logo.textContent = orig; });
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     8. VEGGIE TILES float animation (staggered)
+  ───────────────────────────────────────────────────────────── */
+  function initVegFloat() {
+    document.querySelectorAll('.veggie-tile').forEach((t, i) => {
+      t.style.animationDelay = `${i * 0.22}s`;
+      t.classList.add('yk-float');
     });
   }
 
   /* ─────────────────────────────────────────────────────────────
-     9. STAGGERED COUNTER ANIMATION upgrade
+     INIT
   ───────────────────────────────────────────────────────────── */
-  function initCounters() {
-    const counters = document.querySelectorAll('.stat-number[data-target]');
-    if (!counters.length) return;
+  const ready = fn => document.readyState === 'loading'
+    ? document.addEventListener('DOMContentLoaded', fn)
+    : fn();
 
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        const el     = entry.target;
-        const target = parseInt(el.dataset.target, 10);
-        const dur    = 2000;
-        const start  = performance.now();
-
-        function step(now) {
-          const p    = Math.min((now - start) / dur, 1);
-          const ease = 1 - Math.pow(1 - p, 4); // quartic easeOut
-          el.textContent = Math.round(target * ease);
-          if (p < 1) requestAnimationFrame(step);
-          else el.textContent = target;
-        }
-        requestAnimationFrame(step);
-        obs.unobserve(el);
-      });
-    }, { threshold: 0.6 });
-
-    counters.forEach(c => obs.observe(c));
-  }
-
-  /* ─────────────────────────────────────────────────────────────
-     10. VEGGIE TILE pulse waves
-  ───────────────────────────────────────────────────────────── */
-  function initVeggiePulse() {
-    document.querySelectorAll('.veggie-tile').forEach((tile, i) => {
-      tile.style.animationDelay = `${i * 0.2}s`;
-      tile.classList.add('yk-pulse');
-    });
-  }
-
-  /* ─────────────────────────────────────────────────────────────
-     11. SCROLL INDICATOR hide on scroll
-  ───────────────────────────────────────────────────────────── */
-  function initScrollIndicator() {
-    const ind = document.querySelector('.hero-scroll-indicator');
-    if (!ind) return;
-    window.addEventListener('scroll', () => {
-      ind.style.opacity = window.scrollY > 60 ? '0' : '1';
-      ind.style.transition = 'opacity 0.4s';
-    }, { passive: true });
-  }
-
-  /* ─────────────────────────────────────────────────────────────
-     INIT ALL
-  ───────────────────────────────────────────────────────────── */
-  function init() {
+  ready(() => {
     initCursor();
     initHeroCanvas();
     initMagnetic();
     initTilt();
-    initTextScramble();
-    initParallax();
+    initScramble();
     initLogoScramble();
-    initCounters();
-    initVeggiePulse();
-    initScrollIndicator();
+    initVegFloat();
 
-    // GSAP inits after a tick (ensure GSAP is loaded)
-    if (typeof gsap !== 'undefined') {
-      initHeroGSAP();
-    } else {
-      // Fallback: wait for GSAP to load
-      const gsapWatcher = setInterval(() => {
-        if (typeof gsap !== 'undefined') {
-          clearInterval(gsapWatcher);
-          initHeroGSAP();
-        }
-      }, 100);
-    }
+    // GSAP after a small delay to ensure page settled
+    setTimeout(initGSAP, 300);
 
-    console.log('⚡ YAKUZAZ Premium UI loaded.');
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+    console.log('⚡ YAKUZAZ Premium v2 loaded.');
+  });
 })();

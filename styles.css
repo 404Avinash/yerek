@@ -2516,41 +2516,7 @@ nav#navbar.scrolled .hamburger span { background: var(--gray-800); }
    Custom cursor · particles · tilt · scramble · magnetic
    ============================================================= */
 
-/* ─── Custom Cursor ─────────────────────────────────────── */
-*, *::before, *::after { cursor: none !important; }
 
-#yk-cursor-dot {
-  position: fixed;
-  top: 0; left: 0;
-  width: 8px; height: 8px;
-  background: #22c55e;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 99999;
-  transition: width 0.2s, height 0.2s, background 0.2s;
-  mix-blend-mode: normal;
-  will-change: transform;
-}
-
-#yk-cursor-ring {
-  position: fixed;
-  top: 0; left: 0;
-  width: 40px; height: 40px;
-  border: 2px solid rgba(34,197,94,0.55);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 99998;
-  will-change: transform;
-  transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s;
-}
-
-#yk-cursor-dot.pressed  { width: 5px; height: 5px; background: #4ade80; }
-#yk-cursor-ring.pressed { width: 32px; height: 32px; border-color: #4ade80; }
-#yk-cursor-ring.hover   {
-  width: 56px; height: 56px;
-  background: rgba(34,197,94,0.08);
-  border-color: rgba(34,197,94,0.7);
-}
 
 @media (max-width: 768px) {
   *, *::before, *::after { cursor: auto !important; }
@@ -2682,3 +2648,40 @@ nav#navbar.scrolled .hamburger span { background: var(--gray-800); }
   color: #16a34a;
   transition: color 0.2s;
 }
+
+/* === YAKUZAZ custom cursor (safe, scoped) === */
+html.yk-cursor * { cursor: none; }
+
+#yk-cursor-dot {
+  position: fixed; top:0; left:0;
+  width:8px; height:8px;
+  background:#22c55e; border-radius:50%;
+  pointer-events:none; z-index:99999;
+  will-change:transform;
+  transition: width .2s, height .2s, background .2s;
+}
+#yk-cursor-ring {
+  position:fixed; top:0; left:0;
+  width:40px; height:40px;
+  border:2px solid rgba(34,197,94,.55);
+  border-radius:50%; pointer-events:none;
+  z-index:99998; will-change:transform;
+  transition: width .3s, height .3s, border-color .3s, background .3s;
+}
+#yk-cursor-dot.pressed  { width:5px; height:5px; background:#4ade80; }
+#yk-cursor-ring.pressed { width:32px; height:32px; border-color:#4ade80; }
+#yk-cursor-ring.hover   {
+  width:56px; height:56px;
+  background:rgba(34,197,94,.08);
+  border-color:rgba(34,197,94,.7);
+}
+@media (max-width:768px) {
+  #yk-cursor-dot, #yk-cursor-ring { display:none; }
+}
+
+/* Veggie tile float */
+@keyframes yk-float {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-7px) scale(1.05); }
+}
+.veggie-tile.yk-float { animation: yk-float 3s ease-in-out infinite; }
