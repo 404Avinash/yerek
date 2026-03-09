@@ -3,18 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fresco — Farm Fresh. Transparent. Honest.</title>
-  <meta name="description" content="Fresco brings vegetables directly from farms to our hygienic store while letting you track the journey of your food with QR traceability." />
+  <title>YAKUZAZ — Farm Fresh. Transparent. Honest.</title>
+  <meta name="description" content="YAKUZAZ brings vegetables directly from farms to our hygienic store while letting you track the journey of your food with QR traceability." />
   <meta name="theme-color" content="#16a34a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Fresco">
+  <meta name="apple-mobile-web-app-title" content="YAKUZAZ">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icons/icon-192.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 <body>
 
@@ -23,7 +26,7 @@
     <div class="nav-container">
       <a href="#" class="logo">
         <span class="logo-leaf">🌿</span>
-        <span class="logo-text">Fresco</span>
+        <span class="logo-text">YAKUZAZ</span>
       </a>
       <ul class="nav-links">
         <li><a href="#mission">Mission</a></li>
@@ -36,7 +39,7 @@
       </ul>
       <a href="#walking-mandi" class="nav-cta">Join Beta</a>
       <a href="/consumer/cart.html" class="nav-cart-btn" title="Cart">
-        🛒<span class="fresco-cart-badge" style="display:none">0</span>
+        🛒<span class="YAKUZAZ-cart-badge" style="display:none">0</span>
       </a>
       <a href="/consumer/login.html" class="nav-account-btn" id="navAccountBtn">My Account</a>
       <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
@@ -194,7 +197,7 @@
   <section id="how-it-works">
     <div class="container">
       <div class="section-tag reveal">The Process</div>
-      <h2 class="section-title reveal">How Fresco <em>Works</em></h2>
+      <h2 class="section-title reveal">How YAKUZAZ <em>Works</em></h2>
       <p class="section-sub reveal">A seamless four-step journey that ensures every vegetable reaches you at peak freshness — with full traceability.</p>
     </div>
 
@@ -451,7 +454,7 @@
             <div class="phone-notch"></div>
             <div class="phone-screen">
               <div class="scan-header">
-                <div class="scan-logo">🌿 Fresco</div>
+                <div class="scan-logo">🌿 YAKUZAZ</div>
                 <div class="scan-status">✅ Verified</div>
               </div>
               <div class="scan-veggie">
@@ -511,7 +514,7 @@
     <div class="container">
       <div class="section-tag reveal">Environmental Impact</div>
       <h2 class="section-title reveal">Reducing Food<br /><em>Wastage Together</em></h2>
-      <p class="section-sub reveal">Food wastage is one of the biggest environmental challenges of our time. Fresco is built to fight it at every step of the supply chain.</p>
+      <p class="section-sub reveal">Food wastage is one of the biggest environmental challenges of our time. YAKUZAZ is built to fight it at every step of the supply chain.</p>
       <div class="waste-content">
         <div class="waste-stat-big reveal">
           <div class="big-number">
@@ -571,7 +574,7 @@
               <span class="farmer-tag">🥬 Leafy Veggies</span>
               <span class="farmer-tag">4 yrs partner</span>
             </div>
-            <p class="farmer-quote">"Fresco pays me directly and on time. I no longer deal with 3 middlemen. My family earns 40% more now."</p>
+            <p class="farmer-quote">"YAKUZAZ pays me directly and on time. I no longer deal with 3 middlemen. My family earns 40% more now."</p>
             <div class="farmer-stats">
               <span><strong>12+</strong> varieties</span>
               <span><strong>Daily</strong> harvests</span>
@@ -589,7 +592,7 @@
               <span class="farmer-tag">🥕 Root Vegetables</span>
               <span class="farmer-tag">3 yrs partner</span>
             </div>
-            <p class="farmer-quote">"I grow carrots and beetroot. Fresco gives us a batch ID system so customers know it's from my farm. It's respect."</p>
+            <p class="farmer-quote">"I grow carrots and beetroot. YAKUZAZ gives us a batch ID system so customers know it's from my farm. It's respect."</p>
             <div class="farmer-stats">
               <span><strong>6+</strong> varieties</span>
               <span><strong>3×</strong> weekly</span>
@@ -607,7 +610,7 @@
               <span class="farmer-tag">🍅 Fruiting Veggies</span>
               <span class="farmer-tag">5 yrs partner</span>
             </div>
-            <p class="farmer-quote">"Tomatoes, capsicum, brinjal — all from my farm in Nashik. Fresco's QR system means my name is on every vegetable I grow."</p>
+            <p class="farmer-quote">"Tomatoes, capsicum, brinjal — all from my farm in Nashik. YAKUZAZ's QR system means my name is on every vegetable I grow."</p>
             <div class="farmer-stats">
               <span><strong>8+</strong> varieties</span>
               <span><strong>Daily</strong> supply</span>
@@ -620,7 +623,7 @@
           <div class="farmer-cta-inner">
             <div class="farmer-cta-icon">🤝</div>
             <h3>Become a Farm Partner</h3>
-            <p>We're always looking for quality-conscious farmers to join the Fresco network. Direct payments, no middlemen.</p>
+            <p>We're always looking for quality-conscious farmers to join the YAKUZAZ network. Direct payments, no middlemen.</p>
             <a href="#walking-mandi" class="btn btn-primary" style="margin-top:16px;font-size:.85rem">Get in Touch</a>
           </div>
         </div>
@@ -714,7 +717,7 @@
           </div>
         </div>
         <div class="about-text reveal">
-          <div class="section-tag">About Fresco</div>
+          <div class="section-tag">About YAKUZAZ</div>
           <h2 class="section-title">Built on a Simple<br /><em>Belief</em></h2>
           <p class="about-quote">
             "We believe food should be fresh, transparent, and trusted.
@@ -723,7 +726,7 @@
             vegetable supply chain."
           </p>
           <p class="about-detail">
-            Fresco was born from the frustration of not knowing where your food comes from.
+            YAKUZAZ was born from the frustration of not knowing where your food comes from.
             We set out to fix the broken agriculture retail chain — not just for consumers,
             but for the farmers who grow our food and deserve fair recognition and better prices.
           </p>
@@ -801,7 +804,7 @@
       <div class="container">
         <div class="footer-grid">
           <div class="footer-brand">
-            <a href="#" class="logo">🌿 Fresco</a>
+            <a href="#" class="logo">🌿 YAKUZAZ</a>
             <p>Fresh food with complete transparency. From soil to shelf, we never hide a thing.</p>
             <div class="social-links">
               <a href="#" aria-label="Instagram" class="social-link">
@@ -836,7 +839,7 @@
           <div class="footer-col">
             <h4>Contact</h4>
             <ul>
-              <li><a href="mailto:hello@fresco.in">hello@fresco.in</a></li>
+              <li><a href="mailto:hello@YAKUZAZ.in">hello@YAKUZAZ.in</a></li>
               <li><a href="#">Press &amp; Media</a></li>
               <li><a href="#">Become a Farm Partner</a></li>
               <li><a href="#">Careers</a></li>
@@ -847,14 +850,14 @@
     </div>
     <div class="footer-bottom">
       <div class="container">
-        <p>© 2026 Fresco. All rights reserved.</p>
+        <p>© 2026 YAKUZAZ. All rights reserved.</p>
         <p class="footer-tagline">Fresh food with complete transparency.</p>
       </div>
     </div>
   </footer>
 
   <!-- WHATSAPP FLOAT -->
-  <a href="https://wa.me/919999999999?text=Hi%20Fresco!%20I%20have%20a%20question%20about%20your%20vegetables." target="_blank" rel="noopener" id="whatsapp-float" aria-label="Chat on WhatsApp">
+  <a href="https://wa.me/919999999999?text=Hi%20YAKUZAZ!%20I%20have%20a%20question%20about%20your%20vegetables." target="_blank" rel="noopener" id="whatsapp-float" aria-label="Chat on WhatsApp">
     <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     <span class="wa-label">Chat with us</span>
   </a>
@@ -886,5 +889,6 @@
       navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
   </script>
+  <script src="premium.js?v=1"></script>
 </body>
 </html>

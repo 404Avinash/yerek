@@ -1,5 +1,5 @@
-/* ==========================================
-   FRESCO — main.js
+﻿/* ==========================================
+   YAKUZAZ — main.js
    Interactive behaviors and animations
    ========================================== */
 
@@ -333,7 +333,7 @@ if (trustStrip) {
   trustObserver.observe(trustStrip);
 }
 
-console.log('🌿 Fresco website loaded successfully.');
+console.log('🌿 YAKUZAZ website loaded successfully.');
 
 // ==========================================
 // LIVE VEGGIE SEARCH

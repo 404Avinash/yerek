@@ -1,5 +1,5 @@
-// Fresco Service Worker — Offline Support
-const CACHE = 'fresco-v1';
+﻿// YAKUZAZ Service Worker — Offline Support
+const CACHE = 'YAKUZAZ-v1';
 const STATIC = [
   '/',
   '/index.html',

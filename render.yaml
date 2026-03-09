@@ -1,6 +1,6 @@
-services:
+﻿services:
   - type: web
-    name: fresco
+    name: YAKUZAZ
     env: static
     buildCommand: ""
     staticPublishPath: .

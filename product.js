@@ -1,5 +1,5 @@
-/* ==========================================
-   FRESCO — product.js
+﻿/* ==========================================
+   YAKUZAZ — product.js
    Individual product detail pages
    ========================================== */
 
@@ -981,7 +981,7 @@ function getItemKey() {
 function render(key) {
   const p = PRODUCTS[key];
 
-  document.getElementById('page-title').textContent = `${p.name} (${p.aka}) — Fresco`;
+  document.getElementById('page-title').textContent = `${p.name} (${p.aka}) — YAKUZAZ`;
   document.getElementById('breadcrumb-cat').textContent = p.categoryName;
   document.getElementById('breadcrumb-cat').href = `category.html?cat=${p.category}`;
   document.getElementById('breadcrumb-item').textContent = p.name;
@@ -1115,7 +1115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Product not found — show a helpful error state
     document.body.innerHTML = `
       <nav id="navbar" class="scrolled" style="position:fixed;top:0;left:0;right:0;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;padding:0 40px;height:68px;z-index:1000;">
-        <a href="index.html" style="font-family:Outfit,sans-serif;font-weight:800;font-size:1.2rem;color:#166534;text-decoration:none;">🌿 Fresco</a>
+        <a href="index.html" style="font-family:Outfit,sans-serif;font-weight:800;font-size:1.2rem;color:#166534;text-decoration:none;">🌿 YAKUZAZ</a>
       </nav>
       <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Outfit,sans-serif;padding:80px 24px 0;text-align:center;">
         <div style="font-size:4rem;margin-bottom:16px;">🥬</div>
@@ -1170,7 +1170,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load reviews
   loadReviews(key);
 
-  console.log(`🌿 Fresco — ${PRODUCTS[key].name} page loaded.`);
+  console.log(`🌿 YAKUZAZ — ${PRODUCTS[key].name} page loaded.`);
 });
 
 // ==========================================

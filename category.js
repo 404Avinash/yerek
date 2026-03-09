@@ -1,5 +1,5 @@
-/* ==========================================
-   FRESCO — category.js
+﻿/* ==========================================
+   YAKUZAZ — category.js
    Dynamic data-driven category pages
    ========================================== */
 
@@ -229,7 +229,7 @@ function render(key) {
   const allKeys = Object.keys(CATEGORIES);
 
   // Update <title> and meta
-  document.getElementById('page-title').textContent = `${cat.name} — Fresco`;
+  document.getElementById('page-title').textContent = `${cat.name} — YAKUZAZ`;
   document.getElementById('page-desc').content = cat.sub;
 
   // Hero background
@@ -509,5 +509,5 @@ document.addEventListener('DOMContentLoaded', () => {
   render(key);
   initReveal();
   animateScoreBars();
-  console.log(`🌿 Fresco — ${CATEGORIES[key].name} page loaded.`);
+  console.log(`🌿 YAKUZAZ — ${CATEGORIES[key].name} page loaded.`);
 });

@@ -1,5 +1,5 @@
-// ============================================================
-// Fresco Admin — Shared Utilities
+﻿// ============================================================
+// YAKUZAZ Admin — Shared Utilities
 // Load order: supabase CDN → supabase-client.js → admin.js → page script
 // ============================================================
 
@@ -69,7 +69,7 @@ function renderSidebar(activePage, role) {
     <aside class="admin-sidebar">
       <div class="sidebar-brand">
         <span>🌿</span>
-        <span class="sidebar-brand-text">Fresco</span>
+        <span class="sidebar-brand-text">YAKUZAZ</span>
         <span class="sidebar-admin-badge">Admin</span>
       </div>
       <nav class="sidebar-nav">

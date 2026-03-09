@@ -1,5 +1,5 @@
-/* ==========================================
-   FRESCO — tools.js v2
+﻿/* ==========================================
+   YAKUZAZ — tools.js v2
    Smart Tools: Compare, Box Builder, Stock Board
    All data-driven from product.js PRODUCTS object
    ========================================== */
@@ -330,5 +330,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initCompare();
   initBoxBuilder();
   initStockBoard();
-  console.log('🌿 Fresco Smart Tools v2 loaded.');
+  console.log('🌿 YAKUZAZ Smart Tools v2 loaded.');
 });

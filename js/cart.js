@@ -1,20 +1,20 @@
-/* ============================================================
-   FRESCO — Cart Utility (js/cart.js)
+﻿/* ============================================================
+   YAKUZAZ — Cart Utility (js/cart.js)
    Include this script on any page that needs cart features.
    Works with localStorage — no login required to add items.
    ============================================================ */
 
-const FRESCO_CART_KEY = 'fresco_cart_v1';
+const YAKUZAZ_CART_KEY = 'YAKUZAZ_cart_v1';
 
 /* ---------- Core CRUD ---------- */
 
 function getCart() {
-  try { return JSON.parse(localStorage.getItem(FRESCO_CART_KEY)) || []; }
+  try { return JSON.parse(localStorage.getItem(YAKUZAZ_CART_KEY)) || []; }
   catch { return []; }
 }
 
 function _saveCart(items) {
-  localStorage.setItem(FRESCO_CART_KEY, JSON.stringify(items));
+  localStorage.setItem(YAKUZAZ_CART_KEY, JSON.stringify(items));
   _updateAllCartBadges();
 }
 
@@ -45,7 +45,7 @@ function updateQty(slug, qty) {
 }
 
 function clearCart() {
-  localStorage.removeItem(FRESCO_CART_KEY);
+  localStorage.removeItem(YAKUZAZ_CART_KEY);
   _updateAllCartBadges();
 }
 
@@ -63,17 +63,17 @@ function getCartTotal() {
 
 function _updateAllCartBadges() {
   const count = getCartCount();
-  document.querySelectorAll('.fresco-cart-badge').forEach(badge => {
+  document.querySelectorAll('.YAKUZAZ-cart-badge').forEach(badge => {
     badge.textContent = count;
     badge.style.display = count > 0 ? 'flex' : 'none';
   });
 }
 
 function _showCartToast(name) {
-  let toast = document.getElementById('frescoCartToast');
+  let toast = document.getElementById('YAKUZAZCartToast');
   if (!toast) {
     toast = document.createElement('div');
-    toast.id = 'frescoCartToast';
+    toast.id = 'YAKUZAZCartToast';
     toast.style.cssText = [
       'position:fixed', 'bottom:28px', 'left:50%', 'transform:translateX(-50%) translateY(0)',
       'background:#16a34a', 'color:#fff', 'padding:11px 22px', 'border-radius:999px',

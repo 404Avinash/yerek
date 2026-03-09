@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#16a34a">
   <link rel="manifest" href="/manifest.json">
-  <title>My Cart — Fresco</title>
+  <title>My Cart — YAKUZAZ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../styles.css">
@@ -140,7 +140,7 @@
   <header class="cart-header">
     <a href="/" class="cart-brand">
       <span style="font-size:1.3rem">🌿</span>
-      <span class="cart-brand-name">Fresco</span>
+      <span class="cart-brand-name">YAKUZAZ</span>
     </a>
     <a href="/consumer/login.html" id="cartAccBtn" style="font-size:.82rem;font-weight:600;color:#16a34a;text-decoration:none">My Account</a>
   </header>
@@ -264,7 +264,7 @@
       const notesHtml = `
         <div class="cart-notes">
           <div class="notes-label">📝 Add Order Notes <span style="font-size:.72rem;font-weight:500;color:#9ca3af">(optional)</span></div>
-          <textarea id="cartNotes" class="notes-input" rows="2" placeholder="E.g. Please keep coriander fresh, prefer medium-sized carrots…" oninput="localStorage.setItem('fresco_cart_notes',this.value)">${localStorage.getItem('fresco_cart_notes')||''}</textarea>
+          <textarea id="cartNotes" class="notes-input" rows="2" placeholder="E.g. Please keep coriander fresh, prefer medium-sized carrots…" oninput="localStorage.setItem('YAKUZAZ_cart_notes',this.value)">${localStorage.getItem('YAKUZAZ_cart_notes')||''}</textarea>
         </div>`;
 
       // Suggestions (exclude items already in cart)
@@ -288,7 +288,7 @@
 
       // Pickup note
       const pickupHtml = `<div style="background:#f0fdf4;border:1px solid #d1fae5;border-radius:12px;padding:10px 14px;font-size:.82rem;color:#166534;margin-top:14px;display:flex;align-items:center;gap:8px">
-        <span>📦</span> <span><b>Store Pickup</b> · Fresco Store, Delhi · Packaging free on all orders</span>
+        <span>📦</span> <span><b>Store Pickup</b> · YAKUZAZ Store, Delhi · Packaging free on all orders</span>
       </div>`;
 
       container.innerHTML = savingsBanner + itemsHtml + pickupHtml + billHtml + notesHtml + suggestHtml;
