@@ -9,81 +9,128 @@
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../yakuzaz.css">
   <style>
-    :root {
-      --card-radius: 20px;
-      --card-shadow: 0 4px 24px rgba(20,83,45,.08);
-    }
-    body { background: var(--green-50, #f0fdf4); min-height: 100vh; }
+    /* YAKUZAZ DARK — profile.html */
+    * { box-sizing: border-box; }
+    body { background: #080808 !important; font-family: 'Space Grotesk', sans-serif; min-height: 100vh; }
+
     .pf-header {
-      background: #fff; border-bottom: 1px solid #e5e7eb;
+      background: rgba(8,8,8,0.97); border-bottom: 1px solid #1e1e1e;
       padding: 14px 32px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
     }
     .pf-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-    .pf-brand-name { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700; color: #14532d; }
+    .pf-brand-name { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; color: #F2EDE4; letter-spacing: 0.05em; }
     .pf-signout {
-      background: none; border: 1.5px solid #e5e7eb; border-radius: 999px;
-      padding: 7px 18px; font-size: .85rem; font-weight: 600; cursor: pointer;
-      color: #6b7280; font-family: 'Outfit', sans-serif; transition: .18s;
+      background: none; border: 1px solid #252525; border-radius: 4px;
+      padding: 7px 16px; font-size: .8rem; font-weight: 600; cursor: pointer;
+      color: #7A7A7A; font-family: 'Space Grotesk', sans-serif; transition: .18s;
     }
-    .pf-signout:hover { border-color: #9ca3af; color: #374151; }
+    .pf-signout:hover { border-color: #DC143C; color: #DC143C; }
 
-    .pf-main { max-width: 860px; margin: 0 auto; padding: 40px 24px; display: flex; flex-direction: column; gap: 24px; }
+    .pf-main { max-width: 860px; margin: 0 auto; padding: 40px 24px; display: flex; flex-direction: column; gap: 16px; }
 
     .pf-card {
-      background: #fff; border-radius: var(--card-radius);
-      padding: 28px 32px; box-shadow: var(--card-shadow);
+      background: #141414; border-radius: 10px;
+      padding: 28px 32px; border: 1px solid #222;
+      animation: pf-card-in 0.55s cubic-bezier(0.16,1,0.3,1) both;
     }
+    @keyframes pf-card-in { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .pf-card:nth-child(1){animation-delay:0.05s}.pf-card:nth-child(2){animation-delay:0.12s}
+    .pf-card:nth-child(3){animation-delay:0.19s}.pf-card:nth-child(4){animation-delay:0.26s}
+
     .pf-card-title {
-      font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700;
-      color: #111827; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+      font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700;
+      color: #F2EDE4; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+      letter-spacing: -0.02em;
     }
 
     /* Profile overview */
     .pf-avatar {
-      width: 60px; height: 60px; border-radius: 50%;
-      background: #dcfce7; display: flex; align-items: center; justify-content: center;
-      font-size: 1.6rem; font-weight: 800; color: #15803d; flex-shrink: 0;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(220,20,60,0.12); border: 1px solid rgba(220,20,60,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; font-weight: 800; color: #DC143C; flex-shrink: 0;
     }
-    .pf-info-row { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-    .pf-info-name { font-size: 1.1rem; font-weight: 700; color: #111827; }
+    .pf-info-row { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
+    .pf-info-name { font-size: 1.05rem; font-weight: 700; color: #F2EDE4; font-family: 'Space Grotesk', sans-serif; }
     .pf-info-role {
-      display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .08em;
-      text-transform: uppercase; background: #dcfce7; color: #15803d;
-      padding: 3px 10px; border-radius: 999px; border: 1px solid #bbf7d0;
+      display: inline-block; font-size: .65rem; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; background: rgba(74,222,128,0.08); color: #4ade80;
+      padding: 3px 10px; border-radius: 2px; border: 1px solid rgba(74,222,128,0.2);
     }
-    .pf-info-email { font-size: .87rem; color: #6b7280; margin-top: 2px; }
+    .pf-info-email { font-size: .84rem; color: #7A7A7A; margin-top: 2px; }
+
+    /* Loyalty points display */
+    .pf-loyalty {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(220,20,60,0.06); border: 1px solid rgba(220,20,60,0.15);
+      border-radius: 8px; padding: 14px 18px; margin-bottom: 20px;
+    }
+    .pf-loyalty-pts { font-size: 1.6rem; font-weight: 700; color: #DC143C; font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.03em; }
+    .pf-loyalty-label { font-size: .78rem; color: #7A7A7A; }
+    .pf-loyalty-sub   { font-size: .7rem; color: #5A5A5A; margin-top: 1px; }
 
     /* Edit form */
-    .pf-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .pf-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .pf-fg { display: flex; flex-direction: column; gap: 5px; }
-    .pf-fg label { font-size: .82rem; font-weight: 600; color: #374151; }
+    .pf-fg label { font-size: .76rem; font-weight: 600; color: #7A7A7A; }
     .pf-fg input {
-      padding: 9px 13px; border: 1.5px solid #e5e7eb; border-radius: 10px;
-      font-size: .88rem; font-family: 'Outfit', sans-serif; color: #1f2937;
-      outline: none; transition: .18s;
+      padding: 10px 13px; border: 1px solid #252525; border-radius: 6px;
+      font-size: .86rem; font-family: 'Space Grotesk', sans-serif; color: #F2EDE4;
+      background: rgba(255,255,255,0.04); outline: none; transition: .18s;
     }
-    .pf-fg input:focus { border-color: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.1); }
+    .pf-fg input::placeholder { color: #3A3A3A; }
+    .pf-fg input:focus { border-color: #4ade80; box-shadow: 0 0 0 3px rgba(74,222,128,0.08); }
     .pf-save {
-      margin-top: 4px; background: #16a34a; color: #fff; border: none;
-      border-radius: 999px; padding: 10px 24px; font-size: .87rem; font-weight: 700;
-      cursor: pointer; transition: .18s; font-family: 'Outfit', sans-serif;
+      margin-top: 8px; background: #DC143C; color: #fff; border: none;
+      border-radius: 4px; padding: 11px 28px; font-size: .86rem; font-weight: 700;
+      cursor: pointer; transition: .18s; font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: 0.04em;
     }
-    .pf-save:hover { background: #15803d; }
+    .pf-save:hover { background: #c01234; }
+
+    /* Orders */
+    .pf-order-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; border-radius: 8px; background: #1a1a1a;
+      margin-bottom: 8px; border: 1px solid #222; transition: border-color 0.2s;
+    }
+    .pf-order-row:hover { border-color: rgba(74,222,128,0.2); }
+    .pf-order-num { font-size: .8rem; font-weight: 700; color: #DC143C; font-family: 'Space Grotesk', sans-serif; letter-spacing: 0.04em; }
+    .pf-order-date { font-size: .74rem; color: #5A5A5A; margin-top: 2px; }
+    .pf-order-total { font-size: .9rem; font-weight: 700; color: #4ade80; }
+    .pf-order-status {
+      font-size: .65rem; font-weight: 700; padding: 3px 10px; border-radius: 2px;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .pf-status-pending  { background: rgba(251,191,36,0.08); color: #FBBF24; border: 1px solid rgba(251,191,36,0.2); }
+    .pf-status-confirmed{ background: rgba(96,165,250,0.08); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2); }
+    .pf-status-delivered{ background: rgba(74,222,128,0.08); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
 
     /* Scan history */
     .pf-scan-row {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: .88rem;
+      padding: 10px 0; border-bottom: 1px solid #1a1a1a; font-size: .86rem;
     }
     .pf-scan-row:last-child { border-bottom: none; }
-    .pf-scan-slug { font-weight: 600; color: #111827; }
-    .pf-scan-time { color: #9ca3af; font-size: .8rem; }
+    .pf-scan-slug { font-weight: 600; color: #F2EDE4; }
+    .pf-scan-time { color: #5A5A5A; font-size: .78rem; }
 
-    .pf-empty { color: #9ca3af; font-size: .88rem; padding: 8px 0; }
+    .pf-empty { color: #3A3A3A; font-size: .86rem; padding: 8px 0; }
+
+    /* Danger zone */
+    .pf-danger-zone { border-color: rgba(220,20,60,0.2) !important; }
+    .pf-danger-btn {
+      background: transparent; border: 1px solid rgba(220,20,60,0.3); color: #DC143C;
+      border-radius: 4px; padding: 9px 20px; font-size: .82rem; font-weight: 700;
+      cursor: pointer; font-family: 'Space Grotesk', sans-serif; transition: .18s;
+    }
+    .pf-danger-btn:hover { background: rgba(220,20,60,0.08); }
 
     @media (max-width: 600px) {
       .pf-form { grid-template-columns: 1fr; }
       .pf-header { padding: 14px 16px; }
+      .pf-card { padding: 20px 16px; }
     }
   </style>
   <link rel="stylesheet" href="../consumer/consumer-dark.css">
