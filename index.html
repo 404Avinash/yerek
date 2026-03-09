@@ -198,46 +198,84 @@
       <p class="section-sub reveal">A seamless four-step journey that ensures every vegetable reaches you at peak freshness — with full traceability.</p>
     </div>
 
-    <!-- ── Card shuffle scroll zone ── -->
-    <div id="steps-scroll-region">
-      <div id="steps-sticky">
-        <div id="steps-cards-deck">
+    <!-- ── Horizontal story scroll ── -->
+    <div id="story-scroll-region">
+      <div id="story-sticky">
+        <div id="story-track">
 
-          <div class="step-card" data-step="0">
-            <span class="step-card-num">01</span>
-            <span class="step-card-icon">🌱</span>
-            <h3>Farm Sourcing</h3>
-            <p>We source vegetables directly from our network of trusted partner farms, ensuring quality from the very beginning.</p>
+          <div class="story-panel sp-1" data-num="01">
+            <div class="story-panel-content">
+              <span class="story-tag">Origin</span>
+              <span class="story-icon-lg">🌱</span>
+              <h2 class="story-h">Farm<br>Sourcing</h2>
+              <p class="story-p">We partner directly with 50+ farms across Haryana, UP and Maharashtra — cutting every middleman so vegetables reach you within 8 hours of harvest.</p>
+              <div class="story-chips">
+                <span>50+ Partner Farms</span>
+                <span>Direct Payments</span>
+                <span>8h Farm-to-Store</span>
+              </div>
+            </div>
+            <div class="story-scroll-cue">
+              Scroll to continue &nbsp;
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
           </div>
 
-          <div class="step-card" data-step="1">
-            <span class="step-card-num">02</span>
-            <span class="step-card-icon">🧹</span>
-            <h3>Hygienic Handling</h3>
-            <p>Produce is carefully sorted, inspected, and packed under controlled hygienic conditions to maintain peak freshness.</p>
+          <div class="story-panel sp-2" data-num="02">
+            <div class="story-panel-content">
+              <span class="story-tag">Handling</span>
+              <span class="story-icon-lg">🧹</span>
+              <h2 class="story-h">Hygienic<br>Handling</h2>
+              <p class="story-p">Every batch is sorted, cleaned and quality-checked under strict hygiene standards. Only produce passing our freshness score enters the store.</p>
+              <div class="story-chips">
+                <span>9.1 Avg Score</span>
+                <span>Temp Monitored</span>
+                <span>Zero-contact Pack</span>
+              </div>
+            </div>
           </div>
 
-          <div class="step-card" data-step="2">
-            <span class="step-card-num">03</span>
-            <span class="step-card-icon">🏪</span>
-            <h3>Smart Store</h3>
-            <p>Vegetables are organized into categories — leafy, root, fruit vegetables, and fruits — in our modern retail space.</p>
+          <div class="story-panel sp-3" data-num="03">
+            <div class="story-panel-content">
+              <span class="story-tag">Retail</span>
+              <span class="story-icon-lg">🏪</span>
+              <h2 class="story-h">Smart<br>Store</h2>
+              <p class="story-p">Vegetables are organized by category in our modern retail space — leafy, root, fruiting, and fruits — making your daily shopping effortless.</p>
+              <div class="story-chips">
+                <span>5 Categories</span>
+                <span>Daily Stock Updates</span>
+                <span>AI Freshness Index</span>
+              </div>
+            </div>
           </div>
 
-          <div class="step-card" data-step="3">
-            <span class="step-card-num">04</span>
-            <span class="step-card-icon">📱</span>
-            <h3>Scan &amp; Trace</h3>
-            <p>Customers scan QR codes on produce to instantly view the complete farm-to-store journey of their vegetables.</p>
+          <div class="story-panel sp-4" data-num="04">
+            <div class="story-panel-content">
+              <span class="story-tag">Transparency</span>
+              <span class="story-icon-lg">📱</span>
+              <h2 class="story-h">Scan &amp;<br>Trace</h2>
+              <p class="story-p">Every vegetable has a QR code. One scan shows the farmer's name, harvest date, transit time and freshness score. Your food, fully visible.</p>
+              <div class="story-chips">
+                <span>Farm-to-Table QR</span>
+                <span>Full Traceability</span>
+                <span>One Scan = Full Story</span>
+              </div>
+            </div>
           </div>
 
+        </div><!-- #story-track -->
+        <div class="story-ui-bottom">
+          <div class="story-progress-track"><div class="story-progress-fill"></div></div>
+          <div class="story-nav-dots">
+            <span class="story-dot" data-s="0"></span>
+            <span class="story-dot" data-s="1"></span>
+            <span class="story-dot" data-s="2"></span>
+            <span class="story-dot" data-s="3"></span>
+          </div>
+          <div class="story-counter"><span id="storyCurrentPanel">01</span>&nbsp;/&nbsp;04</div>
         </div>
-        <div class="steps-scroll-hint">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-          Scroll to explore
-        </div>
-      </div>
-    </div>
+      </div><!-- #story-sticky -->
+    </div><!-- #story-scroll-region -->
 
     <div class="container">
       <div class="journey-bar reveal">
@@ -263,6 +301,16 @@
       </div>
     </div>
   </section>
+
+  <!-- ========= BRAND REEL ========= -->
+  <div class="brand-reel" aria-hidden="true">
+    <div class="brand-reel-inner">
+      <span>FARM FRESH</span><span class="br-sep">✦</span><span>ZERO MIDDLEMEN</span><span class="br-sep">✦</span><span>QR TRACED</span><span class="br-sep">✦</span><span>TRANSPARENT</span><span class="br-sep">✦</span><span>HONEST</span><span class="br-sep">✦</span><span>DIRECT FROM FARM</span><span class="br-sep">✦</span>
+    </div>
+    <div class="brand-reel-inner">
+      <span>FARM FRESH</span><span class="br-sep">✦</span><span>ZERO MIDDLEMEN</span><span class="br-sep">✦</span><span>QR TRACED</span><span class="br-sep">✦</span><span>TRANSPARENT</span><span class="br-sep">✦</span><span>HONEST</span><span class="br-sep">✦</span><span>DIRECT FROM FARM</span><span class="br-sep">✦</span>
+    </div>
+  </div>
 
   <!-- ========= CATEGORIES ========= -->
   <section id="categories">
@@ -832,7 +880,7 @@
   <!-- GSAP + ScrollTrigger (~38 KB gzip total) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="main.js?v=4"></script>
+  <script src="main.js?v=5"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').catch(() => {});
