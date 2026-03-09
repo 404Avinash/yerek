@@ -14,74 +14,16 @@
   const $$ = sel => [...document.querySelectorAll(sel)];
   const mobile = () => window.innerWidth < 768;
 
-  /* ─────────────────────────────────────────────────────────
-     1.  LENIS SMOOTH SCROLL
-         Integrated properly with GSAP ScrollTrigger
-  ───────────────────────────────────────────────────────── */
-  function initLenis() {
-    if (typeof Lenis === 'undefined') return null;
+  /* Lenis removed — native scroll is faster and smoother */
+  function initLenis() { return null; }
 
-    const lenis = new Lenis({
-      duration: 1.15,
-      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smooth: true,
-      smoothTouch: false,
-      touchMultiplier: 1.8,
-    });
-
-    // Connect to GSAP ticker so ScrollTrigger updates with Lenis
-    if (typeof gsap !== 'undefined') {
-      gsap.ticker.add(time => lenis.raf(time * 1000));
-      gsap.ticker.lagSmoothing(0);
-    }
-
-    // Connect Lenis to ScrollTrigger scroll events
-    if (typeof ScrollTrigger !== 'undefined') {
-      lenis.on('scroll', ScrollTrigger.update);
-    }
-
-    return lenis;
-  }
 
   /* ─────────────────────────────────────────────────────────
      2.  HERO HEADLINE ANIMATION
          Each line word slides up from below its clip container
   ───────────────────────────────────────────────────────── */
-  function initHeroAnimation() {
-    if (typeof gsap === 'undefined') return;
-
-    const wordEls = document.querySelectorAll('.yk-headline-word');
-    if (!wordEls.length) return;
-
-    const tl = gsap.timeline({ defaults: { ease: 'power4.out' }, delay: 0.2 });
-
-    tl.fromTo('.yk-headline-word',
-        { yPercent: 105, opacity: 0 },
-        { yPercent: 0, opacity: 1, duration: 1.0, stagger: 0.16, clearProps: 'transform,opacity' }
-      )
-      .fromTo('.yk-eyebrow',
-        { opacity: 0, y: 18 },
-        { opacity: 1, y: 0, duration: 0.7, clearProps: 'all' }, '-=0.7')
-      .fromTo('.yk-sub',
-        { opacity: 0, y: 22 },
-        { opacity: 1, y: 0, duration: 0.7, clearProps: 'all' }, '-=0.55')
-      .fromTo('.yk-cta-group',
-        { opacity: 0, y: 16 },
-        { opacity: 1, y: 0, duration: 0.6, clearProps: 'all' }, '-=0.5')
-      .fromTo('.yk-hero-stats',
-        { opacity: 0, y: 14 },
-        { opacity: 1, y: 0, duration: 0.6, clearProps: 'all' }, '-=0.4')
-      .fromTo('.yk-search-wrap',
-        { opacity: 0, y: 12 },
-        { opacity: 1, y: 0, duration: 0.55, clearProps: 'all' }, '-=0.4')
-      .fromTo('.yk-scroll-cue',
-        { opacity: 0 },
-        { opacity: 1, duration: 0.5, clearProps: 'all' }, '-=0.3')
-      .fromTo('.yk-hero-art',
-        { opacity: 0, scale: 0.88 },
-        { opacity: 0.12, scale: 1, duration: 1.4, ease: 'power2.out', clearProps: 'transform' }, '-=1.2');
-  }
-
+  /* Hero animation handled by CSS keyframes in yakuzaz.css — no GSAP needed */
+  function initHeroAnimation() { /* intentional no-op */ }
 
   /* ─────────────────────────────────────────────────────────
      3.  MANIFESTO PANEL ANIMATIONS
@@ -89,44 +31,29 @@
   ───────────────────────────────────────────────────────── */
   function initManifestoAnimations() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-
     gsap.registerPlugin(ScrollTrigger);
 
-    $$('.yk-manifesto-panel').forEach((panel, i) => {
+    $$('.yk-manifesto-panel').forEach((panel) => {
       const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: panel,
-          start: 'top 72%',
-          once: true,
-        }
+        scrollTrigger: { trigger: panel, start: 'top 88%', once: true },
+        defaults: { ease: 'power3.out', clearProps: 'all' }
       });
+      const h = panel.querySelector('.yk-panel-headline');
+      const b = panel.querySelector('.yk-panel-body');
+      const x = panel.querySelector('.yk-panel-stat, .yk-chain, .yk-panel-cta');
+      const c = panel.querySelector('.yk-panel-counter');
+      const t = panel.querySelector('.yk-panel-tag');
 
-      tl.from(panel.querySelector('.yk-panel-counter'), {
-          opacity: 0, x: -20, duration: 0.5, ease: 'power2.out'
-        })
-        .from(panel.querySelector('.yk-panel-tag'), {
-          opacity: 0, x: -20, duration: 0.5, ease: 'power2.out'
-        }, '-=0.3')
-        .from(panel.querySelector('.yk-panel-headline'), {
-          opacity: 0, y: 50, duration: 1.0, ease: 'power4.out'
-        }, '-=0.3')
-        .from(panel.querySelector('.yk-panel-body'), {
-          opacity: 0, y: 30, duration: 0.8, ease: 'power3.out'
-        }, '-=0.6');
+      if (c) tl.fromTo(c, { opacity:0, x:-16 }, { opacity:1, x:0, duration:0.45 });
+      if (t) tl.fromTo(t, { opacity:0, x:-16 }, { opacity:1, x:0, duration:0.45 }, '-=0.25');
+      if (h) tl.fromTo(h, { opacity:0, y:40   }, { opacity:1, y:0,  duration:0.85 }, '-=0.25');
+      if (b) tl.fromTo(b, { opacity:0, y:24   }, { opacity:1, y:0,  duration:0.7  }, '-=0.55');
+      if (x) tl.fromTo(x, { opacity:0, y:20   }, { opacity:1, y:0,  duration:0.6  }, '-=0.45');
 
-      // Animate stat/chain/cta if present
-      const extra = panel.querySelector('.yk-panel-stat, .yk-chain, .yk-panel-cta');
-      if (extra) {
-        tl.from(extra, { opacity: 0, y: 24, duration: 0.7, ease: 'power2.out' }, '-=0.4');
-      }
-
-      // Chain fill animation on panel 2
       const fill = panel.querySelector('.yk-chain-fill');
       if (fill) {
         ScrollTrigger.create({
-          trigger: panel,
-          start: 'top 60%',
-          once: true,
+          trigger: panel, start: 'top 65%', once: true,
           onEnter: () => fill.classList.add('animated')
         });
       }

@@ -144,13 +144,12 @@ body.yk-dark .nav-cta:hover { background: #c01234; }
 }
 .yk-headline-line {
   display: block;
-  overflow: hidden;
+  /* NO overflow:hidden — was clipping the animated words */
 }
 .yk-headline-word {
   display: inline-block;
-  transform: translateY(110%);
-  opacity: 0;
-  transition: none; /* GSAP handles this */
+  will-change: transform, opacity;
+  /* CSS animation — staggered per nth-child below. No GSAP */
 }
 /* Red accent stroke on UNVEIL */
 .yk-headline-line:nth-child(2) {
@@ -382,11 +381,11 @@ body.yk-dark .nav-cta:hover { background: #c01234; }
   padding: 0 5vw;
 }
 .yk-manifesto-panel {
-  min-height: 100vh;
+  min-height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 100px 0;
+  padding: 80px 0;
   border-top: 1px solid var(--yk-border);
   position: relative;
 }
@@ -734,14 +733,41 @@ body.yk-dark .step p  { color: var(--yk-grey-lt); }
 }
 .yk-reveal.visible { opacity: 1; transform: none; }
 
-/* Char animation — NO initial CSS hide (GSAP handles via fromTo) */
+/* Char animation */
 .char { display: inline-block; }
 
-/* Headline word — visible by default, GSAP animates from below */
-.yk-headline-word {
-  display: inline-block;
-  will-change: transform, opacity;
+/* ── HERO CSS ANIMATIONS (zero GSAP dependency) ─────── */
+@keyframes yk-word-up {
+  from { transform: translateY(44px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
+@keyframes yk-fade-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes yk-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Staggered word reveals */
+.yk-headline-line:nth-child(1) .yk-headline-word {
+  animation: yk-word-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+}
+.yk-headline-line:nth-child(2) .yk-headline-word {
+  animation: yk-word-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.24s both;
+}
+.yk-headline-line:nth-child(3) .yk-headline-word {
+  animation: yk-word-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.38s both;
+}
+
+.yk-eyebrow    { animation: yk-fade-up 0.6s ease 0.08s  both; }
+.yk-sub        { animation: yk-fade-up 0.65s ease 0.5s  both; }
+.yk-cta-group  { animation: yk-fade-up 0.6s ease 0.62s  both; }
+.yk-hero-stats { animation: yk-fade-up 0.6s ease 0.74s  both; }
+.yk-search-wrap{ animation: yk-fade-up 0.6s ease 0.84s  both; }
+.yk-scroll-cue { animation: yk-fade-in 0.8s ease 1.1s   both; }
+.yk-hero-art   { animation: yk-fade-in 1.0s ease 0.3s   both; }
 /* ── RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 768px) {
   .yk-headline { font-size: clamp(3rem, 12vw, 5rem); }
