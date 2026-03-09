@@ -50,38 +50,38 @@
   function initHeroAnimation() {
     if (typeof gsap === 'undefined') return;
 
-    const words = $$('.yk-headline-word');
-    if (!words.length) {
-      // Fallback: wrap each line content
-      $$('.yk-headline-line').forEach(line => {
-        const text = line.textContent.trim();
-        line.textContent = '';
-        const word = document.createElement('span');
-        word.className = 'yk-headline-word';
-        word.textContent = text;
-        line.appendChild(word);
-      });
-    }
+    const wordEls = document.querySelectorAll('.yk-headline-word');
+    if (!wordEls.length) return;
 
-    const tl = gsap.timeline({
-      defaults: { ease: 'power4.out' },
-      delay: 0.3
-    });
+    const tl = gsap.timeline({ defaults: { ease: 'power4.out' }, delay: 0.2 });
 
-    tl.from('.yk-headline-word', {
-      yPercent: 110,
-      opacity: 0,
-      duration: 1.1,
-      stagger: 0.18,
-    })
-    .from('.yk-eyebrow', { opacity: 0, y: 20, duration: 0.8 }, '-=0.6')
-    .from('.yk-sub',     { opacity: 0, y: 24, duration: 0.8 }, '-=0.6')
-    .from('.yk-cta-group', { opacity: 0, y: 20, duration: 0.7 }, '-=0.5')
-    .from('.yk-hero-stats', { opacity: 0, y: 16, duration: 0.6 }, '-=0.4')
-    .from('.yk-search-wrap', { opacity: 0, y: 16, duration: 0.6 }, '-=0.4')
-    .from('.yk-scroll-cue', { opacity: 0, duration: 0.6 }, '-=0.2')
-    .from('.yk-hero-art', { opacity: 0, scale: 0.9, duration: 1.2, ease: 'power2.out' }, '-=1.0');
+    tl.fromTo('.yk-headline-word',
+        { yPercent: 105, opacity: 0 },
+        { yPercent: 0, opacity: 1, duration: 1.0, stagger: 0.16, clearProps: 'transform,opacity' }
+      )
+      .fromTo('.yk-eyebrow',
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.7, clearProps: 'all' }, '-=0.7')
+      .fromTo('.yk-sub',
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: 0.7, clearProps: 'all' }, '-=0.55')
+      .fromTo('.yk-cta-group',
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.6, clearProps: 'all' }, '-=0.5')
+      .fromTo('.yk-hero-stats',
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.6, clearProps: 'all' }, '-=0.4')
+      .fromTo('.yk-search-wrap',
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.55, clearProps: 'all' }, '-=0.4')
+      .fromTo('.yk-scroll-cue',
+        { opacity: 0 },
+        { opacity: 1, duration: 0.5, clearProps: 'all' }, '-=0.3')
+      .fromTo('.yk-hero-art',
+        { opacity: 0, scale: 0.88 },
+        { opacity: 0.12, scale: 1, duration: 1.4, ease: 'power2.out', clearProps: 'transform' }, '-=1.2');
   }
+
 
   /* ─────────────────────────────────────────────────────────
      3.  MANIFESTO PANEL ANIMATIONS

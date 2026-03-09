@@ -31,17 +31,16 @@ body.yk-dark {
   overflow-x: hidden;
 }
 
-/* Film grain overlay */
+/* Film grain — lightweight CSS only, no SVG filter */
 body.yk-dark::after {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 9997;
   pointer-events: none;
-  opacity: 0.048;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-  background-repeat: repeat;
+  opacity: 0.035;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4t5eXlzc3OLi4ubm5uVlZWPj4+NjY19fX2JiYl/f39ra2uRkZGZmZlpaWmXl5dvb29xcXGTk5NnZ2c8TV1mAAAAG3RSTlNAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAvEOwtAAAFVklEQVR4XpWWB67c2BUFb3g557T/hRo9/WUMZHlgr4Bg8Z4qQgQJlHI4A8SzFVrapvmTF9O7dmYRFZ60YiBhJRCgh1FYhiLAmdvX0CzTOpNE77ME0Zty/nWWzchDtiqrmQDeuv3powQ5ta2eN0FY0InkqDD73lT9c9lEzwUNqgFHs9VQce3TVClFCQrSTfOiYkVJQBmpbq2L6iZavPnAPcoU0dSw0SUTqz/GtrGuXfbyyBniKykOWQWGqwwMA7QiYAxi+IlPdqo+hYHnUt5ZPfnsHJyNiDtnpJyayNBkF6cWoYGAMY92ZBsiKYelXgg1MsHnNwYIDkDKgGpe8FHPmMoAs8NKaZSABumNoqCwjns3Rg2Lx1FWAAIAAjkFCAMBCwABAAAAIQABJAAY/8AAAAASUVORK5CYII=");
+  background-size: 128px 128px;
 }
 
 /* ── Navigation Dark ──────────────────────────────────────── */
@@ -735,9 +734,14 @@ body.yk-dark .step p  { color: var(--yk-grey-lt); }
 }
 .yk-reveal.visible { opacity: 1; transform: none; }
 
-/* Char animation via GSAP */
+/* Char animation — NO initial CSS hide (GSAP handles via fromTo) */
 .char { display: inline-block; }
 
+/* Headline word — visible by default, GSAP animates from below */
+.yk-headline-word {
+  display: inline-block;
+  will-change: transform, opacity;
+}
 /* ── RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 768px) {
   .yk-headline { font-size: clamp(3rem, 12vw, 5rem); }
