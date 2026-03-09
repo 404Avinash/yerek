@@ -511,3 +511,107 @@ document.addEventListener('DOMContentLoaded', () => {
   animateScoreBars();
   console.log(`🌿 YAKUZAZ — ${CATEGORIES[key].name} page loaded.`);
 });
+
+// ==========================================
+// MAGNETIC CARDS — cursor attraction effect
+// ==========================================
+function initMagneticCards() {
+  document.addEventListener('mousemove', e => {
+    document.querySelectorAll('.produce-card').forEach(card => {
+      const r = card.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const maxDist = 240;
+      if (dist < maxDist) {
+        const strength = (1 - dist / maxDist) * 6; // max 6deg tilt
+        const rx = -(dy / maxDist) * strength * 10;
+        const ry =  (dx / maxDist) * strength * 10;
+        card.classList.add('mag-active');
+        card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(4px)`;
+      } else {
+        card.classList.remove('mag-active');
+        card.style.transform = '';
+      }
+    });
+  });
+
+  // Reset on mouse leave
+  document.addEventListener('mouseleave', () => {
+    document.querySelectorAll('.produce-card').forEach(card => {
+      card.classList.remove('mag-active');
+      card.style.transform = '';
+    });
+  });
+}
+
+// ==========================================
+// FRESHNESS PULSE DOTS + FRESHNESS BARS
+// Injects after renderProduceGrid renders cards
+// ==========================================
+function injectFreshnessPulse() {
+  // Add pulse dot to each freshness badge
+  document.querySelectorAll('.freshness-badge').forEach(badge => {
+    if (badge.querySelector('.freshness-pulse')) return; // skip if already done
+    const pulse = document.createElement('span');
+    pulse.className = 'freshness-pulse';
+    badge.insertBefore(pulse, badge.firstChild);
+  });
+
+  // Inject animated freshness bar below each card info
+  document.querySelectorAll('.produce-card').forEach(card => {
+    const badge = card.querySelector('.freshness-badge');
+    if (!badge || card.querySelector('.cat-freshness-bar-wrap')) return;
+    const scoreText = badge.textContent || '';
+    const match = scoreText.match(/([\d.]+)\/10/);
+    if (!match) return;
+    const score = parseFloat(match[1]);
+    const pct = (score / 10) * 100;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'cat-freshness-bar-wrap';
+    const fill = document.createElement('div');
+    fill.className = 'cat-freshness-bar';
+    fill.style.width = '0%';
+    wrap.appendChild(fill);
+
+    // Insert after produce-card-meta
+    const meta = card.querySelector('.produce-card-meta');
+    if (meta && meta.parentNode) {
+      meta.parentNode.insertBefore(wrap, meta.nextSibling);
+    }
+
+    // Animate after short delay
+    requestAnimationFrame(() => {
+      setTimeout(() => { fill.style.width = pct + '%'; }, 80);
+    });
+  });
+}
+
+// ==========================================
+// HOOK INTO renderProduceGrid
+// Wrap the function to also run visual enhancements after each render
+// ==========================================
+const _origRenderProduceGrid = renderProduceGrid;
+window.renderProduceGrid = function(key, filter, sort) {
+  _origRenderProduceGrid(key, filter, sort);
+  // Slight delay so DOM is ready
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      injectFreshnessPulse();
+    }, 50);
+  });
+};
+
+// ==========================================
+// INIT ENHANCEMENTS ON PAGE LOAD
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+  // Slight delay to let render() finish
+  setTimeout(() => {
+    initMagneticCards();
+    injectFreshnessPulse();
+  }, 300);
+});

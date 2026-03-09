@@ -1284,3 +1284,122 @@ function escHtmlR(str) {
   if (!str) return '';
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
+// ==========================================
+// FARM-TO-TABLE TRACE TIMELINE
+// Rendered into #farm-trace-container after main render()
+// ==========================================
+function renderTraceTimeline(key) {
+  const p = PRODUCTS[key];
+  const container = document.getElementById('farm-trace-container');
+  if (!container || !p) return;
+
+  const steps = [
+    {
+      icon: '🌱', label: 'Planted & Grown', status: 'done',
+      detail: `${p.farm.name}, ${p.farm.location}`,
+      time: `${p.farm.years} yr${p.farm.years !== 1 ? 's' : ''} farm partner`
+    },
+    {
+      icon: '🌅', label: 'Harvested', status: 'done',
+      detail: `${p.batch.farm}`,
+      time: p.batch.harvested
+    },
+    {
+      icon: '🚛', label: 'In Transit', status: 'done',
+      detail: `Cold-chain delivery`,
+      time: `${p.batch.transit} transit time`
+    },
+    {
+      icon: '🏪', label: 'Arrived at Store', status: 'done',
+      detail: `YAKUZAZ Store — Delhi`,
+      time: `Arrived ${p.batch.arrivedAt}`
+    },
+    {
+      icon: '🧊', label: 'Stored & Monitored', status: 'now',
+      detail: p.batch.storage,
+      time: `Batch #${p.batch.batchId}`
+    }
+  ];
+
+  container.innerHTML = `
+    <div class="farm-trace-section">
+      <div class="farm-trace-title">FARM → TABLE TRACE</div>
+      <div class="trace-timeline" id="traceTimeline">
+        ${steps.map(s => `
+          <div class="trace-step">
+            <div class="trace-icon ${s.status}">${s.icon}</div>
+            <div class="trace-info">
+              <div class="trace-step-label">${s.label}</div>
+              <div class="trace-step-detail">${s.detail}</div>
+              <div class="trace-step-time">${s.time}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+
+  // Scroll-triggered reveal
+  const steps_els = container.querySelectorAll('.trace-step');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.3, rootMargin: '0px 0px -20px 0px' });
+  steps_els.forEach(el => observer.observe(el));
+}
+
+// ==========================================
+// ANIMATED NUTRITION BARS
+// Replaces static nutrition grid with bars
+// ==========================================
+function renderAnimatedNutrition(key) {
+  const p = PRODUCTS[key];
+  const grid = document.getElementById('nutrition-grid');
+  if (!grid || !p) return;
+
+  // Determine max numeric value for relative bar sizing
+  const nums = p.nutrition.map(n => parseFloat(n.value) || 0);
+  const maxNum = Math.max(...nums, 1);
+
+  grid.innerHTML = p.nutrition.map((n, i) => {
+    const num = parseFloat(n.value) || 0;
+    const pct = num > 0 ? Math.max(10, (num / maxNum) * 100) : 8;
+    return `
+    <div class="nutr-bar-card" style="animation-delay:${i * 0.07}s">
+      <div class="nutr-bar-value">${n.value}</div>
+      <div class="nutr-bar-label">${n.label}</div>
+      <div class="nutr-bar-per">${n.per}</div>
+      <div class="nutr-bar-track">
+        <div class="nutr-bar-fill" data-pct="${pct}" style="width:0%"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Animate fill bars
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      grid.querySelectorAll('.nutr-bar-fill').forEach((el, i) => {
+        setTimeout(() => {
+          el.style.width = el.dataset.pct + '%';
+        }, i * 60);
+      });
+    }, 100);
+  });
+}
+
+// ==========================================
+// HOOK INTO PRODUCT PAGE DOMContentLoaded
+// Run after existing render() + initReveal()
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+  if (!window.location.pathname.includes('product.html') &&
+      !window.location.pathname.endsWith('/product')) return;
+  const key = (new URLSearchParams(window.location.search)).get('item');
+  if (!key || !PRODUCTS[key]) return;
+
+  // Give the main render() time to finish
+  setTimeout(() => {
+    renderTraceTimeline(key);
+    renderAnimatedNutrition(key);
+  }, 80);
+}, { capture: true });

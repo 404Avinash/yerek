@@ -590,3 +590,149 @@ body.yk-dark .related-price { color: #4ade80; }
   to   { opacity:1; transform: translateY(0); }
 }
 body.yk-dark .product-hero { animation: prod-hero-in 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+
+/* ── FARM-TO-TABLE TRACE TIMELINE ───────────────────────
+   Scroll-triggered animated vertical timeline
+   ──────────────────────────────────────────────────────── */
+.farm-trace-section {
+  margin: 48px 0;
+  padding: 36px 40px;
+  background: #141414;
+  border: 1px solid #222;
+  border-radius: 12px;
+}
+.farm-trace-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  color: #5A5A5A;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.trace-timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+/* Vertical connecting line */
+.trace-timeline::before {
+  content: '';
+  position: absolute;
+  left: 22px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, #DC143C 0%, #4ade80 100%);
+  opacity: 0.25;
+}
+.trace-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 18px 0;
+  opacity: 0;
+  transform: translateX(-12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.trace-step.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.trace-step:nth-child(1) { transition-delay: 0.05s; }
+.trace-step:nth-child(2) { transition-delay: 0.18s; }
+.trace-step:nth-child(3) { transition-delay: 0.31s; }
+.trace-step:nth-child(4) { transition-delay: 0.44s; }
+.trace-step:nth-child(5) { transition-delay: 0.57s; }
+
+.trace-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #333;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.trace-icon.done {
+  border-color: rgba(74,222,128,0.4);
+  background: rgba(74,222,128,0.07);
+}
+.trace-icon.now {
+  border-color: rgba(220,20,60,0.5);
+  background: rgba(220,20,60,0.08);
+  box-shadow: 0 0 0 4px rgba(220,20,60,0.08);
+}
+.trace-info { flex: 1; padding-top: 8px; }
+.trace-step-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .88rem;
+  font-weight: 700;
+  color: #F2EDE4;
+  margin-bottom: 3px;
+}
+.trace-step-detail {
+  font-size: .78rem;
+  color: #7A7A7A;
+  line-height: 1.5;
+}
+.trace-step-time {
+  font-size: .68rem;
+  color: #4ade80;
+  font-weight: 600;
+  margin-top: 3px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* ── ANIMATED NUTRITION BARS ────────────────────────────
+   Numeric cards with fill bars on load
+   ──────────────────────────────────────────────────────── */
+.nutr-bar-card {
+  background: #141414;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 14px 16px;
+  transition: border-color 0.2s;
+}
+.nutr-bar-card:hover { border-color: rgba(74,222,128,0.25); }
+.nutr-bar-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #F2EDE4;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+.nutr-bar-label {
+  font-size: .72rem;
+  font-weight: 700;
+  color: #7A7A7A;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 2px;
+}
+.nutr-bar-per { font-size: .68rem; color: #5A5A5A; }
+.nutr-bar-track {
+  margin-top: 10px;
+  height: 2px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.nutr-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, rgba(220,20,60,0.5), #DC143C);
+  width: 0%;
+  transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+
+@media (max-width: 600px) {
+  .farm-trace-section { padding: 24px 20px; }
+}
