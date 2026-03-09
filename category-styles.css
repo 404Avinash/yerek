@@ -915,3 +915,122 @@
   .pc-qty-btn { padding: 5px 8px; }
 }
 
+
+/* ============================================================
+   YAKUZAZ Dark Theme — category-styles.css overrides
+   ============================================================ */
+
+body.yk-dark.cat-body {
+  background: #080808;
+  color: #F2EDE4;
+}
+
+/* Breadcrumb */
+body.yk-dark .cat-breadcrumb a { color: #7A7A7A; }
+body.yk-dark .cat-breadcrumb span { color: #AAAAAA; }
+body.yk-dark .cat-breadcrumb svg { color: #3A3A3A; }
+
+/* Category header / hero strip */
+body.yk-dark .cat-header {
+  background: linear-gradient(160deg, #0a0a0a 0%, #111 60%, #0a0a0a 100%);
+  border-bottom: 1px solid #252525;
+}
+body.yk-dark .cat-title { color: #F2EDE4; font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.04em; }
+body.yk-dark .cat-desc-text { color: #7A7A7A; }
+body.yk-dark .cat-tag {
+  background: rgba(220,20,60,0.08);
+  color: #DC143C;
+  border: 1px solid rgba(220,20,60,0.2);
+  border-radius: 2px;
+}
+body.yk-dark .cat-stats .cstat { color: #AAAAAA; }
+body.yk-dark .cat-stats .cstat strong { color: #F2EDE4; }
+
+/* Filter bar */
+body.yk-dark .filter-bar {
+  background: rgba(8,8,8,0.96);
+  border-bottom: 1px solid #252525;
+  backdrop-filter: blur(14px);
+}
+body.yk-dark .filter-btn {
+  background: #161616;
+  border: 1px solid #252525;
+  color: #7A7A7A;
+  font-family: 'Space Grotesk', sans-serif;
+  border-radius: 2px;
+}
+body.yk-dark .filter-btn:hover { border-color: rgba(74,222,128,0.4); color: #4ade80; }
+body.yk-dark .filter-btn.active {
+  background: #DC143C;
+  border-color: #DC143C;
+  color: #fff;
+}
+body.yk-dark .sort-select {
+  background: #161616;
+  border: 1px solid #252525;
+  color: #AAAAAA;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* Product grid cards */
+body.yk-dark .prod-card {
+  background: #141414;
+  border: 1px solid #222;
+  border-radius: 10px;
+  transition: border-color 0.25s, transform 0.25s;
+}
+body.yk-dark .prod-card:hover {
+  border-color: rgba(74,222,128,0.3);
+  transform: translateY(-3px);
+}
+body.yk-dark .prod-name { color: #F2EDE4; font-family: 'Space Grotesk', sans-serif; }
+body.yk-dark .prod-aka  { color: #5A5A5A; }
+body.yk-dark .prod-price { color: #4ade80; }
+body.yk-dark .prod-origin { color: #5A5A5A; }
+body.yk-dark .prod-freshness { background: rgba(74,222,128,0.06); color: #4ade80; border-color: rgba(74,222,128,0.2); }
+body.yk-dark .prod-badge { background: #DC143C; color: #fff; border-radius: 2px; }
+body.yk-dark .add-to-cart-btn {
+  background: #DC143C;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  transition: background 0.2s, transform 0.15s;
+}
+body.yk-dark .add-to-cart-btn:hover { background: #c01234; transform: scale(1.02); }
+
+/* Qr batch / farm info chips */
+body.yk-dark .farm-chip {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #252525;
+  color: #7A7A7A;
+  border-radius: 2px;
+}
+
+/* No results */
+body.yk-dark .no-results { color: #3A3A3A; }
+
+/* Pagination */
+body.yk-dark .page-btn {
+  background: #161616;
+  border: 1px solid #252525;
+  color: #7A7A7A;
+}
+body.yk-dark .page-btn.active { background: #DC143C; border-color: #DC143C; color: #fff; }
+body.yk-dark .page-btn:hover  { border-color: rgba(74,222,128,0.4); color: #4ade80; }
+
+/* Animations */
+@keyframes cat-card-in {
+  from { opacity:0; transform: translateY(24px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+body.yk-dark .prod-card {
+  animation: cat-card-in 0.5s cubic-bezier(0.16,1,0.3,1) both;
+}
+body.yk-dark .prod-card:nth-child(1) { animation-delay: 0.05s; }
+body.yk-dark .prod-card:nth-child(2) { animation-delay: 0.1s; }
+body.yk-dark .prod-card:nth-child(3) { animation-delay: 0.15s; }
+body.yk-dark .prod-card:nth-child(4) { animation-delay: 0.2s; }
+body.yk-dark .prod-card:nth-child(5) { animation-delay: 0.25s; }
+body.yk-dark .prod-card:nth-child(6) { animation-delay: 0.3s; }
