@@ -568,41 +568,7 @@ console.log('🌿 Fresco website loaded successfully.');
     });
   }
 
-  /* ── 4. CUSTOM CURSOR ─────────────────── */
-  const dot  = document.getElementById('cursor-dot');
-  const ring = document.getElementById('cursor-ring');
-
-  if (dot && ring && window.matchMedia('(pointer: fine)').matches) {
-    let mx = 0, my = 0, rx = 0, ry = 0;
-
-    document.addEventListener('mousemove', e => {
-      mx = e.clientX;
-      my = e.clientY;
-      dot.style.left = mx + 'px';
-      dot.style.top  = my + 'px';
-    });
-
-    // Ring lags behind dot for organic feel
-    (function trackRing() {
-      rx += (mx - rx) * 0.13;
-      ry += (my - ry) * 0.13;
-      ring.style.left = rx + 'px';
-      ring.style.top  = ry + 'px';
-      requestAnimationFrame(trackRing);
-    })();
-
-    // Expand ring on interactive elements
-    const hoverSel = 'a, button, .cat-card, .tool-showcase-card, .farmer-card, .pillar, input, label, .value-chip, .mandi-feat';
-    document.querySelectorAll(hoverSel).forEach(el => {
-      el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-      el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-    });
-
-    document.addEventListener('mousedown', () => document.body.classList.add('cursor-clicking'));
-    document.addEventListener('mouseup',   () => document.body.classList.remove('cursor-clicking'));
-  }
-
-  /* ── 5. TRUST STRIP MARQUEE ─────────── */
+  /* ── 4. TRUST STRIP MARQUEE ─────────── */
   const tlogos = document.querySelector('.trust-logos');
   if (tlogos) {
     // Duplicate for seamless loop (-50% translate = exactly one copy width)
