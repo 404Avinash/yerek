@@ -28,7 +28,7 @@ body.yk-dark {
   background: var(--yk-black);
   color: var(--yk-white);
   font-family: var(--yk-font-display);
-  overflow-x: hidden;
+  overflow-x: clip; /* clip NOT hidden — hidden breaks position:sticky scroll sections */
 }
 
 /* Film grain — lightweight CSS only, no SVG filter */
