@@ -491,6 +491,71 @@ console.log('🌿 Fresco website loaded successfully.');
       .to('.hero-stats',       { opacity: 1, y: 0, duration: 0.5  }, '-=0.4')
       .to('.hero-visual',      { opacity: 1, x: 0, duration: 1.1  }, 0.18);
 
+    /* ─ Card shuffle — How It Works ─ */
+    const stepCards = gsap.utils.toArray('.step-card');
+    const stepsRegion = document.getElementById('steps-scroll-region');
+    const stepsHint = document.querySelector('.steps-scroll-hint');
+
+    if (stepCards.length === 4 && stepsRegion) {
+      // Initial stacked state (bottom card = data-step 3 is on top visually)
+      const stackStates = [
+        { x:  8,  y: -10, rotation: -8,  scale: 0.91, zIndex: 1 },
+        { x:  4,  y:  -5, rotation: -3,  scale: 0.94, zIndex: 2 },
+        { x: -4,  y:   3, rotation:  4,  scale: 0.97, zIndex: 3 },
+        { x:  0,  y:   0, rotation:  0,  scale: 1.00, zIndex: 4 },
+      ];
+
+      const isMobile = () => window.innerWidth < 640;
+
+      function getSpreadStates() {
+        if (isMobile()) {
+          const cw = 270, ch = 224, g = 16;
+          return [
+            { x: -(cw / 2 + g / 2), y: -(ch / 2 + g / 2), rotation: -1, scale: 0.76, zIndex: 1 },
+            { x:  (cw / 2 + g / 2), y: -(ch / 2 + g / 2), rotation:  1, scale: 0.76, zIndex: 2 },
+            { x: -(cw / 2 + g / 2), y:  (ch / 2 + g / 2), rotation: -1, scale: 0.76, zIndex: 3 },
+            { x:  (cw / 2 + g / 2), y:  (ch / 2 + g / 2), rotation:  1, scale: 0.76, zIndex: 4 },
+          ];
+        }
+        const cw = 270, ch = 224, g = 28;
+        return [
+          { x: -(cw / 2 + g / 2), y: -(ch / 2 + g / 2), rotation: -1, scale: 1, zIndex: 1 },
+          { x:  (cw / 2 + g / 2), y: -(ch / 2 + g / 2), rotation:  1, scale: 1, zIndex: 2 },
+          { x: -(cw / 2 + g / 2), y:  (ch / 2 + g / 2), rotation: -1, scale: 1, zIndex: 3 },
+          { x:  (cw / 2 + g / 2), y:  (ch / 2 + g / 2), rotation:  1, scale: 1, zIndex: 4 },
+        ];
+      }
+
+      stepCards.forEach((card, i) => {
+        gsap.set(card, stackStates[i]);
+      });
+
+      const spread = getSpreadStates();
+      const shuffleTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: stepsRegion,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1.4,
+          onUpdate: (self) => {
+            if (stepsHint) stepsHint.classList.toggle('hidden', self.progress > 0.06);
+          },
+        }
+      });
+
+      stepCards.forEach((card, i) => {
+        shuffleTl.to(card, {
+          x: spread[i].x,
+          y: spread[i].y,
+          rotation: spread[i].rotation,
+          scale: spread[i].scale,
+          zIndex: spread[i].zIndex,
+          ease: 'power2.inOut',
+          duration: 0.6,
+        }, i * 0.08);
+      });
+    }
+
     /* ─ ScrollTrigger scrub parallax (decorative elements only — no opacity conflict) ─ */
 
     // Phone mockup in #trace section

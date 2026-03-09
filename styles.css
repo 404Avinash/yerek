@@ -851,6 +851,107 @@ nav#navbar.scrolled .hamburger span { background: var(--gray-800); }
 }
 #how-it-works .container { text-align: center; }
 #how-it-works .section-sub { margin-left: auto; margin-right: auto; }
+#how-it-works > .container:first-of-type { padding-bottom: 0; }
+
+/* ── Card shuffle scroll zone ──────────────────── */
+#steps-scroll-region {
+  height: 360vh;
+  position: relative;
+}
+#steps-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+#steps-cards-deck {
+  position: relative;
+  /* GSAP controls card positions; deck is just a reference container */
+  width: 0;
+  height: 0;
+}
+.step-card {
+  position: absolute;
+  width: 270px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 28px 28px;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.11), 0 1px 4px rgba(0,0,0,0.06);
+  border: 1px solid var(--gray-100);
+  /* x/y/rotation set by GSAP; center of card aligned to deck center */
+  margin-left: -135px;
+  margin-top:  -112px;
+  transform-origin: center center;
+  will-change: transform;
+  cursor: default;
+  user-select: none;
+}
+.step-card-num {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--green-500);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.step-card-icon {
+  display: block;
+  font-size: 2.4rem;
+  margin-bottom: 18px;
+  line-height: 1;
+}
+.step-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+.step-card p {
+  font-size: 0.82rem;
+  color: var(--gray-500);
+  line-height: 1.7;
+  margin: 0;
+}
+/* Accent border per step */
+.step-card[data-step="0"] { border-top: 3px solid var(--green-400); }
+.step-card[data-step="1"] { border-top: 3px solid var(--green-500); }
+.step-card[data-step="2"] { border-top: 3px solid var(--green-600); }
+.step-card[data-step="3"] { border-top: 3px solid var(--green-700); }
+
+/* Scroll hint label */
+.steps-scroll-hint {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--gray-400);
+  letter-spacing: 0.06em;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.steps-scroll-hint.hidden { opacity: 0; }
+
+/* Reduced-motion: skip the shuffle, show a simple grid */
+@media (prefers-reduced-motion: reduce) {
+  #steps-scroll-region { height: auto; padding: 40px 0; }
+  #steps-sticky { position: static; height: auto; overflow: visible; }
+  #steps-cards-deck {
+    width: 100%; max-width: 640px; height: auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 20px; margin: 0 auto;
+  }
+  .step-card { position: static; margin: 0; width: 100%; }
+}
 
 .steps-flow {
   display: grid;
