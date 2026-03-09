@@ -2100,3 +2100,220 @@ nav#navbar.scrolled .hamburger span { background: var(--gray-800); }
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* ==========================================
+   ADVANCED INTERACTIONS — Premium UI Layer
+   Lenis · GSAP · Cursor · Magnetic · Shimmer
+   ========================================== */
+
+/* ── Typography ── */
+.section-title,
+.hero-headline,
+.smart-tools-title {
+  text-wrap: balance;
+}
+
+/* ── Animated gradient on em (section headings) ── */
+.section-title em,
+.hero-headline em {
+  font-style: normal;
+  background: linear-gradient(
+    135deg,
+    var(--green-400)  0%,
+    var(--green-500) 35%,
+    var(--green-600) 55%,
+    var(--green-400) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 5s linear infinite;
+}
+@keyframes gradientShift {
+  0%   { background-position: 0%   center; }
+  100% { background-position: 200% center; }
+}
+
+/* ── Magnetic button — spring transform ── */
+.btn-primary,
+.btn-outline {
+  transition:
+    transform    0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background   0.3s var(--ease-out),
+    box-shadow   0.3s var(--ease-out),
+    color        0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out) !important;
+}
+.btn-smart-tools {
+  transition:
+    transform  0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.3s var(--ease-out),
+    box-shadow 0.3s var(--ease-out) !important;
+}
+
+/* ── Card shimmer sweep on hover ── */
+.farmer-card,
+.pillar,
+.tool-showcase-card,
+.problem-card,
+.mandi-feat,
+.step {
+  position: relative;
+  overflow: hidden;
+}
+.farmer-card::after,
+.pillar::after,
+.tool-showcase-card::after,
+.problem-card::after,
+.mandi-feat::after,
+.step::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    108deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 70%
+  );
+  transform: translateX(-130%);
+  transition: transform 0s linear;
+  pointer-events: none;
+  border-radius: inherit;
+}
+.farmer-card:hover::after,
+.pillar:hover::after,
+.tool-showcase-card:hover::after,
+.problem-card:hover::after,
+.mandi-feat:hover::after,
+.step:hover::after {
+  transform: translateX(130%);
+  transition: transform 0.65s ease;
+}
+
+/* ── Nav link animated underline ── */
+.nav-links a {
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  right: 50%;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 2px;
+  opacity: 0.5;
+  transition: left 0.3s var(--ease-out), right 0.3s var(--ease-out);
+}
+.nav-links a:hover::after,
+.nav-links a.active-nav::after {
+  left: 12px;
+  right: 12px;
+}
+
+/* ── Footer link underline ── */
+.footer-col a {
+  position: relative;
+  display: inline-block;
+}
+.footer-col a::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--green-500);
+  border-radius: 1px;
+  transition: width 0.35s var(--ease-out);
+}
+.footer-col a:hover::after { width: 100%; }
+
+/* ── Custom cursor (desktop / fine pointer only) ── */
+@media (pointer: fine) {
+  body { cursor: none; }
+  a, button, input, label, select,
+  [role="button"], .cat-card, .tool-showcase-card,
+  .farmer-card, .pillar, .value-chip { cursor: none; }
+}
+#cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  background: var(--green-400);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+  transition:
+    width    0.2s var(--ease-spring),
+    height   0.2s var(--ease-spring),
+    background 0.2s ease;
+}
+#cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 38px;
+  height: 38px;
+  border: 1.5px solid rgba(34, 197, 94, 0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+  transition:
+    width        0.25s var(--ease-out),
+    height       0.25s var(--ease-out),
+    border-color 0.25s ease;
+}
+body.cursor-hover  #cursor-dot  { width: 11px; height: 11px; background: var(--green-500); }
+body.cursor-hover  #cursor-ring { width: 54px; height: 54px; border-color: rgba(34, 197, 94, 0.2); }
+body.cursor-clicking #cursor-dot { transform: translate(-50%, -50%) scale(0.5); }
+
+/* ── Trust strip marquee ── */
+.trust-inner { overflow: hidden; }
+.trust-logos {
+  flex-wrap: nowrap !important;
+  flex-shrink: 0;
+  width: max-content;
+  gap: 52px !important;
+  animation: trustMarquee 30s linear infinite;
+}
+.trust-logos:hover { animation-play-state: paused; }
+@keyframes trustMarquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Page entrance fade ── */
+body { animation: pageFadeIn 0.45s var(--ease-out) both; }
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Reduced motion — safety net ── */
+@media (prefers-reduced-motion: reduce) {
+  body { animation: none !important; cursor: auto !important; }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+  .trust-logos,
+  .section-title em,
+  .hero-headline em { animation: none !important; }
+  #cursor-dot, #cursor-ring { display: none !important; }
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration:  0.01ms !important;
+  }
+}
