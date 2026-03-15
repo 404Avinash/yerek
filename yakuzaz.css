@@ -1187,3 +1187,102 @@ body.yk-dark .nav-links a.active::after {
   .yk-mb-headline { font-size: clamp(2.4rem, 12vw, 5rem); }
 }
 
+/* ════════════════════════════════════════════
+   MULTI-REEL VARIANTS — unique per section
+═══════════════════════════════════════════ */
+
+/* RTL / reverse scroll animation */
+@keyframes brand-reel-scroll-rtl {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+
+/* Reversed direction reel — tilts opposite angle */
+.brand-reel--reverse {
+  transform: rotate(1.8deg) scaleX(1.04) !important;
+}
+.brand-reel-rtl {
+  animation-name: brand-reel-scroll-rtl !important;
+  animation-direction: normal !important;
+}
+
+/* Freshness / Quality reel — faster scroll */
+.brand-reel--quality {
+  margin: 48px 0 !important;
+  animation-duration: calc(var(--reel-speed, 28s) * 0.9);
+}
+.brand-reel--quality .brand-reel-inner span:not(.br-sep) {
+  -webkit-text-stroke-color: rgba(74,222,128,0.5) !important;
+}
+.brand-reel--quality .br-sep {
+  color: #4ade80 !important;
+}
+
+/* Data / Transparency reel — outline only, green accent */
+.brand-reel--data .brand-reel-inner span:not(.br-sep) {
+  -webkit-text-stroke-color: rgba(255,255,255,0.3) !important;
+}
+.brand-reel--data .br-sep {
+  color: rgba(74,222,128,0.6) !important;
+}
+
+/* Community / Farmers reel — warm gold accent  */
+.brand-reel--community {
+  margin: 48px 0 !important;
+}
+.brand-reel--community .brand-reel-inner span:not(.br-sep) {
+  -webkit-text-stroke-color: rgba(251,191,36,0.45) !important;
+}
+.brand-reel--community .br-sep {
+  color: #fbbf24 !important;
+}
+
+/* Mission reel — full red solid fill on hover */
+.brand-reel--mission .brand-reel-inner span:not(.br-sep) {
+  -webkit-text-stroke-color: rgba(220,20,60,0.55) !important;
+}
+.brand-reel--mission .br-sep {
+  color: #DC143C !important;
+}
+.brand-reel--mission:hover .brand-reel-inner span:not(.br-sep) {
+  -webkit-text-stroke-color: #DC143C !important;
+  color: rgba(220,20,60,0.08) !important;
+}
+
+/* ════════════════════════════════════════════
+   WAITLIST SECTION (global)
+═══════════════════════════════════════════ */
+.yk-waitlist-section {
+  background: #050505;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 100px 0;
+  text-align: center;
+}
+.yk-waitlist-tag {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .72rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: #DC143C;
+  margin-bottom: 20px;
+}
+.yk-waitlist-headline {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: clamp(2.8rem, 7vw, 6rem);
+  font-weight: 900;
+  line-height: .9;
+  letter-spacing: -.03em;
+  color: #F2EDE4;
+  margin-bottom: 20px;
+}
+.yk-waitlist-sub {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.05rem;
+  color: rgba(242,237,228,.55);
+  line-height: 1.75;
+  max-width: 520px;
+  margin: 0 auto 48px;
+}
+
+
