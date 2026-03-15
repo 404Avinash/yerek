@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>YAKUZAZ — The Digital Harvest</title>
+<meta name="description" content="Ultra-premium farm-to-table. Every root traced. Every obsession cultivated."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700;1,9..144,900&family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root {
+  --primary: #B4F868;
+  --primary-glow: rgba(180,248,104,0.35);
+  --bg: #0A130C;
+  --surface: rgba(22,40,27,0.45);
+  --surface-solid: #16281B;
+  --text: #F4F9F5;
+  --muted: #4A6B53;
+  --accent: #E85D04;
+  --border: rgba(74,107,83,0.35);
+  --font-head: 'Fraunces', serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-mono: 'Space Grotesk', sans-serif;
+  --ease: cubic-bezier(0.16,1,0.3,1);
+  --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  cursor:none;
+  line-height:1.6;
+}
+img{display:block;max-width:100%;}
+a{text-decoration:none;color:inherit;}
+ul{list-style:none;}
+button,input{font-family:inherit;border:none;background:none;cursor:none;}
+::selection{background:var(--primary);color:var(--bg);}
+
+/* ── SCROLLBAR ─────── */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--muted);}
+
+/* ── GRAIN OVERLAY ─────── */
+#grain{
+  position:fixed;inset:0;z-index:9998;
+  pointer-events:none;opacity:.055;mix-blend-mode:screen;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:256px 256px;
+  animation:grainShift 0.12s steps(1) infinite;
+}
+@keyframes grainShift{
+  0%{background-position:0 0;}20%{background-position:-40px 20px;}
+  40%{background-position:20px -30px;}60%{background-position:30px 40px;}
+  80%{background-position:-20px -10px;}100%{background-position:10px 25px;}
+}
+
+/* ── CUSTOM CURSOR ─────── */
+#cursor-dot{
+  position:fixed;width:10px;height:10px;border-radius:50%;
+  background:var(--primary);pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);transition:width .18s,height .18s,background .18s;
+  box-shadow:0 0 22px 8px var(--primary-glow);mix-blend-mode:screen;
+}
+#cursor-ring{
+  position:fixed;width:38px;height:38px;border-radius:50%;
+  border:1.5px solid rgba(180,248,104,.5);pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:width .35s var(--ease),height .35s var(--ease),border-color .2s,opacity .2s;
+}
+body:has(a:hover) #cursor-dot,
+body:has(button:hover) #cursor-dot{width:6px;height:6px;}
+body:has(a:hover) #cursor-ring,
+body:has(button:hover) #cursor-ring{width:54px;height:54px;border-color:var(--primary);}
+
+/* ── LOADING SCREEN ─────── */
+#loader{
+  position:fixed;inset:0;background:var(--bg);z-index:9990;
+  display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:0;overflow:hidden;
+}
+#loader-line{
+  width:2px;height:0;background:var(--primary);
+  box-shadow:0 0 16px 4px var(--primary-glow);
+  animation:rootGrow 1.6s var(--ease) forwards;
+}
+#loader-pct{
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--primary);
+}
+@keyframes rootGrow{from{height:0;}to{height:100vh;}}
+
+/* ── GLASS ─────── */
+.glass{
+  background:var(--surface);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--border);
+}
+
+/* ── NAV ─────── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  padding:0 40px;height:72px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(10,19,12,.5);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  transition:background .4s;
+}
+.nav-logo{
+  font-family:var(--font-head);font-size:1.3rem;font-weight:900;
+  font-style:italic;letter-spacing:-.02em;color:var(--text);
+  display:flex;align-items:center;gap:10px;
+}
+.nav-logo span{color:var(--primary);}
+.nav-links{display:flex;align-items:center;gap:8px;}
+.nav-links a{
+  font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(244,249,245,.6);padding:8px 14px;border-radius:4px;
+  transition:color .2s,background .2s;
+}
+.nav-links a:hover{color:var(--text);background:rgba(255,255,255,.06);}
+.nav-cta{
+  font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--bg);background:var(--primary);padding:9px 22px;border-radius:4px;
+  transition:transform .2s var(--ease),box-shadow .2s;
+}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--primary-glow);}
+
+/* ── SECTION UTILS ─────── */
+.section-label{
+  font-family:var(--font-mono);font-size:.68rem;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--primary);
+  display:flex;align-items:center;gap:8px;margin-bottom:20px;
+}
+.section-label::before{
+  content:'';display:block;width:28px;height:1px;background:var(--primary);
+}
+</style>
+</head>
+<body>
+
+<!-- Film Grain -->
+<div id="grain" aria-hidden="true"></div>
+
+<!-- Custom Cursor -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- Loading Screen -->
+<div id="loader" aria-hidden="true">
+  <div id="loader-line"></div>
+  <div id="loader-pct">UNEARTHING <span id="loader-num">0</span>%</div>
+</div>
+
+<!-- Navigation -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo"><span>✦</span> YAKUZAZ.</a>
+  <ul class="nav-links">
+    <li><a href="#produce">Produce</a></li>
+    <li><a href="#trace">Trace</a></li>
+    <li><a href="#waitlist">Access</a></li>
+  </ul>
+  <a href="#waitlist" class="nav-cta">Join Waitlist</a>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     HERO & MANIFESTO
+════════════════════════════════════════ -->
+<style>
+/* HERO */
+#hero{
+  position:relative;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;padding:100px 40px 80px;
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 20% 50%, rgba(180,248,104,.05) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 60% at 80% 40%, rgba(74,107,83,.08) 0%,transparent 60%);
+}
+/* floating assets — positioned via inline style */
+.float-asset{
+  position:absolute;pointer-events:none;will-change:transform;
+  filter:drop-shadow(0 40px 60px rgba(0,0,0,.85));
+}
+.float-asset.bg-layer{mix-blend-mode:luminosity;}
+.float-asset.fg-layer{mix-blend-mode:luminosity;}
+/* hero title */
+.hero-inner{
+  position:relative;z-index:10;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+}
+.hero-eyebrow{
+  font-family:var(--font-mono);font-size:.68rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:28px;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-eyebrow::before,.hero-eyebrow::after{
+  content:'';display:block;width:20px;height:1px;background:var(--muted);
+}
+.hero-title{
+  font-family:var(--font-head);font-style:italic;font-weight:900;
+  font-size:clamp(80px,13vw,180px);line-height:.88;letter-spacing:-.03em;
+  color:var(--text);margin-bottom:32px;
+  background:linear-gradient(180deg,var(--text) 0%,rgba(244,249,245,.55) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-manifesto{
+  display:inline-flex;align-items:center;gap:16px;
+  padding:14px 28px;border-radius:50px;border:1px solid var(--border);
+  background:var(--surface);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  margin-bottom:52px;
+  box-shadow:0 0 40px rgba(180,248,104,.06);
+}
+.hero-manifesto p{
+  font-size:clamp(.8rem,1.4vw,1.05rem);font-weight:300;letter-spacing:.04em;color:var(--text);
+}
+.hero-manifesto strong{font-weight:800;color:var(--primary);}
+/* scroll indicator */
+.scroll-cue{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:10px;z-index:10;
+}
+.scroll-cue span{
+  font-family:var(--font-mono);font-size:.6rem;letter-spacing:.22em;
+  text-transform:uppercase;color:rgba(180,248,104,.6);
+}
+.scroll-line-wrap{width:2px;height:64px;background:rgba(180,248,104,.12);overflow:hidden;border-radius:2px;}
+.scroll-line-fill{
+  width:100%;height:100%;background:var(--primary);transform:translateY(-100%);
+  animation:scrollDrop 2.2s cubic-bezier(.16,1,.3,1) infinite;
+  box-shadow:0 0 8px var(--primary);
+}
+@keyframes scrollDrop{0%{transform:translateY(-100%);}60%{transform:translateY(0);}100%{transform:translateY(100%);}}}
+
+/* BRAND REEL */
+#reel{
+  position:relative;width:100%;overflow:hidden;
+  padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  transform:rotate(-1.5deg) scaleX(1.08);margin:40px 0;
+}
+.reel-track{display:flex;white-space:nowrap;gap:0;}
+.reel-inner{
+  display:inline-flex;align-items:center;gap:0;
+  animation:reelScroll 28s linear infinite;
+  will-change:transform;
+}
+#reel:hover .reel-inner{animation-duration:14s;}
+@keyframes reelScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.reel-word{
+  font-family:var(--font-head);font-size:clamp(52px,7vw,100px);
+  font-weight:900;font-style:italic;padding:0 36px;letter-spacing:-.02em;
+  -webkit-text-stroke:1.5px var(--muted);color:transparent;
+  transition:color .3s,-webkit-text-stroke-color .3s;white-space:nowrap;
+}
+#reel:hover .reel-word{-webkit-text-stroke-color:var(--primary);color:rgba(180,248,104,.08);}
+.reel-dot{color:var(--primary);-webkit-text-stroke:0;font-size:.6em;margin:0 8px;}
+</style>
+
+<section id="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+
+  <!-- Background floating assets (blurred, distant) -->
+  <img class="float-asset bg-layer" data-speed="-.3" aria-hidden="true"
+    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzvdFVTVyU8fdBjNyFVqX1oVu7jD34ng_6bLEkJIkVjN8ZnGCrdR_64Kt6zi1ik_y18977VvkfxW3FimG6DRoE7iker3JkARmFSYTBtrCiTv1-Za59o0uud2y5Ld24fDPtMQnCEGi_gTpjxv7zPoR-bh3Hx3toxyGwQFzlix1QKVu6ccTOtvZvpINkodQ3BHr3BLWHjnPbJTSlwNmzudxkA7c3KZmpJAV6aM6lWRHgJcX7613EoZMwtOWd0i4UOmLmUbqd4SqPPA"
+    style="width:260px;top:18%;left:8%;opacity:.22;filter:drop-shadow(0 30px 50px rgba(0,0,0,.9)) blur(2px) grayscale(30%);transform:rotate(-12deg);"
+    alt=""/>
+  <img class="float-asset bg-layer" data-speed=".2" aria-hidden="true"
+    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS_KUfnlHpxg7cT6tB2IX-i1YhHy1ybez4bzIaElAbkeaAi5cRMgR5iggH-smPOUKKc10a_4mz2gL2Dm-idtnJiFWxpjB9RXtb59Nhpt3bmtU9oaEuwq1eOEj8po0TBOC-XTszVfvZEsri6IvfCzlxw27Dq9ExCEVwBAzXiDDvMreoCRoGgy6n27Zfpt8j4irVYpt_DedJt44HXtEh-K5E0kA9y89fQbpYJUAuDvmxFDa6sd9TXnLOPpP05uwft75A5bT97WVrFw"
+    style="width:200px;bottom:18%;right:10%;opacity:.18;filter:drop-shadow(0 24px 40px rgba(0,0,0,.9)) blur(1px) grayscale(40%);transform:rotate(8deg);"
+    alt=""/>
+
+  <!-- Hero title + manifesto -->
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Ghaziabad · NCR · India</div>
+    <h1 class="hero-title">YAKUZAZ.</h1>
+    <div class="hero-manifesto">
+      <p>We do not grow food. <strong>We cultivate obsessions.</strong></p>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
+      <a href="#produce" style="
+        display:inline-flex;align-items:center;gap:8px;
+        background:var(--primary);color:var(--bg);
+        font-size:.82rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+        padding:14px 30px;border-radius:4px;
+        transition:transform .25s var(--ease),box-shadow .25s;
+      " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 32px var(--primary-glow)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        Explore Produce
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#trace" style="
+        display:inline-flex;align-items:center;gap:8px;
+        border:1px solid var(--border);color:var(--text);
+        font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+        padding:14px 30px;border-radius:4px;
+        transition:border-color .2s,background .2s;
+      " onmouseover="this.style.borderColor='var(--primary)';this.style.background='rgba(180,248,104,.06)'" onmouseout="this.style.borderColor='';this.style.background=''">
+        Trace Origin
+      </a>
+    </div>
+  </div>
+
+  <!-- Foreground floating assets (large, blurred, closer) -->
+  <img class="float-asset fg-layer" data-speed="1.1" aria-hidden="true"
+    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCajtqoZpeLHUIGOtuqpKeG8qh8DfMUFObrQOBUNZ6a64O-84P5n3attudc28y6AKofL537yGqo5CzBQ69kWzfI6pyYxVTXmq8V47rMlzm88qWyJbMumzv-soXIvzA9n_ZfGdt85E5XD69C9r0lkRHxYX3URc9LTFOKxzeOoO1cvWONp-5C6XdOz9ogCGhUCswHql21jj33espD0CGZ0DWuBOc97shHfaLrSn-xjNn-lJmALEWJBayiOxACQ1xwg-sGpFzfe8vPOg"
+    style="width:520px;bottom:-80px;left:-60px;opacity:.55;filter:drop-shadow(0 60px 80px rgba(0,0,0,.95)) blur(5px) grayscale(20%);transform:rotate(-6deg);"
+    alt=""/>
+  <img class="float-asset fg-layer" data-speed=".9" aria-hidden="true"
+    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcdxd5zv4Lg3jJs6T30A-WTl8hTmOSCCKZyBHt7yO-GBCxtp7vay5XArwemIONl-sPeRh_4ne61zQ98BagTV31BiWADTlDkwk0xDienvHcEhCY0L2o3GmTpsMW-LTWe-ES-_bz3bMUZ9xfISYZbl_xlDJsqF7HdCiu1S3XizDOJsbsiMxiFWH8jcuYJzLgJq6P6Se4zy6mvp2AEL7R2U6en6cArA"
+    style="width:440px;top:-60px;right:-70px;opacity:.45;filter:drop-shadow(0 50px 70px rgba(0,0,0,.95)) blur(7px) grayscale(25%);transform:rotate(10deg);"
+    alt=""/>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-cue">
+    <span>Descend</span>
+    <div class="scroll-line-wrap"><div class="scroll-line-fill"></div></div>
+  </div>
+</section>
+
+<!-- Brand Reel -->
+<div id="reel" aria-hidden="true">
+  <div class="reel-track">
+    <div class="reel-inner">
+      <span class="reel-word">RAW</span><span class="reel-dot">✦</span>
+      <span class="reel-word">UNFILTERED</span><span class="reel-dot">✦</span>
+      <span class="reel-word">HARVESTED IN THE DARK</span><span class="reel-dot">✦</span>
+      <span class="reel-word">ZERO COMPROMISE</span><span class="reel-dot">✦</span>
+      <span class="reel-word">FARM DIRECT</span><span class="reel-dot">✦</span>
+      <span class="reel-word">RAW</span><span class="reel-dot">✦</span>
+      <span class="reel-word">UNFILTERED</span><span class="reel-dot">✦</span>
+      <span class="reel-word">HARVESTED IN THE DARK</span><span class="reel-dot">✦</span>
+      <span class="reel-word">ZERO COMPROMISE</span><span class="reel-dot">✦</span>
+      <span class="reel-word">FARM DIRECT</span><span class="reel-dot">✦</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PRODUCE ═══ -->
+<style>
+#produce{padding:120px 0 80px;background:var(--bg);position:relative;overflow:hidden;}
+.produce-header{text-align:center;margin-bottom:72px;padding:0 40px;}
+.produce-title{font-family:var(--font-head);font-style:italic;font-weight:900;font-size:clamp(44px,7vw,90px);color:var(--text);letter-spacing:-.03em;line-height:.9;margin-bottom:16px;}
+.produce-sub{color:var(--muted);font-size:1rem;font-weight:300;letter-spacing:.04em;}
+.carousel-wrap{position:relative;width:100%;max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:center;height:640px;}
+.carousel-item{position:absolute;transition:all .8s cubic-bezier(.16,1,.3,1);display:flex;align-items:center;justify-content:center;}
+.carousel-item img{filter:drop-shadow(0 40px 60px rgba(0,0,0,.9));transition:filter .5s;}
+.carousel-item.ci-active{z-index:30;width:680px;transform:translateX(-200px);}
+.carousel-item.ci-active img{filter:drop-shadow(0 60px 80px rgba(180,248,104,.15)) drop-shadow(0 40px 60px rgba(0,0,0,.9));}
+.carousel-item.ci-prev{z-index:10;width:320px;transform:translateX(-620px) scale(.65);opacity:.3;filter:blur(4px);}
+.carousel-item.ci-next{z-index:10;width:320px;transform:translateX(580px) scale(.65);opacity:.3;filter:blur(4px);}
+.produce-card{position:absolute;right:60px;top:50%;transform:translateY(-50%);width:290px;z-index:40;padding:26px;border-radius:12px;}
+.art-no{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--primary);margin-bottom:8px;}
+.produce-card h3{font-family:var(--font-head);font-style:italic;font-weight:900;font-size:1.9rem;letter-spacing:-.02em;color:var(--text);line-height:1;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.pm{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(74,107,83,.2);}
+.pm .lbl{font-family:var(--font-mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.pm .val{font-family:var(--font-mono);font-size:.82rem;font-weight:600;color:var(--text);}
+.pm .val.hi{color:var(--primary);}
+.pdesc{font-size:.8rem;font-weight:300;line-height:1.65;color:rgba(244,249,245,.68);border-left:2px solid var(--primary);padding-left:12px;margin:14px 0;}
+.trace-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:6px;background:var(--primary);color:var(--bg);font-family:var(--font-mono);font-size:.73rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;transition:transform .22s var(--ease),box-shadow .22s;margin-top:14px;}
+.trace-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px var(--primary-glow);}
+.cnav{position:absolute;top:50%;z-index:50;display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;border:1px solid var(--border);background:var(--surface);transform:translateY(-50%);transition:border-color .2s,background .2s;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
+.cnav:hover{border-color:var(--primary);background:rgba(180,248,104,.08);}
+#cprev{left:24px;}#cnext{right:380px;}
+</style>
+
+<section id="produce">
+  <div class="produce-header">
+    <p class="section-label">Produce</p>
+    <h2 class="produce-title">Museum Artifacts.<br/>From the Soil.</h2>
+    <p class="produce-sub">Click arrows to rotate</p>
+  </div>
+  <div class="carousel-wrap" id="carousel">
+    <div class="carousel-item ci-prev"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbkQcDCLE-uT_Lx0FISmcB-fMn3OfVxQWWxOPX68eNrKmBvogWMvZlEHNYqxsUnznkOWETR2OYBJn1ue-0OScA_ykEAYp6Ak_7yuVhhwfkibOkkFO41pMpeaziyX-alA9p6PrNEbXvToaQaDKVM8SuZtcPtYvRz_X1F-jqekw1OyldjgW2Y8oB5AS3wStsbVTGke3O8PRbC4685dFyke0MqF2Ae1hUuaN4pDAEaYr3Q1boaDXGHsLst0SADUIqQXcpUoIBpD2B-g" alt="Romanesco" style="width:280px;mix-blend-mode:screen;"/></div>
+    <div class="carousel-item ci-active"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTpR0t1-1JLgNrOmTKGt7fHTFEQ9wAtbkFu7UmEEbNU6yjHC1FTLTCCmCloXfY35_gVN4K3yJ7fxwltczqcDIzpI0Xgm1qnuTCAIIAYWIhzWLpf6Lw4ybMuXIC7vRoRkk_GvanfhZE27LTQiJ43COfmCv1YAVKgGzbtFQaRP9hOSkdWupEILohXybNiY8bdal835kRIPaCSDj4zzM31PNXvvcY_t1ikuptemORLYJX6SmIw211L3u1LI8bL_ymD43EPyUQtiB6JQ" alt="Purple Majesty" style="width:640px;mix-blend-mode:screen;"/></div>
+    <div class="carousel-item ci-next"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-LtJqfhi06AjlUdna7_ugxZ4fiOszZZPpxx865FJdfV7MIyRX1l0Uj2ZVuL0ZMTBYSms7UCmbt9TowlnbK-vCzzbVzaiDY9UGZ2RhdF1KBLXmwTlKru3s31q0jkWG0_hTl74s2WQUyEAVx3q44EkrKQVsY6jN1DuUx3zAOOPAU2WoG-mQEpBdVEPxkd0hdqvxUMXOO_FFMNA8HmZaldEDdGvOvQqcglfIAWujVrXTpEsUi9zKHf3rMbRV74kkH9Lm9ZtKO87TxA" alt="Heirloom Tomato" style="width:280px;mix-blend-mode:screen;"/></div>
+    <div class="produce-card glass" id="produce-card">
+      <div class="art-no">Artifact No. 042</div>
+      <h3>Purple<br/>Majesty</h3>
+      <div class="pm"><span class="lbl">Brix Level</span><span class="val hi">8.4°Bx</span></div>
+      <div class="pm"><span class="lbl">Harvest</span><span class="val">Late Autumn</span></div>
+      <div class="pm"><span class="lbl">Soil Type</span><span class="val">Volcanic Loam</span></div>
+      <p class="pdesc">Cultivated in absolute darkness. Deep earthy notes, remarkably high antioxidant concentration. A textural revelation.</p>
+      <a href="#trace" class="trace-btn">Trace Origin <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+    <button class="cnav" id="cprev" aria-label="Prev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="cnav" id="cnext" aria-label="Next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+  </div>
+</section>
+
+<!-- ═══ TRACE ═══ -->
+<style>
+#trace{display:flex;min-height:100vh;border-top:1px solid var(--border);}
+.trace-left{width:42%;min-height:100vh;padding:100px 52px;background:rgba(10,19,12,.95);border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2;}
+.trace-title{font-family:var(--font-head);font-style:italic;font-weight:900;font-size:clamp(52px,7vw,88px);letter-spacing:-.03em;color:var(--text);line-height:.88;margin-bottom:18px;}
+.trace-sub{font-size:.95rem;font-weight:300;color:var(--muted);line-height:1.7;max-width:340px;margin-bottom:48px;}
+.timeline{position:relative;padding-left:26px;}
+.timeline::before{content:'';position:absolute;left:6px;top:8px;bottom:0;width:2px;background:rgba(74,107,83,.3);}
+.tli{position:relative;padding-bottom:34px;cursor:default;}
+.tli-dot{position:absolute;left:-23px;top:4px;width:14px;height:14px;border-radius:50%;border:2px solid var(--muted);background:var(--bg);}
+.tli.tli-on .tli-dot{border-color:var(--primary);background:var(--primary);box-shadow:0 0 12px var(--primary-glow);}
+.tl-n{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.18em;color:var(--primary);font-weight:700;margin-bottom:3px;}
+.tl-h{font-family:var(--font-head);font-style:italic;font-weight:700;font-size:1.45rem;color:var(--text);margin-bottom:5px;line-height:1.1;}
+.tl-m{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+.tl-c{margin-top:10px;padding:13px;border-radius:6px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.tc-k{font-family:var(--font-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:2px;}
+.tc-v{font-family:var(--font-mono);font-size:.8rem;color:var(--text);font-weight:600;}
+.tc-v.g{color:var(--primary);}
+.trace-right{width:58%;position:relative;background:#050906;overflow:hidden;}
+.topo-grid{position:absolute;inset:-50%;width:200%;height:200%;background-image:linear-gradient(rgba(74,107,83,.17) 1px,transparent 1px),linear-gradient(90deg,rgba(74,107,83,.17) 1px,transparent 1px);background-size:44px 44px;transform:perspective(900px) rotateX(58deg) scale(1.4);animation:topoS 22s linear infinite alternate;}
+@keyframes topoS{from{background-position:0 0;}to{background-position:60px 60px;}}
+.topo-vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 0%,#050906 78%);}
+.mmark{position:absolute;z-index:20;transform:translate(-50%,-50%);}
+.mcore{width:14px;height:14px;border-radius:50%;background:var(--primary);border:2px solid var(--bg);box-shadow:0 0 18px var(--primary),0 0 36px rgba(180,248,104,.4);position:relative;z-index:2;cursor:pointer;}
+.mping{position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(180,248,104,.3);animation:mpinganim 2.5s ease-in-out infinite;}
+@keyframes mpinganim{0%{transform:scale(1);opacity:1;}100%{transform:scale(2.4);opacity:0;}}
+.midle .mcore{background:var(--muted);box-shadow:none;}
+.mtt{position:absolute;bottom:calc(100% + 16px);left:50%;transform:translateX(-50%) translateY(8px);width:230px;padding:14px;border-radius:10px;opacity:0;pointer-events:none;transition:opacity .3s var(--ease),transform .3s var(--ease);}
+.mmark:hover .mtt{opacity:1;transform:translateX(-50%) translateY(0);}
+.mtt-top{display:flex;align-items:center;gap:9px;margin-bottom:9px;padding-bottom:9px;border-bottom:1px solid var(--border);}
+.mtt-av{width:32px;height:32px;border-radius:50%;background:var(--surface-solid);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.mtt-nm{font-family:var(--font-mono);font-size:.76rem;font-weight:700;color:var(--text);}
+.mtt-rl{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.1em;color:var(--primary);text-transform:uppercase;}
+.mtt-g{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.mtt-k{font-family:var(--font-mono);font-size:.57rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:1px;}
+.mtt-v{font-family:var(--font-mono);font-size:.73rem;color:var(--text);font-weight:600;}
+.mhud{position:absolute;bottom:22px;right:22px;z-index:30;text-align:right;pointer-events:none;}
+.mhud-l{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;color:var(--muted);line-height:1.8;}
+.mhud-s{display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-family:var(--font-mono);font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--primary);}
+.mhud-s::before{content:'';display:block;width:5px;height:5px;border-radius:50%;background:var(--primary);animation:pdd 1.5s ease-in-out infinite;}
+@keyframes pdd{0%,100%{opacity:1;}50%{opacity:.3;}}
+</style>
+
+<section id="trace">
+  <div class="trace-left">
+    <p class="section-label">01 — QR Soil Trace</p>
+    <h2 class="trace-title">ORIGIN<br/>TRACE.</h2>
+    <p class="trace-sub">Radical transparency through interactive supply chain data. Every root, every drop, accounted for.</p>
+    <div class="timeline">
+      <div class="tli tli-on"><div class="tli-dot"></div><div class="tl-n">01</div><div class="tl-h">Seed Planted</div><div class="tl-m">Mar 12, 2025 · Sonipat, Haryana</div><div class="tl-c glass"><div><div class="tc-k">Strain</div><div class="tc-v">Heirloom Purple</div></div><div><div class="tc-k">Soil Temp</div><div class="tc-v g">14°C</div></div></div></div>
+      <div class="tli"><div class="tli-dot"></div><div class="tl-n">02</div><div class="tl-h">First Sprout</div><div class="tl-m">Mar 28, 2025 · Soil pH: 6.8</div></div>
+      <div class="tli tli-on"><div class="tli-dot"></div><div class="tl-n">03</div><div class="tl-h">Midnight Harvest</div><div class="tl-m">Harvested in darkness to preserve sugars</div><div class="tl-c glass"><div><div class="tc-k">Time</div><div class="tc-v">03:14 AM</div></div><div><div class="tc-k">Brix Score</div><div class="tc-v g">12.4</div></div></div></div>
+      <div class="tli" style="opacity:.45;"><div class="tli-dot"></div><div class="tl-n">04</div><div class="tl-h">Cold Transit</div><div class="tl-m">Awaiting dispatch · Est. 8h to store</div></div>
+    </div>
+  </div>
+  <div class="trace-right">
+    <div class="topo-grid"></div>
+    <div class="topo-vig"></div>
+    <div class="mmark" style="top:45%;left:46%;">
+      <div class="mping"></div><div class="mcore"></div>
+      <div class="mtt glass">
+        <div class="mtt-top"><div class="mtt-av">👨‍🌾</div><div><div class="mtt-nm">Ramesh Kumar</div><div class="mtt-rl">Master Cultivator</div></div></div>
+        <div class="mtt-g"><div><div class="mtt-k">Coordinates</div><div class="mtt-v">29.0°N 77.0°E</div></div><div><div class="mtt-k">Soil pH</div><div class="mtt-v" style="color:var(--primary)">6.8</div></div><div><div class="mtt-k">Elevation</div><div class="mtt-v">230m</div></div><div><div class="mtt-k">Mineral</div><div class="mtt-v">Alluvial</div></div></div>
+      </div>
+    </div>
+    <div class="mmark midle" style="top:32%;left:66%;"><div class="mcore"></div></div>
+    <div class="mmark midle" style="top:67%;left:37%;"><div class="mcore"></div></div>
+    <div class="mhud"><div class="mhud-l">LAT: 29.0000° N</div><div class="mhud-l">LNG: 77.0000° E</div><div class="mhud-s">Active Telemetry</div></div>
+  </div>
+</section>
+
+<!-- ═══ WAITLIST TERMINAL ═══ -->
+<style>
+#waitlist{
+  padding:120px 40px;display:flex;flex-direction:column;align-items:center;
+  border-top:1px solid var(--border);position:relative;overflow:hidden;
+}
+.waitlist-bg{
+  position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 80% 50% at 50% 100%,rgba(180,248,104,.05) 0%,transparent 70%);
+}
+.waitlist-inner{position:relative;z-index:2;width:100%;max-width:800px;text-align:center;}
+.wl-eyebrow{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--primary);margin-bottom:20px;}
+.wl-title{font-family:var(--font-head);font-style:italic;font-weight:900;font-size:clamp(52px,9vw,120px);letter-spacing:-.03em;color:var(--text);line-height:.86;margin-bottom:16px;}
+.wl-sub{color:var(--muted);font-size:1rem;font-weight:300;margin-bottom:52px;}
+/* terminal */
+.terminal{
+  background:#030706;border:1px solid rgba(180,248,104,.25);border-radius:10px;
+  overflow:hidden;box-shadow:0 0 60px rgba(180,248,104,.08),0 40px 80px rgba(0,0,0,.6);
+  text-align:left;font-family:var(--font-mono);
+}
+.term-bar{
+  padding:12px 16px;background:rgba(180,248,104,.035);border-bottom:1px solid rgba(180,248,104,.12);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.term-dots{display:flex;gap:6px;}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(180,248,104,.2);}
+.dot.r{background:#FF5F57;}.dot.y{background:#FEBC2E;}.dot.g{background:#28C840;}
+.term-title{font-size:.62rem;color:rgba(180,248,104,.45);letter-spacing:.12em;text-transform:uppercase;}
+.term-body{padding:28px 28px 24px;}
+.term-line{font-size:.82rem;line-height:1.9;color:rgba(180,248,104,.6);}
+.term-line .prompt{color:var(--primary);font-weight:700;}
+.term-line .cmd{color:var(--text);}
+.term-line .out{color:rgba(180,248,104,.5);}
+.term-line .grn{color:var(--primary);}
+.term-line .mut{color:var(--muted);}
+/* input row */
+.term-input-row{
+  display:flex;align-items:center;gap:10px;
+  border-top:1px solid rgba(180,248,104,.1);padding:18px 28px;
+  background:rgba(180,248,104,.02);
+}
+.term-prompt-sym{color:var(--primary);font-size:.82rem;font-weight:700;white-space:nowrap;}
+#wl-input{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--text);font-family:var(--font-mono);font-size:.82rem;
+  caret-color:var(--primary);
+}
+#wl-input::placeholder{color:rgba(74,107,83,.6);}
+#wl-submit{
+  padding:8px 20px;border-radius:4px;background:var(--primary);
+  color:var(--bg);font-family:var(--font-mono);font-size:.72rem;
+  font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  transition:transform .2s var(--ease),box-shadow .2s;
+}
+#wl-submit:hover{transform:scale(1.04);box-shadow:0 6px 18px var(--primary-glow);}
+.term-cursor{display:inline-block;width:7px;height:14px;background:var(--primary);vertical-align:middle;margin-left:2px;animation:blink .9s step-start infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+/* success state */
+.wl-success{display:none;flex-direction:column;align-items:center;gap:12px;padding:32px;text-align:center;}
+.wl-success.show{display:flex;}
+.wl-success-icon{font-size:2.5rem;animation:popIn .5s var(--ease-spring);}
+@keyframes popIn{from{transform:scale(0);}to{transform:scale(1);}}
+.wl-success p{font-family:var(--font-mono);font-size:.8rem;color:var(--primary);letter-spacing:.1em;}
+/* stats */
+.wl-stats{display:flex;gap:60px;justify-content:center;margin-top:52px;flex-wrap:wrap;}
+.wl-stat{text-align:center;}
+.wl-stat-n{font-family:var(--font-head);font-style:italic;font-size:3rem;font-weight:900;color:var(--primary);line-height:1;}
+.wl-stat-l{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+/* footer */
+footer{border-top:1px solid var(--border);padding:40px;display:flex;align-items:center;justify-content:space-between;}
+.footer-brand{font-family:var(--font-head);font-style:italic;font-weight:900;font-size:1.2rem;color:var(--text);}
+.footer-brand span{color:var(--primary);}
+.footer-meta{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+</style>
+
+<section id="waitlist">
+  <div class="waitlist-bg" aria-hidden="true"></div>
+  <div class="waitlist-inner">
+    <div class="wl-eyebrow">Closed Beta</div>
+    <h2 class="wl-title">JOIN THE<br/>HARVEST.</h2>
+    <p class="wl-sub">Access granted to 200 obsessives. Every season. No exceptions.</p>
+
+    <div class="terminal">
+      <div class="term-bar">
+        <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+        <div class="term-title">yakuzaz-terminal — harvest v2.0.1</div>
+        <div></div>
+      </div>
+      <div class="term-body" id="term-body">
+        <div class="term-line"><span class="prompt">$&nbsp;</span><span class="cmd">harvest --init --season=2025</span></div>
+        <div class="term-line"><span class="out">⟶ Connecting to soil telemetry network...</span></div>
+        <div class="term-line"><span class="out">⟶ Verifying farm credentials... <span class="grn">OK</span></span></div>
+        <div class="term-line"><span class="out">⟶ Current season: <span class="grn">AUTUMN 2025</span></span></div>
+        <div class="term-line"><span class="out">⟶ Access slots: <span class="grn">47 / 200</span> remaining</span></div>
+        <div class="term-line"><span class="mut">────────────────────────────────────</span></div>
+        <div class="term-line"><span class="prompt">$&nbsp;</span><span class="cmd">harvest --request-access --priority<span class="term-cursor"></span></span></div>
+      </div>
+      <!-- Input -->
+      <div id="wl-form-wrap">
+        <div class="term-input-row">
+          <span class="term-prompt-sym">$ enter email →</span>
+          <input id="wl-input" type="email" placeholder="chef@yourrestaurant.com" autocomplete="off"/>
+          <button id="wl-submit">Request Access</button>
+        </div>
+      </div>
+      <!-- Success -->
+      <div class="wl-success" id="wl-success">
+        <div class="wl-success-icon">✦</div>
+        <p>ACCESS CONFIRMED. WE'LL BE IN TOUCH.</p>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="wl-stats">
+      <div class="wl-stat"><div class="wl-stat-n">12</div><div class="wl-stat-l">Partner Farms</div></div>
+      <div class="wl-stat"><div class="wl-stat-n">47</div><div class="wl-stat-l">Slots Remaining</div></div>
+      <div class="wl-stat"><div class="wl-stat-n">100%</div><div class="wl-stat-l">Traced to Root</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-brand"><span>✦</span> YAKUZAZ.</div>
+  <div class="footer-meta">Ghaziabad, NCR · India &nbsp;·&nbsp; Farm to Table &nbsp;·&nbsp; © 2025</div>
+  <div class="footer-meta">harvest@yakuzaz.in</div>
+</footer>
+
+<!-- ═══ JAVASCRIPT ENGINE ═══ -->
+<script>
+(function(){
+'use strict';
+
+/* ── CURSOR ────────── */
+const dot  = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  dot.style.left=mx+'px';dot.style.top=my+'px';
+});
+(function lerp(){
+  rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(lerp);
+})();
+
+/* ── LOADER ────────── */
+const loader   = document.getElementById('loader');
+const numEl    = document.getElementById('loader-num');
+let pct=0;
+const tick = setInterval(()=>{
+  pct = Math.min(pct + Math.random()*12+3, 100);
+  numEl.textContent = Math.floor(pct);
+  if(pct >= 100){
+    clearInterval(tick);
+    setTimeout(()=>{
+      loader.style.transition='opacity .7s ease';
+      loader.style.opacity='0';
+      setTimeout(()=>{ loader.style.display='none'; initEntrance(); }, 700);
+    }, 280);
+  }
+},90);
+
+/* ── ENTRANCE ─────── */
+function initEntrance(){
+  if(typeof gsap === 'undefined') return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* smooth scroll */
+  if(typeof Lenis !== 'undefined'){
+    const lenis = new Lenis({duration:1.35,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t))});
+    lenis.on('scroll',ScrollTrigger.update);
+    gsap.ticker.add(time=>lenis.raf(time*1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* hero entrance */
+  const tl = gsap.timeline({defaults:{ease:'power4.out',duration:1.2}});
+  tl.from('.hero-eyebrow',  {y:30,opacity:0,duration:.8})
+    .from('.hero-title',    {y:80,opacity:0,skewY:4},'-=.5')
+    .from('.hero-manifesto',{y:30,opacity:0},'-=.6')
+    .from('[href="#produce"]',{y:20,opacity:0,stagger:.1},'-=.5');
+
+  /* parallax floating assets */
+  document.querySelectorAll('.float-asset').forEach(el=>{
+    const spd = parseFloat(el.dataset.speed||0.4)*120;
+    gsap.to(el,{
+      y:spd,
+      ease:'none',
+      scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:1.4}
+    });
+  });
+
+  /* reveal sections */
+  gsap.utils.toArray('.section-label,.trace-title,.produce-title,.wl-title').forEach(el=>{
+    gsap.from(el,{y:50,opacity:0,duration:1.2,ease:'power4.out',
+      scrollTrigger:{trigger:el,start:'top 85%'}
+    });
+  });
+}
+
+/* ── CAROUSEL ─────── */
+const items = document.querySelectorAll('.carousel-item');
+const data  = [
+  { no:'Artifact No. 031', name:'Romanesco<br/>Broccoli', b:'11.2°Bx', h:'Spring', s:'Red Clay', d:'A mathematical wonder. Fibonacci spirals grown under open Haryana skies. Nutty, dense, textural perfection.'},
+  { no:'Artifact No. 042', name:'Purple<br/>Majesty',    b:'8.4°Bx',  h:'Late Autumn', s:'Volcanic Loam', d:'Cultivated in absolute darkness. Deep earthy notes, remarkably high antioxidant concentration.'},
+  { no:'Artifact No. 019', name:'Heirloom<br/>Tomato',  b:'9.6°Bx',  h:'Monsoon Peak', s:'Alluvial', d:'Seven generations of selective cultivation. Sun-dried salinity balanced with explosive sweetness.'},
+];
+let idx=1;
+function setCarousel(i){
+  idx=((i%items.length)+items.length)%items.length;
+  const prev=(idx-1+items.length)%items.length;
+  const next=(idx+1)%items.length;
+  items.forEach(el=>el.className='carousel-item');
+  items[prev].classList.add('ci-prev');
+  items[idx].classList.add('ci-active');
+  items[next].classList.add('ci-next');
+  const d=data[idx];
+  const card=document.getElementById('produce-card');
+  card.querySelector('.art-no').textContent=d.no;
+  card.querySelector('h3').innerHTML=d.name;
+  card.querySelectorAll('.pm')[0].querySelector('.val').textContent=d.b;
+  card.querySelectorAll('.pm')[1].querySelector('.val').textContent=d.h;
+  card.querySelectorAll('.pm')[2].querySelector('.val').textContent=d.s;
+  card.querySelector('.pdesc').textContent=d.d;
+}
+document.getElementById('cprev').addEventListener('click',()=>setCarousel(idx-1));
+document.getElementById('cnext').addEventListener('click',()=>setCarousel(idx+1));
+
+/* ── WAITLIST ─────── */
+const wlInput   = document.getElementById('wl-input');
+const wlSubmit  = document.getElementById('wl-submit');
+const wlSuccess = document.getElementById('wl-success');
+const wlForm    = document.getElementById('wl-form-wrap');
+const termBody  = document.getElementById('term-body');
+
+function typeTermLine(text,className){
+  return new Promise(res=>{
+    const div = document.createElement('div');
+    div.className='term-line';termBody.appendChild(div);
+    let i=0,cl=false;
+    const root='<span class="'+className+'">';
+    div.innerHTML=root+'<span class="tc-inner"></span></span>';
+    const span=div.querySelector('.tc-inner');
+    const t=setInterval(()=>{
+      if(i<text.length){span.textContent+=text[i++];}
+      else{clearInterval(t);res();}
+    },18);
+    termBody.scrollTop=termBody.scrollHeight;
+  });
+}
+
+wlSubmit.addEventListener('click',async()=>{
+  const email=wlInput.value.trim();
+  if(!email||!email.includes('@')){
+    wlInput.style.outline='1px solid rgba(232,93,4,.7)';
+    setTimeout(()=>wlInput.style.outline='',1000);return;
+  }
+  wlSubmit.disabled=true;wlInput.disabled=true;
+  await typeTermLine('⟶ Validating identity...','out');
+  await new Promise(r=>setTimeout(r,600));
+  await typeTermLine('⟶ Provisioning access slot...','out');
+  await new Promise(r=>setTimeout(r,700));
+  await typeTermLine('⟶ ACCESS GRANTED :: '+email,'grn');
+  await new Promise(r=>setTimeout(r,400));
+  wlForm.style.display='none';
+  wlSuccess.classList.add('show');
+});
+
+wlInput.addEventListener('keydown',e=>{if(e.key==='Enter')wlSubmit.click();});
+
+})();
+</script>
+
+</body>
+</html>
