@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -312,7 +312,93 @@
     </a>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-client.js"></script>
+  <script src="/js/db.js"></script>
   <script src="/js/cart.js"></script>
-  <script src="category.js?v=2"></script>
+  <script src="category.js?v=3"></script>
+  <script>
+  /* ── Live Supabase sync — overlays real prices + availability ── */
+  (async function syncLiveData() {
+    const params = new URLSearchParams(window.location.search);
+    const slug   = params.get('cat') || 'leafy';
+    try {
+      const [products, farms] = await Promise.all([
+        DB.getProducts(slug),
+        DB.getFarms()
+      ]);
+      if (!products.length) return;
+
+      // Build lookup: product-slug -> DB row
+      const bySlug = {};
+      products.forEach(p => { bySlug[p.slug] = p; });
+
+      // Update each rendered card's price + availability from DB
+      document.querySelectorAll('.produce-card').forEach(card => {
+        // card onclick carries item=slug
+        const m = card.getAttribute('onclick') && card.onclick
+          ? null : card.querySelector('[onclick]');
+        // get slug from onclick attr on the card itself
+        const onclickAttr = card.getAttribute('onclick') || '';
+        const slugMatch = onclickAttr.match(/item=([\w-]+)/);
+        if (!slugMatch) return;
+        const cardSlug = slugMatch[1];
+        const dbRow = bySlug[cardSlug];
+        if (!dbRow) return;
+
+        // Update price display
+        const priceEl = card.querySelector('[style*="15803d"]');
+        if (priceEl) {
+          priceEl.innerHTML = `₹${dbRow.price_per_kg}<span style="font-size:.72rem;font-weight:500;color:#6b7280">/kg</span>`;
+        }
+
+        // Availability badge
+        if (!dbRow.is_available) {
+          const body = card.querySelector('.produce-card-body');
+          if (body && !body.querySelector('.yk-unavail-badge')) {
+            const b = document.createElement('div');
+            b.className = 'yk-unavail-badge';
+            b.style.cssText = 'display:inline-block;padding:3px 10px;border-radius:20px;background:#fee2e2;color:#991b1b;font-size:.7rem;font-weight:700;margin-bottom:8px;';
+            b.textContent = 'Out of Stock';
+            body.insertBefore(b, body.firstChild);
+            card.style.opacity = '0.6';
+          }
+        }
+
+        // Freshness score from DB
+        const fBadge = card.querySelector('.freshness-badge');
+        if (fBadge && dbRow.freshness_score) {
+          fBadge.textContent = `⭐ ${dbRow.freshness_score}/10`;
+        }
+      });
+
+      // Update farm strip from DB if farms loaded
+      if (farms.length) {
+        const categoryFarms = farms.filter(f => products.some(p => p.farm_id === f.id));
+        const strip = document.getElementById('farm-strip');
+        if (strip && categoryFarms.length) {
+          strip.innerHTML = categoryFarms.slice(0, 4).map(f => `
+            <div class="farm-card">
+              <div class="farm-card-top">
+                <div class="farm-avatar">${f.emoji || '🌾'}</div>
+                <div>
+                  <div class="farm-name">${f.name}</div>
+                  <div class="farm-location">📍 ${f.location}</div>
+                </div>
+                <span class="farm-badge">${f.is_certified ? '✓ Certified' : '○ Partner'}</span>
+              </div>
+              <div class="farm-stats">
+                <div class="farm-stat-item"><span class="farm-stat-val">${f.supply_pct || '—'}</span><span class="farm-stat-lbl">Supply Share</span></div>
+                <div class="farm-stat-item"><span class="farm-stat-val">${f.years_partnered}yr${f.years_partnered !== 1 ? 's' : ''}</span><span class="farm-stat-lbl">Partnership</span></div>
+              </div>
+            </div>`);
+        }
+        document.getElementById('farm-count-tag').textContent = `${categoryFarms.length} Active Farm${categoryFarms.length !== 1 ? 's' : ''}`;
+      }
+    } catch(e) {
+      console.warn('[YAKUZAZ] Live sync failed, using static data.', e);
+    }
+  })();
+  </script>
 </body>
 </html>

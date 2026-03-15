@@ -937,6 +937,31 @@
     </div>
   </section>
 
+  <!-- ========= WAITLIST SECTION ========= -->
+  <section id="waitlist" style="background:#050505;border-top:1px solid rgba(255,255,255,0.06);padding:100px 0">
+    <div style="max-width:860px;margin:0 auto;padding:0 32px;text-align:center">
+      <p style="font-family:'Space Grotesk',sans-serif;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:#DC143C;margin-bottom:20px">▲ Early Access</p>
+      <h2 style="font-family:'Fraunces',serif;font-style:italic;font-size:clamp(2.8rem,7vw,6rem);font-weight:900;line-height:.9;letter-spacing:-.03em;color:#F2EDE4;margin-bottom:20px">Be First.<br/><span style='color:#4ade80'>Get Fresh.</span></h2>
+      <p style="font-family:'Space Grotesk',sans-serif;font-size:1.05rem;color:rgba(242,237,228,.55);line-height:1.75;max-width:520px;margin:0 auto 48px">Join the waitlist for YAKUZAZ Walking Mandi — when we launch in your city, you'll be the first to know and get early access pricing.</p>
+      <form id="yk-waitlist-form" style="display:flex;flex-direction:column;gap:14px;max-width:460px;margin:0 auto" onsubmit="handleWaitlist(event)">
+        <input id="wl-name" type="text" placeholder="Your name" required
+          style="padding:14px 20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:4px;color:#F2EDE4;font-family:'Space Grotesk',sans-serif;font-size:.95rem;outline:none"
+        />
+        <input id="wl-email" type="email" placeholder="your@email.com" required
+          style="padding:14px 20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:4px;color:#F2EDE4;font-family:'Space Grotesk',sans-serif;font-size:.95rem;outline:none"
+        />
+        <input id="wl-city" type="text" placeholder="Your city (optional)"
+          style="padding:14px 20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:4px;color:#F2EDE4;font-family:'Space Grotesk',sans-serif;font-size:.95rem;outline:none"
+        />
+        <button type="submit" id="wl-btn"
+          style="padding:16px 32px;background:#DC143C;color:#fff;border:none;border-radius:4px;font-family:'Space Grotesk',sans-serif;font-size:.88rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s">
+          Join Waitlist &rarr;
+        </button>
+        <div id="wl-msg" style="font-family:'Space Grotesk',sans-serif;font-size:.84rem;display:none;padding:10px 16px;border-radius:4px"></div>
+      </form>
+    </div>
+  </section>
+
   <!-- ========= FOOTER ========= -->
   <footer id="footer">
     <div class="footer-top">
@@ -1003,8 +1028,45 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/supabase-client.js"></script>
+  <script src="/js/db.js"></script>
   <script>
-    // Update nav account button based on auth state
+    // ── Waitlist form handler ──
+    async function handleWaitlist(e) {
+      e.preventDefault();
+      const btn  = document.getElementById('wl-btn');
+      const msg  = document.getElementById('wl-msg');
+      const name  = document.getElementById('wl-name').value.trim();
+      const email = document.getElementById('wl-email').value.trim();
+      const city  = (document.getElementById('wl-city')?.value || '').trim();
+
+      btn.disabled = true;
+      btn.textContent = 'Joining…';
+      msg.style.display = 'none';
+
+      try {
+        await DB.submitWaitlist(name, email, city);
+        msg.textContent = '🎉 You\'re on the list! We\'ll reach out when YAKUZAZ launches in your city.';
+        msg.style.display = 'block';
+        msg.style.background = 'rgba(74,222,128,0.08)';
+        msg.style.color = '#4ade80';
+        msg.style.border = '1px solid rgba(74,222,128,0.2)';
+        document.getElementById('yk-waitlist-form').reset();
+        btn.textContent = '✓ Joined!';
+      } catch(err) {
+        const isDupe = err.message === 'DUPLICATE';
+        msg.textContent = isDupe
+          ? '✓ This email is already on the waitlist — we\'ll be in touch!'
+          : '✕ Something went wrong. Please try again.';
+        msg.style.display = 'block';
+        msg.style.background = isDupe ? 'rgba(74,222,128,0.06)' : 'rgba(220,20,60,0.08)';
+        msg.style.color = isDupe ? '#4ade80' : '#DC143C';
+        msg.style.border = `1px solid ${isDupe ? 'rgba(74,222,128,0.2)' : 'rgba(220,20,60,0.2)'}`;
+        btn.disabled = false;
+        btn.textContent = 'Join Waitlist →';
+      }
+    }
+
+    // ── Nav account button auth state ──
     (async () => {
       const btn = document.getElementById('navAccountBtn');
       if (!btn) return;
@@ -1019,6 +1081,7 @@
       } catch (_) {}
     })();
   </script>
+
   <!-- GSAP + ScrollTrigger (~38 KB gzip total) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
